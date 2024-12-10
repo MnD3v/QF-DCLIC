@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/data/models/ardoise_question.dart';
 import 'package:immobilier_apk/scr/data/models/maked.dart';
@@ -13,11 +14,18 @@ class UserArdoiseQuestionCard extends StatelessWidget {
 
   RxString qcuResponse = "".obs;
   RxString qctResponse = "".obs;
-  RxList<String> qcmResponse = RxList();
+  RxList<String> qcmResponse = RxList<String>([]);
   @override
   Widget build(BuildContext context) {
     if (question.type == QuestionType.qcm) {
-      qcmResponse.value = question.maked[id]!.response[0];
+      print(((question.maked[id]!.response[0] as List)
+              .map((element) => element.toString() as String)
+              .toList())
+          .runtimeType);
+      // List<String> qcmR = question.maked[id]!.response[0].map((element)=> element.toString()).toList() as List<String>;
+      qcmResponse.value = (question.maked[id]!.response[0] as List)
+          .map((element) => element.toString() as String)
+          .toList();
     } else if (question.type == QuestionType.qcu) {
       qcuResponse.value = question.maked[id]!.response[0];
     } else {
@@ -26,27 +34,32 @@ class UserArdoiseQuestionCard extends StatelessWidget {
     return AnimatedContainer(
       duration: 333.milliseconds,
       width: Get.width,
+      padding: EdgeInsets.all(9),
       decoration: BoxDecoration(
         // color: Color.fromARGB(0, 30, 95, 145),
         // gradient: LinearGradient(colors: [Colors.transparent, const Color.fromARGB(255, 15, 53, 88)]),
         border: Border.all(width: .6, color: Colors.white24),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.white12,
-              offset: Offset(3, 3),
-              blurStyle: BlurStyle.inner,
-              blurRadius: 15),
-        ],
-        color: question.maked
-                .containsKey(Utilisateur.currentUser.value!.telephone_id)
-            ? Color.fromARGB(255, 24, 49, 77)
-            : const Color(0xff0d1b2a),
+       
+        color:  Color(0xff0d1b2a),
         borderRadius: BorderRadius.circular(9),
       ),
       margin: EdgeInsets.symmetric(vertical: 6),
       child: EColumn(children: [
         Container(
-          padding: EdgeInsets.all(6),
+          decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(3)),
+          margin: EdgeInsets.symmetric(horizontal: 6),
+          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+           Icon(CupertinoIcons.person_circle),
+              3.w,
+              EText("${question.maked[id]!.nom} ${question.maked[id]!.prenom}"),
+            ],
+          ),
+        ),
+        Container(
           decoration: BoxDecoration(
               color: Color.fromARGB(0, 255, 255, 255),
               borderRadius: BorderRadius.vertical(top: Radius.circular(12))),
@@ -54,19 +67,19 @@ class UserArdoiseQuestionCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 6),
-                child: ETextRich(
-                  textSpans: [
-                    ETextSpan(
-                        text: question.question,
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        weight: FontWeight.bold),
-                  ],
-                  size: 22,
-                ),
-              ),
+              // Padding(
+              //   padding:
+              //       const EdgeInsets.symmetric(vertical: 12.0, horizontal: 6),
+              //   child: ETextRich(
+              //     textSpans: [
+              //       ETextSpan(
+              //           text: question.question,
+              //           color: const Color.fromARGB(255, 255, 255, 255),
+              //           weight: FontWeight.bold),
+              //     ],
+              //     size: 22,
+              //   ),
+              // ),
             ],
           ),
         ),

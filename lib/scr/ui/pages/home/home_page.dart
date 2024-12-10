@@ -21,6 +21,7 @@ import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/all_questionnair
 import 'package:immobilier_apk/scr/ui/pages/admin/questionnaire/add_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/admin/questionnaire/questionnaire.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/view_questionnaire.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/users/users.dart';
 import 'package:immobilier_apk/scr/ui/widgets/bottom_navigation_widget.dart';
 import 'package:immobilier_apk/scr/ui/widgets/question_card.dart';
 
@@ -56,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   var pages = [
-    Center(),
+    Users(),
     Navigator(
       key: Get.nestedKey(2), // Clé pour le Navigator local
       initialRoute: '/', // Page initiale

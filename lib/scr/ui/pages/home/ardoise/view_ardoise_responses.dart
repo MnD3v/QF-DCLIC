@@ -25,15 +25,33 @@ class ViewArdoiseResponses extends StatelessWidget {
           ArdoiseQuestion question =
               ArdoiseQuestion.fromMap(snapshot.data!.data()!);
           return EScaffold(
-            body: EColumn(
-              children: question.maked.keys
-                  .map((key) => UserArdoiseQuestionCard(
-                    id: key,
-
-                      question: question))
-                  .toList(),
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              title: EText(
+                "Reponses",
+                size: 24,
+                weight: FontWeight.bold,
+              ),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: EColumn(children: [
+                EText(question.question,
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    weight: FontWeight.bold),
+                ...(sortByDate(question.maked)
+                    .map((key) =>
+                        UserArdoiseQuestionCard(id: key, question: question))
+                    .toList()),
+              ]),
             ),
           );
         });
+  }
+ List sortByDate(Map map){
+    List sortedKeys = map.keys.toList()
+    ..sort((a, b) => map[a]!.date.compareTo(map[b]!.date));
+    return sortedKeys.reversed.toList();
   }
 }

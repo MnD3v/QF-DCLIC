@@ -28,14 +28,9 @@ class ArdoiseQuestionCard extends StatelessWidget {
         // color: Color.fromARGB(0, 30, 95, 145),
         // gradient: LinearGradient(colors: [Colors.transparent, const Color.fromARGB(255, 15, 53, 88)]),
         border: Border.all(width: .6, color: Colors.white24),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.white12,
-              offset: Offset(3, 3),
-              blurStyle: BlurStyle.inner,
-              blurRadius: 15),
-        ],
-        color: const Color.fromARGB(255, 0, 0, 0),
+       
+       
+        color: Color(0xff0d1b2a),
         borderRadius: BorderRadius.circular(9),
       ),
       margin: EdgeInsets.symmetric(vertical: 6),
