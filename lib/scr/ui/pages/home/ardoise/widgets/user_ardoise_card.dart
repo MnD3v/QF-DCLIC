@@ -4,18 +4,25 @@ import 'package:immobilier_apk/scr/data/models/maked.dart';
 import 'package:immobilier_apk/scr/ui/pages/admin/ardoise/add_question.dart';
 
 class UserArdoiseQuestionCard extends StatelessWidget {
-  UserArdoiseQuestionCard({super.key, required this.question, required this.id});
+  UserArdoiseQuestionCard(
+      {super.key, required this.question, required this.id});
   final String id;
   final ArdoiseQuestion question;
 
-
   var sendLoading = false.obs;
+
+  RxString qcuResponse = "".obs;
+  RxString qctResponse = "".obs;
+  RxList<String> qcmResponse = RxList();
   @override
   Widget build(BuildContext context) {
-    question.maked[id]!.response[]
-      final RxString qcuResponse;
-  final RxString qctResponse;
-  final RxList<String> qcmResponse;
+    if (question.type == QuestionType.qcm) {
+      qcmResponse.value = question.maked[id]!.response[0];
+    } else if (question.type == QuestionType.qcu) {
+      qcuResponse.value = question.maked[id]!.response[0];
+    } else {
+      qctResponse.value = question.maked[id]!.response[0];
+    }
     return AnimatedContainer(
       duration: 333.milliseconds,
       width: Get.width,
