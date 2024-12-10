@@ -1,0 +1,132 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:immobilier_apk/scr/config/app/export.dart';
+import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/view_user_questionnaire.dart';
+import 'package:my_widgets/data/other/collections.dart';
+import 'package:my_widgets/my_widgets.dart';
+
+class ViewResponses extends StatelessWidget {
+  final String id;
+  ViewResponses({super.key, required this.id});
+
+  var user = Utilisateur.currentUser.value!;
+
+  Questionnaire? questionnaire;
+  @override
+  Widget build(BuildContext context) {
+    return EScaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          title: EText(
+            "Reponses",
+            size: 24,
+            weight: FontWeight.bold,
+          ),
+        ),
+        body: StreamBuilder(
+            stream: DB
+                .firestore(Collections.classes)
+                .doc(user.classe)
+                .collection(Collections.questionnaires)
+                .doc(id)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (DB.waiting(snapshot)) {
+                return ECircularProgressIndicator();
+              }
+
+              questionnaire = Questionnaire.fromMap(snapshot.data!.data()!);
+              return Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: EColumn(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white24),
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: EText(
+                          questionnaire!.title.toUpperCase(),
+                          align: TextAlign.center,
+                          size: 22,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                    ),
+                    12.h,
+                    ...questionnaire!.maked.keys.map((key) {
+                      var maked = questionnaire!.maked[key];
+                      return GestureDetector(
+                        onTap: () {
+                     
+                          Get.to(ViewUserQuestionnaire(
+                            userID: key,
+                              questionnaire: questionnaire!,
+                              dejaRepondu: true.obs), id: 1);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          margin: EdgeInsets.all(6),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white12,
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 60,
+                                    height: 60,
+                                    child: CircleAvatar(
+                                      backgroundColor: AppColors.background,
+                                      child: Icon(
+                                        CupertinoIcons.person,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  9.w,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      EText("${maked!.nom} ${maked.prenom}"),
+                                      ETextRich(
+                                        textSpans: [
+                                          ETextSpan(
+                                              text: "${maked.pointsGagne}",
+                                              color: Colors.greenAccent),
+                                          ETextSpan(
+                                            text:
+                                                "/${questionnaire!.questions.length}",
+                                            color: Colors.white,
+                                          )
+                                        ],
+                                        size: 30,
+                                        font: Fonts.sevenSegment,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Icon(Icons.keyboard_arrow_right_rounded)
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList()
+                  ],
+                ),
+              );
+            }));
+  }
+}
