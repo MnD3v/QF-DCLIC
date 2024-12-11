@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // import 'package:dotted_line/dotted_line.dart';
 
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 
 import 'package:immobilier_apk/scr/config/app/export.dart';
@@ -33,7 +34,6 @@ class _ViewUserQuestionnaireState extends State<ViewUserQuestionnaire> {
 
   var loading = false.obs;
 
-
   @override
   void initState() {
     waitAfter(10, () {
@@ -51,8 +51,11 @@ class _ViewUserQuestionnaireState extends State<ViewUserQuestionnaire> {
     } else {
       initalResponses = widget.questionnaire.maked[widget.userID]!.response;
     }
-    return EScaffold(
-     appBar: AppBar(
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = constraints.maxWidth;
+      final crossAxisCount = width / 400;
+      return EScaffold(
+        appBar: AppBar(
           backgroundColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           title: EText(
@@ -61,48 +64,30 @@ class _ViewUserQuestionnaireState extends State<ViewUserQuestionnaire> {
             weight: FontWeight.bold,
           ),
         ),
-      color: Color.fromARGB(255, 24, 49, 77),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 9.0),
-        child: EColumn(children: [
-          12.h,
-          Container(
-            width: Get.width,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.white24),
-                borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: EText(
-                widget.questionnaire!.title.toUpperCase(),
-                align: TextAlign.center,
-                size: 22,
-                color: const Color.fromARGB(255, 255, 255, 255),
-              ),
-            ),
-          ),
-          12.h,
-          ...widget.questionnaire!.questions.map((element) {
-            var index = widget.questionnaire!.questions.indexOf(element);
-
-            var qcmResponse = RxList<String>()
-                ;
-            var qcuResponse = "".obs;
-            return UserQuestionCard(
-              userID: widget.userID,
-                element: element,
-                index: index,
-                dejaRepondu: widget.dejaRepondu,
-                qcuResponse: qcuResponse,
-                questionnaire: widget.questionnaire,
-                initalResponses: initalResponses,
-                qcmResponse: qcmResponse );
-          }).toList(),
-          24.h
-        ]),
-      ),
-    );
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 9.0),
+          child: DynamicHeightGridView(
+                itemCount: widget.questionnaire.questions.length,
+                crossAxisCount: crossAxisCount.toInt(),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                builder: (ctx, index) {
+                  var element = widget.questionnaire.questions[index];
+                  var qcmResponse = RxList<String>();
+                  var qcuResponse = "".obs;
+                  return UserQuestionCard(
+                      userID: widget.userID,
+                      element: element,
+                      index: index,
+                      dejaRepondu: widget.dejaRepondu,
+                      qcuResponse: qcuResponse,
+                      questionnaire: widget.questionnaire,
+                      initalResponses: initalResponses,
+                      qcmResponse: qcmResponse);
+                }),
+        ),
+      );
+    });
   }
 
   void showDialogForScrore(double points) {

@@ -1,3 +1,4 @@
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
 import 'package:immobilier_apk/scr/ui/pages/admin/questionnaire/questionnaire.dart';
@@ -16,7 +17,8 @@ class ViewAllQuestionnaires extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final width = constraints.maxWidth > 900.0 ? 900.0 : constraints.maxWidth;
+      final width = constraints.maxWidth;
+      final crossAxisCount = width / 400;
 
       return EScaffold(
         appBar: AppBar(
@@ -46,14 +48,19 @@ class ViewAllQuestionnaires extends StatelessWidget {
                 questionnaires.add(Questionnaire.fromMap(element.data()));
               });
 
-              return ListView.builder(
+              return DynamicHeightGridView(
                   itemCount: questionnaires.length,
-                  itemBuilder: (context, index) {
+                  crossAxisCount: crossAxisCount.toInt(),
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  builder: (ctx, index) {
                     var questionnaire = questionnaires[index];
                     var dejaRepondu =
                         questionnaire.maked.containsKey(telephone).obs;
-
-                    return QuestionnaireCard(dejaRepondu: dejaRepondu, questionnaire: questionnaire, width: width);
+                    return QuestionnaireCard(
+                        dejaRepondu: dejaRepondu,
+                        questionnaire: questionnaire,
+                        width: width);
                   });
             }),
         floatingActionButton: FloatingActionButton(onPressed: () {
@@ -82,7 +89,7 @@ class QuestionnaireCard extends StatelessWidget {
       onTap: () {
         Get.to(
             SizedBox(
-              width: 800,
+     
               child: ViewQuestionnaire(
                 dejaRepondu: dejaRepondu,
                 questionnaire: questionnaire,
@@ -91,110 +98,83 @@ class QuestionnaireCard extends StatelessWidget {
             id: 1);
       },
       child: Container(
-        width: width - 240,
-        margin:
-            EdgeInsets.symmetric(vertical: 6, horizontal: 9),
+        padding: EdgeInsets.all(24),
+        margin: EdgeInsets.symmetric(vertical: 6, horizontal: 9),
         decoration: BoxDecoration(
-            color:  Colors.transparent
-                ,
-            borderRadius: BorderRadius.circular(18),
+          gradient: LinearGradient(
+            colors: [Color(0xff0d1b2a), const Color.fromARGB(255, 29, 0, 75)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight),
+            borderRadius: BorderRadius.circular(24),
             border: Border.all(color: Colors.white24)),
-        child: Container(
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(Assets.image("noise.png")),
-                fit: BoxFit.cover),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-            
-              SizedBox(
-                width: width - 85,
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
-                  children: [
-                    EText(
-                      questionnaire.title,
-                      color:  Colors.white
-                         ,
-                      size: 22,
-                    ),
-                    EText(
-                      questionnaire.date
-                          .split(" ")[0]
-                          .split("-")
-                          .reversed
-                          .join("-"),
-                      color:Colors.white
-                         ,
-                      size: 18,
-                      weight: FontWeight.bold,
-                    ),
-                    // Row(
-                    //   children: [
-                    //     Image(
-                    //       image: AssetImage(Assets.icons("view_questions.png")),
-                    //       height: 20,
-                    //       color: Colors.greenAccent,
-                    //     ),
-                    //     6.w,
-                    //     EText(questionnaire.questions.length.toString()),
-                    //   ],
-                    // ),r
-                    9.h,
-                    Row(
-                      children: [
-                        SimpleButton(
-                            width:122,
-                           
-                            height: 35,onTap: (){
-                              Get.to(ViewResponses(id: questionnaire.id,), id: 1);
-                            }, child: EText("Reponses", color: Colors.black,),),
-                            6.w,
-                        Container(
-                          alignment: Alignment.center,
-                          width: 90 ,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(45),
-                            color: Colors.white12,
-                          ),
-                          height: 35,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                   padding:
-                                       const EdgeInsets.only(
-                                           left: 9.0, top: 3),
-                                   child: EText(
-                                    "Voir",
-                                     color:  const Color.fromARGB(255, 255, 255, 255),
-                                   ),
-                                 ),
-                              Icon(
-                                Icons.arrow_right_rounded,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                size: 30,
-                              )
-                            ],
-                          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            EText(
+              questionnaire.title,
+              color: Colors.white,
+              size: 22,
+            ),
+            EText(
+              questionnaire.date
+                  .split(" ")[0]
+                  .split("-")
+                  .reversed
+                  .join("-"),
+              color: const Color.fromARGB(255, 190, 76, 0),
+              size: 18,
+              weight: FontWeight.bold,
+            ),
+            9.h,
+            Row(
+              children: [
+                SimpleButton(
+                  width: 122,
+                  height: 35,
+                  onTap: () {
+                    Get.to(
+                        ViewResponses(
+                          id: questionnaire.id,
                         ),
-                      ],
-                    ),
-                  ],
+                        id: 1);
+                  },
+                  child: EText(
+                    "Reponses",
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: Colors.white
-                    ,
-              )
-            ],
-          ),
+                6.w,
+                Container(
+                  alignment: Alignment.center,
+                  width: 90,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(45),
+                    color: Colors.white12,
+                  ),
+                  height: 35,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 9.0, top: 3),
+                        child: EText(
+                          "Voir",
+                          color:
+                              const Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_right_rounded,
+                        color: Color.fromARGB(255, 255, 255, 255),
+                        size: 30,
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

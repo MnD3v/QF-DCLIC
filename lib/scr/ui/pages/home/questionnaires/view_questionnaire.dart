@@ -2,6 +2,7 @@
 // import 'package:dotted_line/dotted_line.dart';
 
 
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 
 import 'package:immobilier_apk/scr/config/app/export.dart';
@@ -50,7 +51,8 @@ class _ViewQuestionnaireState extends State<ViewQuestionnaire> {
       initalResponses = widget.questionnaire!.maked[telephone]!.response;
     }
     return LayoutBuilder(builder: (context, constraints) {
-      final width = constraints.maxWidth > 900.0 ? 900.0 : constraints.maxWidth;
+      final width = constraints.maxWidth ;
+      final crossAxisCount = width / 400;
 
         return EScaffold(
           appBar: AppBar(
@@ -63,32 +65,19 @@ class _ViewQuestionnaireState extends State<ViewQuestionnaire> {
             surfaceTintColor: Color(0xff0d1b2a),
             title: EText("Questionnaire", size: 22,),
          ),
-          color: Color.fromARGB(255, 24, 49, 77),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 9.0),
-            child: EColumn(children: [
-              12.h,
-              Container(
-                width: width,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white24),
-                   borderRadius: BorderRadius.circular(12)),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: EText(
-                    widget.questionnaire!.title.toUpperCase(),
-                    align: TextAlign.center,
-                    size: 22,
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                  ),
-                ),
-              ),
-              12.h,
-              ...widget.questionnaire!.questions.map((element) {
-                var qcmResponse = RxList<String>([]);
+            child:
+            
+                    DynamicHeightGridView(
+                    itemCount: widget.questionnaire!.questions.length,
+                    crossAxisCount: crossAxisCount.toInt(),
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    builder: (ctx, index) {
+                      var element =  widget.questionnaire!.questions[index];
+                      var qcmResponse = RxList<String>([]);
                 var qcuResponse = "".obs;
-                var index = widget.questionnaire!.questions.indexOf(element);
                 return QuestionCard(
                     element: element,
                     index: index,
@@ -97,9 +86,7 @@ class _ViewQuestionnaireState extends State<ViewQuestionnaire> {
                     questionnaire: widget.questionnaire,
                     initalResponses: initalResponses,
                     qcmResponse: qcmResponse);
-              }).toList(),
-           24.h
-            ]),
+                    })
           ),
         );
       }

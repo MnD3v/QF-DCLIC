@@ -87,98 +87,86 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final width = constraints.maxWidth > 900.0 ? 900.0 : constraints.maxWidth;
+      final width = constraints.maxWidth;
 
-      return Scaffold(
-        backgroundColor:Color.fromARGB(255, 10, 20, 31),
-        body: Center(
-          child: SizedBox(
-            width: width,
-            child: EScaffold(
-                appBar: AppBar(
-                  backgroundColor: Color(0xff0d1b2a),
-                  surfaceTintColor: Color(0xff0d1b2a),
-                  title: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onDoubleTap: () {
-                          Get.dialog(AddArdoiseQuestion());
-                        },
-                        onTap: () {
-                          Get.to(CreateQuestionnaire());
-                        },
-                        child: Image(
-                          image: AssetImage(Assets.image("logo.png")),
-                          height: 35,
-                        ),
-                      ),
-                    ],
+      return EScaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0xff0d1b2a),
+            surfaceTintColor: Color(0xff0d1b2a),
+            title: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onDoubleTap: () {
+                    Get.dialog(AddArdoiseQuestion());
+                  },
+                  onTap: () {
+                    Get.to(CreateQuestionnaire());
+                  },
+                  child: Image(
+                    image: AssetImage(Assets.image("logo.png")),
+                    height: 35,
                   ),
                 ),
-                color: Color.fromARGB(255, 0, 0, 0),
-                body: Center(
-                  child: Container(
-                    color: Color.fromARGB(255, 24, 49, 77),
-                    width: width,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 240,
-                          padding: EdgeInsets.all(18),
-                          decoration: BoxDecoration(
-                            color: Color(0xff0d1b2a),
-                          ),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                EText("Menu"),
-                                9.h,
-                                MneuItem(
-                                  currentIndex: currentIndex,
-                                  label: "Etudiants",
-                                  icon: CupertinoIcons.person_3,
-                                  index: 0,
-                                ),
-                                MneuItem(
-                                  currentIndex: currentIndex,
-                                  label: "Ardoise",
-                                  icon: CupertinoIcons.square,
-                                  index: 1,
-                                ),
-                                MneuItem(
-                                  currentIndex: currentIndex,
-                                  label: "Questionnaires",
-                                  icon: CupertinoIcons.question_diamond,
-                                  index: 2,
-                                ),
-                              ]),
-                        ),
-                        Obx(
-                          () => SizedBox(
-                              width: width - 240,
-                              child: AnimatedSwitcher(
-                                  duration: 666.milliseconds,
-                                  key: Key(currentIndex.value.toString()),
-                                  child: pages[currentIndex.value])),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-          
-                // PageView(
-                //   controller: pageController,
-                //   onPageChanged: (index) {
-                //     currentPageIndex.value = index;
-                //   },
-                //   children: [ViewAllQuestionnaires(), Ardoise(), Compte()],
-                // ),
-          
-                ),
+              ],
+            ),
           ),
-        ),
-      );
+      
+          body: Center(
+            child: Row(
+              children: [
+                Container(
+                  width: 240,
+                  padding: EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: Color(0xff0d1b2a),
+                  ),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        EText("Menu"),
+                        9.h,
+                        MneuItem(
+                          currentIndex: currentIndex,
+                          label: "Etudiants",
+                          icon: CupertinoIcons.person_3,
+                          index: 0,
+                        ),
+                        MneuItem(
+                          currentIndex: currentIndex,
+                          label: "Ardoise",
+                          icon: CupertinoIcons.square,
+                          index: 1,
+                        ),
+                        MneuItem(
+                          currentIndex: currentIndex,
+                          label: "Questionnaires",
+                          icon: CupertinoIcons.question_diamond,
+                          index: 2,
+                        ),
+                      ]),
+                ),
+                Obx(
+                  () => SizedBox(
+                      width: width - 240,
+                      child: AnimatedSwitcher(
+                          duration: 666.milliseconds,
+                          key: Key(currentIndex.value.toString()),
+                          child: pages[currentIndex.value])),
+                ),
+              ],
+            ),
+          )
+            
+          // PageView(
+          //   controller: pageController,
+          //   onPageChanged: (index) {
+          //     currentPageIndex.value = index;
+          //   },
+          //   children: [ViewAllQuestionnaires(), Ardoise(), Compte()],
+          // ),
+            
+          );
     });
   }
 }

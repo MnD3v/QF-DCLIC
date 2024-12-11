@@ -1,3 +1,4 @@
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/data/models/ardoise_question.dart';
@@ -24,34 +25,41 @@ class ViewArdoiseResponses extends StatelessWidget {
 
           ArdoiseQuestion question =
               ArdoiseQuestion.fromMap(snapshot.data!.data()!);
-          return EScaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              title: EText(
-                "Reponses",
-                size: 24,
-                weight: FontWeight.bold,
+          return LayoutBuilder(builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            final crossAxisCount = width / 400;
+            return EScaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
+                title: EText(
+                  "Reponses",
+                  size: 24,
+                  weight: FontWeight.bold,
+                ),
               ),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: EColumn(children: [
-                EText(question.question,
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                    weight: FontWeight.bold),
-                ...(sortByDate(question.maked)
-                    .map((key) =>
-                        UserArdoiseQuestionCard(id: key, question: question))
-                    .toList()),
-              ]),
-            ),
-          );
+              body: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: DynamicHeightGridView(
+                    itemCount: sortByDate(question.maked).length,
+                    crossAxisCount: crossAxisCount.toInt(),
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    builder: (ctx, index) {
+                      return UserArdoiseQuestionCard(
+                          id: sortByDate(question.maked)[index],
+                          question: question);
+                    }),
+             
+              ),
+            );
+          });
         });
   }
- List sortByDate(Map map){
+
+  List sortByDate(Map map) {
     List sortedKeys = map.keys.toList()
-    ..sort((a, b) => map[a]!.date.compareTo(map[b]!.date));
+      ..sort((a, b) => map[a]!.date.compareTo(map[b]!.date));
     return sortedKeys.reversed.toList();
   }
 }

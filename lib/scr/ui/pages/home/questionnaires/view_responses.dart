@@ -1,3 +1,4 @@
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,116 +18,110 @@ class ViewResponses extends StatelessWidget {
   Questionnaire? questionnaire;
   @override
   Widget build(BuildContext context) {
-    return EScaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          title: EText(
-            "Reponses",
-            size: 24,
-            weight: FontWeight.bold,
-          ),
-        ),
-        body: StreamBuilder(
-            stream: DB
-                .firestore(Collections.classes)
-                .doc(user.classe)
-                .collection(Collections.questionnaires)
-                .doc(id)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (DB.waiting(snapshot)) {
-                return ECircularProgressIndicator();
-              }
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = constraints.maxWidth;
+      final crossAxisCount = width / 400;
 
-              questionnaire = Questionnaire.fromMap(snapshot.data!.data()!);
-              return Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: EColumn(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white24),
-                          borderRadius: BorderRadius.circular(12)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: EText(
-                          questionnaire!.title.toUpperCase(),
-                          align: TextAlign.center,
-                          size: 22,
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                        ),
-                      ),
-                    ),
-                    12.h,
-                    ...questionnaire!.maked.keys.map((key) {
-                      var maked = questionnaire!.maked[key];
-                      return GestureDetector(
-                        onTap: () {
-                     
-                          Get.to(ViewUserQuestionnaire(
-                            userID: key,
-                              questionnaire: questionnaire!,
-                              dejaRepondu: true.obs), id: 1);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          margin: EdgeInsets.all(6),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              color: Colors.white12,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
+      return EScaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            title: EText(
+              "Reponses",
+              size: 24,
+              weight: FontWeight.bold,
+            ),
+          ),
+          body: StreamBuilder(
+              stream: DB
+                  .firestore(Collections.classes)
+                  .doc(user.classe)
+                  .collection(Collections.questionnaires)
+                  .doc(id)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (DB.waiting(snapshot)) {
+                  return ECircularProgressIndicator();
+                }
+
+                questionnaire = Questionnaire.fromMap(snapshot.data!.data()!);
+                return Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: DynamicHeightGridView(
+                        itemCount: questionnaire!.maked.keys.length,
+                        crossAxisCount: crossAxisCount.toInt(),
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        builder: (ctx, index) {
+                          var key = questionnaire!.maked.keys.toList()[index];
+                          var maked = questionnaire!.maked[key];
+                          return GestureDetector(
+                            onTap: () {
+                              Get.to(
+                                  ViewUserQuestionnaire(
+                                      userID: key,
+                                      questionnaire: questionnaire!,
+                                      dejaRepondu: true.obs),
+                                  id: 1);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(12),
+                              margin: EdgeInsets.all(6),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white12),
+                                  color: const Color(0xff0d1b2a),
+                                  borderRadius: BorderRadius.circular(24)),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  SizedBox(
-                                    width: 60,
-                                    height: 60,
-                                    child: CircleAvatar(
-                                      backgroundColor: AppColors.background,
-                                      child: Icon(
-                                        CupertinoIcons.person,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  9.w,
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  Row(
                                     children: [
-                                      EText("${maked!.nom} ${maked.prenom}"),
-                                      ETextRich(
-                                        textSpans: [
-                                          ETextSpan(
-                                              text: "${maked.pointsGagne}",
-                                              color: Colors.greenAccent),
-                                          ETextSpan(
-                                            text:
-                                                "/${questionnaire!.questions.length}",
+                                      SizedBox(
+                                        width: 60,
+                                        height: 60,
+                                        child: CircleAvatar(
+                                          backgroundColor: 
+                                          Colors.white12,
+                                          child: Icon(
+                                            CupertinoIcons.person,
                                             color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      9.w,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          EText(
+                                              "${maked!.nom} ${maked.prenom}"),
+                                          ETextRich(
+                                            textSpans: [
+                                              ETextSpan(
+                                                  text: "${maked.pointsGagne}",
+                                                  color: Colors.greenAccent),
+                                              ETextSpan(
+                                                text:
+                                                    "/${questionnaire!.questions.length}",
+                                                color: Colors.white,
+                                              )
+                                            ],
+                                            size: 30,
+                                            font: Fonts.sevenSegment,
                                           )
                                         ],
-                                        size: 30,
-                                        font: Fonts.sevenSegment,
-                                      )
+                                      ),
                                     ],
                                   ),
+                                  Icon(Icons.keyboard_arrow_right_rounded)
                                 ],
                               ),
-                              Icon(Icons.keyboard_arrow_right_rounded)
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList()
-                  ],
-                ),
-              );
-            }));
+                            ),
+                          );
+                        }));
+              }));
+    });
   }
 }

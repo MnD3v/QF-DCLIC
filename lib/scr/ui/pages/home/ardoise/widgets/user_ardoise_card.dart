@@ -34,21 +34,21 @@ class UserArdoiseQuestionCard extends StatelessWidget {
     return AnimatedContainer(
       duration: 333.milliseconds,
       width: Get.width,
-      padding: EdgeInsets.all(9),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
         // color: Color.fromARGB(0, 30, 95, 145),
         // gradient: LinearGradient(colors: [Colors.transparent, const Color.fromARGB(255, 15, 53, 88)]),
         border: Border.all(width: .6, color: Colors.white24),
        
         color:  Color(0xff0d1b2a),
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(24),
       ),
-      margin: EdgeInsets.symmetric(vertical: 6),
+      margin: EdgeInsets.symmetric(vertical: 6, ),
       child: EColumn(children: [
         Container(
-          decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(3)),
+          decoration: BoxDecoration(color: Colors.purple, borderRadius: BorderRadius.circular(12)),
           margin: EdgeInsets.symmetric(horizontal: 6),
-          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 9),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,

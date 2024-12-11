@@ -24,63 +24,51 @@ class ArdoiseQuestionCard extends StatelessWidget {
     return AnimatedContainer(
       duration: 333.milliseconds,
       width: Get.width,
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         // color: Color.fromARGB(0, 30, 95, 145),
         // gradient: LinearGradient(colors: [Colors.transparent, const Color.fromARGB(255, 15, 53, 88)]),
         border: Border.all(width: .6, color: Colors.white24),
-       
-       
-        color: Color(0xff0d1b2a),
-        borderRadius: BorderRadius.circular(9),
+
+        gradient: LinearGradient(
+            colors: [Color(0xff0d1b2a), const Color.fromARGB(255, 29, 0, 75)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight),
+        borderRadius: BorderRadius.circular(24),
       ),
       margin: EdgeInsets.symmetric(vertical: 6),
       child: EColumn(children: [
-        Container(
-          padding: EdgeInsets.all(6),
-          decoration: BoxDecoration(
-              color: Color.fromARGB(0, 255, 255, 255),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12))),
-          width: Get.width,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 6),
-                child: ETextRich(
-                  textSpans: [
-                    ETextSpan(
-                        text: question.question,
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        weight: FontWeight.bold),
-                  ],
-                  size: 22,
-                ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 6),
+              child: ETextRich(
+                textSpans: [
+                  ETextSpan(
+                      text: question.question,
+                      color: const Color.fromARGB(255, 255, 255, 255),
+                      weight: FontWeight.bold),
+                ],
+                size: 22,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        // DottedDashedLine(
-        //   height: 0,
-        //   width: Get.width - 24,
-        //   axis: Axis.horizontal,
-        //   dashColor: Colors.white54,
-        // ),
         question.type == QuestionType.qct
             ? Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 18),
-                    child: EColumn(
-                      children: [
-
-                        EText(
-                          question.reponse,
-                          color: Colors.greenAccent,
-                        )
-                      ],
-                    ),
-                  )
-              
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 18),
+                child: EColumn(
+                  children: [
+                    EText(
+                      question.reponse,
+                      color: Colors.greenAccent,
+                    )
+                  ],
+                ),
+              )
             : Obx(
                 () => EColumn(
                     children: question.choix.keys.map((e) {
@@ -109,8 +97,7 @@ class ArdoiseQuestionCard extends StatelessWidget {
                                     ))
                                 : EText(
                                     question.choix[e],
-                                    color: 
-                                            question.reponse == e
+                                    color: question.reponse == e
                                         ? Colors.greenAccent
                                         : Colors.white,
                                   ),
@@ -143,23 +130,27 @@ class ArdoiseQuestionCard extends StatelessWidget {
                                   ))
                               : EText(
                                   question.choix[e],
-                                  color: 
-                                          question.reponse.contains(e)
+                                  color: question.reponse.contains(e)
                                       ? Colors.greenAccent
                                       : Colors.white,
                                 ),
                         );
                 }).toList()),
               ),
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SimpleButton(
-        height: 35,
-        width: 140,
-        onTap: (){
-          Get.to(ViewArdoiseResponses(id: question.id), id: 2);
-      }, child: EText("Reponses", color: Colors.black,),),
-    )
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SimpleButton(
+            height: 35,
+            width: 140,
+            onTap: () {
+              Get.to(ViewArdoiseResponses(id: question.id), id: 2);
+            },
+            child: EText(
+              "Reponses",
+              color: Colors.black,
+            ),
+          ),
+        )
       ]),
     );
   }
