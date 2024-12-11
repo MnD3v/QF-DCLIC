@@ -3,7 +3,7 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/data/models/question.dart';
 import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/admin/questionnaire/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/add_question.dart';
 
 class QuestionCard extends StatelessWidget {
   const QuestionCard(

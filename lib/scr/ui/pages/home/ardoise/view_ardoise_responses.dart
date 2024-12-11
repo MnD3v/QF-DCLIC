@@ -4,6 +4,7 @@ import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/data/models/ardoise_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/ardoise/widgets/ardoise_card.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/ardoise/widgets/user_ardoise_card.dart';
+import 'package:lottie/lottie.dart';
 
 class ViewArdoiseResponses extends StatelessWidget {
   final String id;
@@ -40,9 +41,9 @@ class ViewArdoiseResponses extends StatelessWidget {
               ),
               body: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: DynamicHeightGridView(
+                child: sortByDate(question.maked).isEmpty?Lottie.asset(Assets.image("empty.json"),  height: 400): DynamicHeightGridView(
                     itemCount: sortByDate(question.maked).length,
-                    crossAxisCount: crossAxisCount.toInt(),
+                    crossAxisCount: crossAxisCount.toInt() <= 0 ? 1 : crossAxisCount.toInt(),
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     builder: (ctx, index) {

@@ -14,7 +14,7 @@ class AddQuestion extends StatelessWidget {
 
   var propositions = RxList<String>();
 
-  var type = "qcu".obs;
+  var type = "qcm".obs;
 
   String title = "";
 
@@ -169,7 +169,7 @@ class AddQuestion extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SimpleButton(
-            radius: 3,
+            radius: 12,
             color: Colors.amber,
             onTap: () {
               if (title.isEmpty) {
@@ -238,90 +238,93 @@ class AddQuestion extends StatelessWidget {
     String proposition = "";
   var loadingImage = false.obs;
     Get.dialog(Dialog(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: EColumn(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              EText("Entrez la proposition"),
-              9.h,
-              ETextField(
-                  placeholder: "Saisissez une proposition",
-                  onChanged: (value) {
-                    proposition = value;
-                  },
-                  phoneScallerFactor: phoneScallerFactor),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: EText("Ou"),
-              ),
-              GestureDetector(
-                onTap: () {
-                  ImagePicker()
-                      .pickImage(
-                    source: ImageSource.gallery,
-                  )
-                      .then(
-                    (value) async {
-                      loadingImage.value = true;
-    
-                      var link;
-                      if (kIsWeb) {
-                        link = await FStorage.putData(
-                            await value!.readAsBytes());
-                      } else {
-                        link =
-                            await FStorage.putFile(File(value!.path));
-                      }
-                      loadingImage.value = false;
-                      print(link);
-                      proposition = link;
-                      propositions.add(proposition);
-    
-                      Get.back();
+      child: ConstrainedBox(
+         constraints: BoxConstraints(maxWidth: 700),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: EColumn(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                EText("Entrez la proposition"),
+                9.h,
+                ETextField(
+                    placeholder: "Saisissez une proposition",
+                    onChanged: (value) {
+                      proposition = value;
                     },
-                    
-                  ).onError((_, __) {
-                loadingImage.value = false;
-              });;
-                },
-                child: Obx(() => Container(
-                  height: 95,
-                  width: 95,
-                  decoration: BoxDecoration(color: Colors.greenAccent, borderRadius: BorderRadius.circular(18)),
-                  child: loadingImage.value
-                      ? ECircularProgressIndicator(
-                          color: Colors.black,
-                        )
-                      : Icon(Icons.image_outlined, color: Colors.black,),
-                )),
-              ),
-              9.h,
-              SimpleOutlineButton(
-                color: Colors.amber,
-                radius: 3,
-                onTap: () {
-                  if (proposition.isEmpty) {
-                    Fluttertoast.showToast(
-                        msg:
-                            "Veuillez saisir une proposition valable");
-                    return;
-                  }
-                  if (propositions.contains(proposition)) {
-                    Fluttertoast.showToast(
-                        msg:
-                            "Evitez d'entrer des propositions identiques");
-                    return;
-                  }
-                  propositions.add(proposition);
-                  Get.back();
-                },
-                child: EText(
-                  "Ajouter",
-                  color: Colors.amber,
+                    phoneScallerFactor: phoneScallerFactor),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: EText("Ou"),
                 ),
-              )
-            ]),
+                GestureDetector(
+                  onTap: () {
+                    ImagePicker()
+                        .pickImage(
+                      source: ImageSource.gallery,
+                    )
+                        .then(
+                      (value) async {
+                        loadingImage.value = true;
+            
+                        var link;
+                        if (kIsWeb) {
+                          link = await FStorage.putData(
+                              await value!.readAsBytes());
+                        } else {
+                          link =
+                              await FStorage.putFile(File(value!.path));
+                        }
+                        loadingImage.value = false;
+                        print(link);
+                        proposition = link;
+                        propositions.add(proposition);
+            
+                        Get.back();
+                      },
+                      
+                    ).onError((_, __) {
+                  loadingImage.value = false;
+                });;
+                  },
+                  child: Obx(() => Container(
+                    height: 95,
+                    width: 95,
+                    decoration: BoxDecoration(color: Colors.greenAccent, borderRadius: BorderRadius.circular(18)),
+                    child: loadingImage.value
+                        ? ECircularProgressIndicator(
+                            color: Colors.black,
+                          )
+                        : Icon(Icons.image_outlined, color: Colors.black,),
+                  )),
+                ),
+                9.h,
+                SimpleOutlineButton(
+                  color: Colors.amber,
+                  radius: 3,
+                  onTap: () {
+                    if (proposition.isEmpty) {
+                      Fluttertoast.showToast(
+                          msg:
+                              "Veuillez saisir une proposition valable");
+                      return;
+                    }
+                    if (propositions.contains(proposition)) {
+                      Fluttertoast.showToast(
+                          msg:
+                              "Evitez d'entrer des propositions identiques");
+                      return;
+                    }
+                    propositions.add(proposition);
+                    Get.back();
+                  },
+                  child: EText(
+                    "Ajouter",
+                    color: Colors.amber,
+                  ),
+                )
+              ]),
+        ),
       ),
     ));
   }

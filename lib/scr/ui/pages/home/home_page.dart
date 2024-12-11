@@ -14,14 +14,17 @@ import 'package:immobilier_apk/scr/data/models/ardoise_question.dart';
 import 'package:immobilier_apk/scr/data/models/maked.dart';
 import 'package:immobilier_apk/scr/data/models/question.dart';
 import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/admin/ardoise/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/ardoise/add_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/ardoise/ardoise.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/brouillon/ardoise/ardoise_brouillon.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/brouillon/brouillon.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/brouillon/questionnaire/questionnaire_brouillon.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/compte/compte_view.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/all_questionnaires.dart';
-import 'package:immobilier_apk/scr/ui/pages/admin/questionnaire/add_question.dart';
-import 'package:immobilier_apk/scr/ui/pages/admin/questionnaire/questionnaire.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/create_questionnaire.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/view_questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/users/users.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/students/students.dart';
 import 'package:immobilier_apk/scr/ui/widgets/bottom_navigation_widget.dart';
 import 'package:immobilier_apk/scr/ui/widgets/question_card.dart';
 
@@ -57,7 +60,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   var pages = [
-    Users(),
+    Students(),
     Navigator(
       key: Get.nestedKey(2), // Clé pour le Navigator local
       initialRoute: '/', // Page initiale
@@ -82,6 +85,27 @@ class _HomePageState extends State<HomePage> {
         );
       },
     ),
+    Navigator(
+      key: Get.nestedKey(3), // Clé pour le Navigator local
+      initialRoute: '/', // Page initiale
+      onGenerateRoute: (settings) {
+        // Par défaut, afficher HomePage
+        return MaterialPageRoute(
+          builder: (context) =>
+              SizedBox(width: 700, child: QuestionnaireBrouillon()),
+        );
+      },
+    ),
+    Navigator(
+      key: Get.nestedKey(4), // Clé pour le Navigator local
+      initialRoute: '/', // Page initiale
+      onGenerateRoute: (settings) {
+        // Par défaut, afficher HomePage
+        return MaterialPageRoute(
+          builder: (context) => SizedBox(width: 700, child: ArdoiseBrouillon()),
+        );
+      },
+    ),
   ];
 
   @override
@@ -90,74 +114,152 @@ class _HomePageState extends State<HomePage> {
       final width = constraints.maxWidth;
 
       return EScaffold(
-          appBar: AppBar(
-            backgroundColor: Color(0xff0d1b2a),
-            surfaceTintColor: Color(0xff0d1b2a),
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onDoubleTap: () {
-                    Get.dialog(AddArdoiseQuestion());
-                  },
-                  onTap: () {
-                    Get.to(CreateQuestionnaire());
-                  },
-                  child: Image(
-                    image: AssetImage(Assets.image("logo.png")),
-                    height: 35,
-                  ),
-                ),
-              ],
-            ),
-          ),
-      
           body: Center(
-            child: Row(
-              children: [
-                Container(
-                  width: 240,
-                  padding: EdgeInsets.all(18),
-                  decoration: BoxDecoration(
-                    color: Color(0xff0d1b2a),
-                  ),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        EText("Menu"),
-                        9.h,
-                        MneuItem(
-                          currentIndex: currentIndex,
-                          label: "Etudiants",
-                          icon: CupertinoIcons.person_3,
-                          index: 0,
+        child: Row(
+          children: [
+            Container(
+              width: 240,
+              padding: EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 16, 0, 43),
+             
+              ),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    EText("Menu"),
+                    9.h,
+                    MneuItem(
+                      currentIndex: currentIndex,
+                      label: "Etudiants",
+                      icon: CupertinoIcons.person_3,
+                      index: 0,
+                    ),
+                    MneuItem(
+                      currentIndex: currentIndex,
+                      label: "Ardoise",
+                      icon: CupertinoIcons.square,
+                      index: 1,
+                    ),
+                    MneuItem(
+                      currentIndex: currentIndex,
+                      label: "Questionnaires",
+                      icon: CupertinoIcons.question_diamond_fill,
+                      index: 2,
+                    ),
+                    12.h,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                CupertinoIcons.archivebox,
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                              ),
+                              9.w,
+                              EText("Brouillon",
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255)),
+                            ],
+                          ),
+                          Icon(
+                            Icons.keyboard_arrow_down_outlined,
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            size: 20,
+                          )
+                        ],
+                      ),
+                    ),
+                    12.h,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40.0),
+                      child: Obx(
+                        () => Column(
+                          children: [
+                            3.h,
+                            GestureDetector(
+                              onTap: () {
+                                currentIndex.value = 3;
+                                // waitAfter(50, () {
+                                //   Get.to(QuestionnaireBrouillon(), id: 3);
+                                // });
+                              },
+                              child: Container(
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(24),
+                                  color: Colors.transparent),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.question_diamond,
+                                      color: currentIndex.value == 3
+                                          ? Colors.amber
+                                          : Colors.white60,
+                                    ),
+                                    6.w,
+                                    EText(
+                                      "Questionnaires",
+                                      color: currentIndex.value == 3
+                                          ? Colors.amber
+                                          : Colors.white60,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            6.h,
+                            GestureDetector(
+                              onTap: () {
+                                currentIndex.value = 4;
+                              },
+                              child: Container(
+                                height: 40,
+
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(24),
+                                    color: Colors.transparent),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.square,
+                                      color: currentIndex.value == 4
+                                          ? Colors.amber
+                                          : Colors.white60,
+                                    ),
+                                    6.w,
+                                    EText(
+                                      "Ardoise",
+                                      color: currentIndex.value == 4
+                                          ? Colors.amber
+                                          : Colors.white60,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                        MneuItem(
-                          currentIndex: currentIndex,
-                          label: "Ardoise",
-                          icon: CupertinoIcons.square,
-                          index: 1,
-                        ),
-                        MneuItem(
-                          currentIndex: currentIndex,
-                          label: "Questionnaires",
-                          icon: CupertinoIcons.question_diamond,
-                          index: 2,
-                        ),
-                      ]),
-                ),
-                Obx(
-                  () => SizedBox(
-                      width: width - 240,
-                      child: AnimatedSwitcher(
-                          duration: 666.milliseconds,
-                          key: Key(currentIndex.value.toString()),
-                          child: pages[currentIndex.value])),
-                ),
-              ],
+                      ),
+                    )
+                  ]),
             ),
-          )
-            
+            Obx(
+              () => SizedBox(
+                  width: width - 240,
+                  child: AnimatedSwitcher(
+                      duration: 666.milliseconds,
+                      child: SizedBox(
+                          key: Key(currentIndex.value.toString()),
+                          child: pages[currentIndex.value]))),
+            ),
+          ],
+        ),
+      )
+
           // PageView(
           //   controller: pageController,
           //   onPageChanged: (index) {
@@ -165,7 +267,7 @@ class _HomePageState extends State<HomePage> {
           //   },
           //   children: [ViewAllQuestionnaires(), Ardoise(), Compte()],
           // ),
-            
+
           );
     });
   }
@@ -194,14 +296,14 @@ class MneuItem extends StatelessWidget {
               duration: 333.milliseconds,
               height: 40,
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 12),
+              padding: EdgeInsets.symmetric(horizontal: 24),
               margin: EdgeInsets.symmetric(vertical: 6),
               width: Get.width,
               decoration: BoxDecoration(
                   color: currentIndex.value == index
-                      ? const Color.fromARGB(255, 0, 232, 240)
+                      ? Colors.amber
                       : Colors.transparent,
-                  borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(24)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -210,22 +312,22 @@ class MneuItem extends StatelessWidget {
                       Icon(
                         icon,
                         color: currentIndex.value == index
-                            ? const Color.fromARGB(255, 0, 0, 0)
+                            ? Colors.black
                             : const Color.fromARGB(255, 255, 255, 255),
                       ),
                       9.w,
                       EText(label,
                           color: currentIndex.value == index
-                              ? const Color.fromARGB(255, 0, 0, 0)
+                              ? Colors.black
                               : const Color.fromARGB(255, 255, 255, 255)),
                     ],
                   ),
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     color: currentIndex.value == index
-                        ? const Color.fromARGB(255, 0, 0, 0)
+                        ? Colors.black
                         : const Color.fromARGB(0, 255, 255, 255),
-                    size: 20,
+                    size: 15,
                   )
                 ],
               )),

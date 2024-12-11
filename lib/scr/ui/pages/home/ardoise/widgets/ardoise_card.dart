@@ -1,7 +1,7 @@
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/data/models/ardoise_question.dart';
 import 'package:immobilier_apk/scr/data/models/maked.dart';
-import 'package:immobilier_apk/scr/ui/pages/admin/ardoise/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/ardoise/add_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/ardoise/view_ardoise_responses.dart';
 
 class ArdoiseQuestionCard extends StatelessWidget {
@@ -11,12 +11,14 @@ class ArdoiseQuestionCard extends StatelessWidget {
       required this.qcuResponse,
       required this.qctResponse,
       required this.qcmResponse,
+      this.brouillon,
       required this.question});
   final ArdoiseQuestion question;
   final RxBool dejaRepondu;
   final RxString qcuResponse;
   final RxString qctResponse;
   final RxList<String> qcmResponse;
+  final bool? brouillon;
 
   var sendLoading = false.obs;
   @override
@@ -30,10 +32,10 @@ class ArdoiseQuestionCard extends StatelessWidget {
         // gradient: LinearGradient(colors: [Colors.transparent, const Color.fromARGB(255, 15, 53, 88)]),
         border: Border.all(width: .6, color: Colors.white24),
 
-        gradient: LinearGradient(
-            colors: [Color(0xff0d1b2a), const Color.fromARGB(255, 29, 0, 75)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight),
+         gradient: LinearGradient(
+              colors: [Color.fromARGB(255, 16, 0, 43), const Color.fromARGB(255, 29, 0, 75)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight),
         borderRadius: BorderRadius.circular(24),
       ),
       margin: EdgeInsets.symmetric(vertical: 6),
@@ -137,20 +139,53 @@ class ArdoiseQuestionCard extends StatelessWidget {
                         );
                 }).toList()),
               ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SimpleButton(
-            height: 35,
-            width: 140,
-            onTap: () {
-              Get.to(ViewArdoiseResponses(id: question.id), id: 2);
-            },
-            child: EText(
-              "Reponses",
-              color: Colors.black,
-            ),
-          ),
-        )
+        brouillon == true
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SimpleButton(
+                    height: 35,
+                    width: 140,
+                    onTap: () async {
+                      sendLoading.value = true;
+                      await DB
+                          .firestore(Collections.classes)
+                          .doc(Utilisateur.currentUser.value!.classe)
+                          .collection(Collections.ardoise)
+                          .doc(question.id)
+                          .set(question.toMap());
+                      await DB
+                          .firestore(Collections.classes)
+                          .doc(Utilisateur.currentUser.value!.classe)
+                          .collection(Collections.brouillon)
+                          .doc(Utilisateur.currentUser.value!.classe)
+                          .collection(Collections.ardoise)
+                          .doc(question.id)
+                          .delete();
+                      sendLoading.value = false;
+                    },
+                    child: Obx(
+                      () => sendLoading.value
+                          ? SizedBox( height: 20, width: 20, child: CircularProgressIndicator(color: Colors.black, strokeWidth: 1.2,))
+                          : EText(
+                              "Publier",
+                              color: Colors.black,
+                            ),
+                    )),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SimpleButton(
+                  height: 35,
+                  width: 140,
+                  onTap: () {
+                    Get.to(ViewArdoiseResponses(id: question.id), id: 2);
+                  },
+                  child: EText(
+                    "Reponses",
+                    color: Colors.black,
+                  ),
+                ),
+              )
       ]),
     );
   }

@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:immobilier_apk/firebase_options.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/config/theme/app_theme.dart';
@@ -21,10 +22,7 @@ Map<int, Map<String, String>> id_datas = {};
 
 int? currentId;
 
-
 var firestoreDb = FirebaseFirestore.instance;
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,9 +30,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
- 
-
 
   var user = FirebaseAuth.instance.currentUser;
   if (user.isNotNul) {
@@ -53,9 +48,7 @@ void main() async {
     debugShowCheckedModeBanner: false,
     theme: AppTheme.theme,
     home: LoadingPage(),
-  
   ));
-
 }
 
 void goToDetailPage({required Map<String, dynamic> notificationData}) async {
@@ -66,16 +59,8 @@ void goToDetailPage({required Map<String, dynamic> notificationData}) async {
       transition: Transition.rightToLeftWithFade,
       duration: 333.milliseconds,
     );
-  } else {
-    
-   
-
-  
-    
-  }
+  } else {}
 }
-
-
 
 Future<String?> getPaygateApiKey() async {
   DocumentSnapshot<Map<String, dynamic>> q;
@@ -109,9 +94,11 @@ Future<void> requestNotificationPermission() async {
 
   if (settings.authorizationStatus == AuthorizationStatus.denied) {
     print('Permission refusée par l\'utilisateur.');
-  } else if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
+  } else if (settings.authorizationStatus ==
+      AuthorizationStatus.notDetermined) {
     print('Permission non encore déterminée.');
   } else {
     print('Permission accordée : ${settings.authorizationStatus}');
   }
 }
+

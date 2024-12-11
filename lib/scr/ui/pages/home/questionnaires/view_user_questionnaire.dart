@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/data/models/maked.dart';
 import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/admin/questionnaire/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/add_question.dart';
 import 'package:immobilier_apk/scr/ui/widgets/question_card.dart';
 import 'package:immobilier_apk/scr/ui/widgets/user_question_card.dart';
 
@@ -68,7 +68,7 @@ class _ViewUserQuestionnaireState extends State<ViewUserQuestionnaire> {
           padding: const EdgeInsets.symmetric(horizontal: 9.0),
           child: DynamicHeightGridView(
                 itemCount: widget.questionnaire.questions.length,
-                crossAxisCount: crossAxisCount.toInt(),
+              crossAxisCount: crossAxisCount.toInt() <= 0 ? 1 : crossAxisCount.toInt(),
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 builder: (ctx, index) {

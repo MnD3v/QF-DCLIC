@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/data/models/maked.dart';
 import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/admin/questionnaire/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/add_question.dart';
 import 'package:immobilier_apk/scr/ui/widgets/question_card.dart';
 
 class ViewQuestionnaire extends StatefulWidget {
@@ -56,11 +56,7 @@ class _ViewQuestionnaireState extends State<ViewQuestionnaire> {
 
         return EScaffold(
           appBar: AppBar(
-             leading: IconButton(
-                onPressed: () {
-                  Get.back(id: 1);
-                },
-                icon: Icon(Icons.arrow_back)),
+           
             backgroundColor: Color(0xff0d1b2a),
             surfaceTintColor: Color(0xff0d1b2a),
             title: EText("Questionnaire", size: 22,),
@@ -71,7 +67,7 @@ class _ViewQuestionnaireState extends State<ViewQuestionnaire> {
             
                     DynamicHeightGridView(
                     itemCount: widget.questionnaire!.questions.length,
-                    crossAxisCount: crossAxisCount.toInt(),
+                 crossAxisCount: crossAxisCount.toInt() <= 0 ? 1 : crossAxisCount.toInt(),
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     builder: (ctx, index) {

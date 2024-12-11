@@ -1,3 +1,5 @@
+
+
 import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +14,8 @@ import 'package:immobilier_apk/scr/ui/pages/home/home_page.dart';
 import 'package:immobilier_apk/scr/ui/widgets/question_card.dart';
 import 'package:lottie/lottie.dart';
 
-class Ardoise extends StatelessWidget {
-  Ardoise({super.key});
+class ArdoiseBrouillon extends StatelessWidget {
+  ArdoiseBrouillon({super.key});
 
   var questions = <ArdoiseQuestion>[];
   var user = Utilisateur.currentUser.value!;
@@ -38,6 +40,8 @@ class Ardoise extends StatelessWidget {
             stream: DB
                 .firestore(Collections.classes)
                 .doc(user.classe)
+                 .collection(Collections.brouillon)
+                          .doc(user.classe)
                 .collection(Collections.ardoise)
                 .orderBy("date", descending: true)
                 .snapshots(),
@@ -56,11 +60,10 @@ class Ardoise extends StatelessWidget {
                 child: questions.isEmpty?Lottie.asset(Assets.image("empty.json"),  height: 400): AnimatedSwitcher(
                   duration: 666.milliseconds,
                   child: DynamicHeightGridView(
-                      key: Key(questions.length.toString()),
+                  key: Key(questions.length.toString()),
+
                       itemCount: questions.length,
-                      crossAxisCount: crossAxisCount.toInt() <= 0
-                          ? 1
-                          : crossAxisCount.toInt(),
+                      crossAxisCount: crossAxisCount.toInt() <= 0 ? 1 : crossAxisCount.toInt(),
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
                       builder: (ctx, index) {
@@ -68,15 +71,16 @@ class Ardoise extends StatelessWidget {
                         var qcmResponse = RxList<String>([]);
                         var qcuResponse = "".obs;
                         var qctResponse = "".obs;
-
+                  
                         // var index = questions.indexOf(element);
-
+                  
                         var dejaRepondu = false.obs;
-
+                  
                         dejaRepondu.value =
                             element!.maked.keys.contains(telephone);
-
+                  
                         return ArdoiseQuestionCard(
+                          brouillon: true,
                             dejaRepondu: dejaRepondu,
                             qctResponse: qctResponse,
                             qcuResponse: qcuResponse,
@@ -88,7 +92,7 @@ class Ardoise extends StatelessWidget {
             }),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Get.to(AddArdoiseQuestion(), id: 2);
+            Get.to(AddArdoiseQuestion(brouillon: true,), id: 4);
           },
           child: Icon(Icons.add),
         ),
