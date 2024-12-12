@@ -3,14 +3,24 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
-import 'package:immobilier_apk/scr/data/models/ardoise_question.dart';
-import 'package:immobilier_apk/scr/data/models/question.dart';
 
-class AddArdoiseQuestion extends StatelessWidget {
+import 'package:my_widgets/my_widgets.dart';
+
+class AddArdoiseQuestion extends StatefulWidget {
   final bool? brouillon;
-  AddArdoiseQuestion({super.key, this.brouillon});
+  ArdoiseQuestion? question;
+
+  AddArdoiseQuestion({super.key, this.brouillon, this.question});
+
+  @override
+  State<AddArdoiseQuestion> createState() => _AddArdoiseQuestionState();
+}
+
+class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
   var qcuResponse = "".obs;
+
   var qcmResponse = RxList<String>();
+
   var qctResponse = "";
 
   var propositions = RxList<String>();
@@ -20,6 +30,25 @@ class AddArdoiseQuestion extends StatelessWidget {
   String title = "";
 
   var _loading = false.obs;
+
+  @override
+  void initState() {
+    if (widget.question != null) {
+      type.value = widget.question!.type;
+      title = widget.question!.question;
+      propositions.value = widget.question!.choix.values.toList();
+      if (widget.question!.type == QuestionType.qct) {
+        qctResponse = widget.question!.reponse;
+      } else if (widget.question!.type == QuestionType.qcu) {
+        qcuResponse.value = widget.question!.reponse;
+      } else {
+        print(widget.question!.reponse);
+        qcmResponse.value = (widget.question!.reponse as List).map((element)=>element.toString()).toList();
+      }
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -45,6 +74,7 @@ class AddArdoiseQuestion extends StatelessWidget {
                 EText("Ajoutez l'intitulé de la question"),
                 6.h,
                 ETextField(
+                  initialValue: title,
                     placeholder: "Saisissez l'intitulé de la question",
                     onChanged: (value) {
                       title = value;
@@ -117,6 +147,7 @@ class AddArdoiseQuestion extends StatelessWidget {
                             children: [
                               EText("Entrez la réponse"),
                               ETextField(
+                                initialValue: qctResponse,
                                   placeholder:
                                       "Saisissez la reponse à la question",
                                   onChanged: (value) {
@@ -274,7 +305,13 @@ class AddArdoiseQuestion extends StatelessWidget {
                     }
                     // questions.add(question);
                     _loading.value = true;
-                    if (brouillon == true) {
+                    //verifier si c'est une mise a jour
+                    if(widget.question != null){
+                      question.id = widget.question!.id;
+                    }
+                    //verifier si c'est une mise a jour
+
+                    if (widget.brouillon == true) {
                       await DB
                           .firestore(Collections.classes)
                           .doc(user.classe)
@@ -294,7 +331,7 @@ class AddArdoiseQuestion extends StatelessWidget {
 
                     _loading.value = false;
 
-                    Get.back(id: brouillon == true? 4: 2);
+                    Get.back(id: widget.brouillon == true ? 4 : 2);
                   },
                   child: Obx(
                     () => _loading.value
@@ -320,7 +357,7 @@ class AddArdoiseQuestion extends StatelessWidget {
 
     Get.dialog(Dialog(
       child: ConstrainedBox(
-         constraints: BoxConstraints(maxWidth: 700),
+        constraints: BoxConstraints(maxWidth: 700),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child:
@@ -351,7 +388,7 @@ class AddArdoiseQuestion extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: EText("Ou"),
             ),
-            GestureDetector(
+            InkWell(
               onTap: () async {
                 await ImagePicker()
                     .pickImage(
@@ -360,7 +397,7 @@ class AddArdoiseQuestion extends StatelessWidget {
                     .then(
                   (value) async {
                     loadingImage.value = true;
-              
+
                     var link;
                     if (kIsWeb) {
                       link = await FStorage.putData(await value!.readAsBytes());
@@ -371,7 +408,7 @@ class AddArdoiseQuestion extends StatelessWidget {
                     print(link);
                     proposition = link;
                     propositions.add(proposition);
-              
+
                     Get.back();
                   },
                 ).onError((_, __) {
@@ -429,10 +466,4 @@ bool isFirebaseStorageLink(String url) {
     r'^https:\/\/firebasestorage\.googleapis\.com\/v0\/b\/[a-zA-Z0-9.-]+\.appspot\.com\/o\/.+\?alt=media&token=[a-zA-Z0-9-]+$',
   );
   return firebaseStorageRegex.hasMatch(url);
-}
-
-class QuestionType {
-  static String qcu = "qcu";
-  static String qcm = "qcm";
-  static String qct = "qct";
 }

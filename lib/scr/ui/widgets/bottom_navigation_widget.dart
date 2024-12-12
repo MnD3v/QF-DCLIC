@@ -92,7 +92,7 @@ class BottomNavigationButton extends StatelessWidget {
   final unselectedIcon;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: function,
       child: Container(
         width: Get.width / 5,

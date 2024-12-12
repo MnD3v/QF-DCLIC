@@ -1,14 +1,12 @@
 import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
-import 'package:immobilier_apk/scr/data/models/question.dart';
-import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/add_question.dart';
 
-class UserQuestionCard extends StatelessWidget {
-  UserQuestionCard(
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/add_question.dart';
+
+class QuestionCard extends StatelessWidget {
+  const QuestionCard(
       {super.key,
-      required this.userID,
       required this.index,
       required this.dejaRepondu,
       required this.qcuResponse,
@@ -16,33 +14,19 @@ class UserQuestionCard extends StatelessWidget {
       required this.initalResponses,
       required this.qcmResponse,
       required this.element});
-      final userID;
   final Question element;
   final int index;
   final RxBool dejaRepondu;
   final RxString qcuResponse;
   final Questionnaire? questionnaire;
   final List initalResponses;
-  final RxList qcmResponse;
-  String qctResponse = "";
-  @override 
-  Widget build(BuildContext context) {
-    if(element.type == QuestionType.qcu){
-    qcuResponse.value = initalResponses[index];
+  final RxList<String> qcmResponse;
 
-    }
-    else if(element.type == QuestionType.qcm){
-    List<String> qcmR = (initalResponses[index] as List).map((element)=>element.toString()).toList() ;
-     qcmResponse.value = qcmR;
-    }
-    else{
-      qctResponse = initalResponses[index];
-    }
-    print(qcmResponse);
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: Get.width,
       decoration: BoxDecoration(
-        // color: Colors.red,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(width: .5, color: Colors.white54)),
       margin: EdgeInsets.symmetric(vertical: 6),
@@ -85,7 +69,8 @@ class UserQuestionCard extends StatelessWidget {
                         child: EColumn(
                           children: [
                             EText(questionnaire!
-                                .maked[userID]!
+                                .maked[Utilisateur
+                                    .currentUser.value!.telephone_id]!
                                 .response[index]),
                             9.h,
                             EText(
@@ -95,14 +80,18 @@ class UserQuestionCard extends StatelessWidget {
                           ],
                         ),
                       )
-                    : ETextField(
-                        maxLines: 6,
-                        minLines: 3,
-                        placeholder: "Saisissez votre reponse",
-                        onChanged: (value) {
-                          initalResponses[index] = value;
-                        },
-                        phoneScallerFactor: phoneScallerFactor),
+                    : Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: ETextField(
+                          maxLines: 6,
+                          minLines: 3,
+                          radius: 18,
+                          placeholder: "Saisissez votre reponse",
+                          onChanged: (value) {
+                            initalResponses[index] = value;
+                          },
+                          phoneScallerFactor: phoneScallerFactor),
+                    ),
               )
             : Obx(
                 () => EColumn(
@@ -135,25 +124,19 @@ class UserQuestionCard extends StatelessWidget {
                                             borderRadius:
                                                 BorderRadius.circular(15),
                                             border: Border.all(
-                                              
-                                              color: dejaRepondu.value &&
-                                                      element.reponse == e
+                                              color: element.reponse == e
                                                   ? Colors.greenAccent
-                                                  : dejaRepondu.value &&
-                                                          initalResponses[
-                                                                  index] ==
-                                                              e
-                                                      ? Colors.red
-                                                      : Colors.white,
+                                                  : Colors.white,
                                             )),
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(12),
-                                          child: GestureDetector(
+                                          child: InkWell(
                                             onTap: () {
                                               showImageViewer(
-                                                  context, NetworkImage(
-                                                  element.choix[e]!),
+                                                  context,
+                                                  NetworkImage(
+                                                      element.choix[e]!),
                                                   onViewerDismissed: () {
                                                 print("dismissed");
                                               });
@@ -170,13 +153,10 @@ class UserQuestionCard extends StatelessWidget {
                                   )
                                 : EText(
                                     element.choix[e],
-                                    color: dejaRepondu.value &&
+                                    color: 
                                             element.reponse == e
                                         ? Colors.greenAccent
-                                        : dejaRepondu.value &&
-                                                initalResponses[index] == e
-                                            ? Colors.red
-                                            : Colors.white,
+                                        :  Colors.white,
                                   ),
                           ),
                         )
@@ -210,27 +190,24 @@ class UserQuestionCard extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(15),
                                           border: Border.all(
-                                              
-                                              color: dejaRepondu.value &&
+                                              color: 
                                                       element.reponse
                                                           .contains(e)
                                                   ? Colors.greenAccent
-                                                  : dejaRepondu.value &&
-                                                          initalResponses[index]
-                                                              .contains(e)
-                                                      ? Colors.red
-                                                      : Colors.white)),
+                                                  :  Colors.white)),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
-                                        child: GestureDetector(
-                                          onTap: (){
-                                             showImageViewer(
-
-                                                  context, NetworkImage(
-                                                  element.choix[e]!),
-                                                  onViewerDismissed: () {
-                                                print("dismissed");
-                                              }, doubleTapZoomable: true, backgroundColor: Colors.black, barrierColor: Colors.black, useSafeArea: true);
+                                        child: InkWell(
+                                          onTap: () {
+                                            showImageViewer(context,
+                                                NetworkImage(element.choix[e]!),
+                                                onViewerDismissed: () {
+                                              print("dismissed");
+                                            },
+                                                doubleTapZoomable: true,
+                                                backgroundColor: Colors.black,
+                                                barrierColor: Colors.black,
+                                                useSafeArea: true);
                                           },
                                           child: EFadeInImage(
                                             height: 90,
@@ -244,13 +221,10 @@ class UserQuestionCard extends StatelessWidget {
                                 )
                               : EText(
                                   element.choix[e],
-                                  color: dejaRepondu.value &&
+                                  color: 
                                           element.reponse.contains(e)
                                       ? Colors.greenAccent
-                                      : dejaRepondu.value &&
-                                              initalResponses[index].contains(e)
-                                          ? Colors.red
-                                          : Colors.white,
+                                      :  Colors.white,
                                 ),
                         );
                 }).toList()),

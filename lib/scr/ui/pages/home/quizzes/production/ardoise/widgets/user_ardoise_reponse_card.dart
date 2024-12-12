@@ -1,11 +1,11 @@
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
-import 'package:immobilier_apk/scr/data/models/ardoise_question.dart';
-import 'package:immobilier_apk/scr/data/models/maked.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/ardoise/add_question.dart';
 
-class UserArdoiseQuestionCard extends StatelessWidget {
-  UserArdoiseQuestionCard(
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/add_question.dart';
+
+class UserArdoiseResponseCard extends StatelessWidget {
+  UserArdoiseResponseCard(
       {super.key, required this.question, required this.id});
   final String id;
   final ArdoiseQuestion question;
@@ -22,7 +22,7 @@ class UserArdoiseQuestionCard extends StatelessWidget {
               .map((element) => element.toString() as String)
               .toList())
           .runtimeType);
-      // List<String> qcmR = question.maked[id]!.response[0].map((element)=> element.toString()).toList() as List<String>;
+
       qcmResponse.value = (question.maked[id]!.response[0] as List)
           .map((element) => element.toString() as String)
           .toList();
@@ -39,21 +39,27 @@ class UserArdoiseQuestionCard extends StatelessWidget {
         // color: Color.fromARGB(0, 30, 95, 145),
         // gradient: LinearGradient(colors: [Colors.transparent, const Color.fromARGB(255, 15, 53, 88)]),
         border: Border.all(width: .6, color: Colors.white24),
-       
-        color:  Color(0xff0d1b2a),
+
+        gradient: LinearGradient(colors: [
+          Color.fromARGB(255, 16, 0, 43),
+          const Color.fromARGB(255, 29, 0, 75)
+        ], begin: Alignment.topLeft, end: Alignment.bottomRight),
         borderRadius: BorderRadius.circular(24),
       ),
-      margin: EdgeInsets.symmetric(vertical: 6, ),
+      margin: EdgeInsets.symmetric(
+        vertical: 6,
+      ),
       child: EColumn(children: [
         Container(
-          decoration: BoxDecoration(color: Colors.purple, borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+              color: Colors.pink, borderRadius: BorderRadius.circular(12)),
           margin: EdgeInsets.symmetric(horizontal: 6),
           padding: EdgeInsets.symmetric(vertical: 3, horizontal: 9),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-           Icon(CupertinoIcons.person_circle),
+              Icon(CupertinoIcons.person_circle),
               3.w,
               EText("${question.maked[id]!.nom} ${question.maked[id]!.prenom}"),
             ],
@@ -90,7 +96,8 @@ class UserArdoiseQuestionCard extends StatelessWidget {
         //   dashColor: Colors.white54,
         // ),
         question.type == QuestionType.qct
-            ? Padding(
+            ? 
+            Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12.0, vertical: 18),
                 child: EColumn(
@@ -110,7 +117,9 @@ class UserArdoiseQuestionCard extends StatelessWidget {
             : Obx(
                 () => EColumn(
                     children: question.choix.keys.map((e) {
-                  return !(question.type == QuestionType.qcm)
+                  print   ( question.reponse);
+                  print   ( e);
+                  return question.type == QuestionType.qcu
                       ? IgnorePointer(
                           ignoring: true,
                           child: RadioListTile(
@@ -125,14 +134,46 @@ class UserArdoiseQuestionCard extends StatelessWidget {
                               qcuResponse.value = value as String;
                             },
                             title: isFirebaseStorageLink(question.choix[e]!)
-                                ? Container(
-                                    width: Get.width,
+                                ? Align(
                                     alignment: Alignment.centerLeft,
-                                    height: 90,
-                                    child: EFadeInImage(
-                                      radius: 12,
-                                      image: NetworkImage(question.choix[e]!),
-                                    ))
+                                    child: Container(
+                                        height: 90,
+                                        width: 120,
+                                        padding: EdgeInsets.all(3),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            border: Border.all(
+                                              color: question.reponse == e
+                                                  ? Colors.greenAccent
+                                                  : question.maked[id]!.response
+                                                          .contains(e)
+                                                      ? Colors.red
+                                                      : Colors.white,
+                                            )),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          child: InkWell(
+                                            onTap: () {
+                                              showImageViewer(
+                                                  context,
+                                                  NetworkImage(
+                                                      question.choix[e]!),
+                                                  onViewerDismissed: () {
+                                                print("dismissed");
+                                              });
+                                            },
+                                            child: EFadeInImage(
+                                              height: 90,
+                                              width: 120,
+                                              radius: 12,
+                                              image: NetworkImage(
+                                                  question.choix[e]!),
+                                            ),
+                                          ),
+                                        )),
+                                  )
                                 : EText(
                                     question.choix[e],
                                     color: true && question.reponse == e
@@ -160,14 +201,45 @@ class UserArdoiseQuestionCard extends StatelessWidget {
                                 : qcmResponse.add(e);
                           },
                           title: isFirebaseStorageLink(question.choix[e]!)
-                              ? Container(
-                                  width: Get.width,
+                              ? Align(
                                   alignment: Alignment.centerLeft,
-                                  height: 90,
-                                  child: EFadeInImage(
-                                    radius: 12,
-                                    image: NetworkImage(question.choix[e]!),
-                                  ))
+                                  child: Container(
+                                      height: 90,
+                                      width: 120,
+                                      padding: EdgeInsets.all(3),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          border: Border.all(
+                                            color: question.reponse.contains(e)
+                                                ? Colors.greenAccent
+                                                : question.maked[id]!.response
+                                                        .contains(e)
+                                                    ? Colors.red
+                                                    : Colors.white,
+                                          )),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: InkWell(
+                                          onTap: () {
+                                            showImageViewer(
+                                                context,
+                                                NetworkImage(
+                                                    question.choix[e]!),
+                                                onViewerDismissed: () {
+                                              print("dismissed");
+                                            });
+                                          },
+                                          child: EFadeInImage(
+                                            height: 90,
+                                            width: 120,
+                                            radius: 12,
+                                            image: NetworkImage(
+                                                question.choix[e]!),
+                                          ),
+                                        ),
+                                      )),
+                                )
                               : EText(
                                   question.choix[e],
                                   color: true && question.reponse.contains(e)

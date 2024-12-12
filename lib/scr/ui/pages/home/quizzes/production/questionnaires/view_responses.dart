@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
-import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/view_user_questionnaire.dart';
+
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/view_user_questionnaire.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_widgets/data/other/collections.dart';
 import 'package:my_widgets/my_widgets.dart';
@@ -50,7 +50,8 @@ class ViewResponses extends StatelessWidget {
                     padding: const EdgeInsets.all(12.0),
                     child: questionnaire!.maked.keys.isEmpty
                         ? Lottie.asset(Assets.image("empty.json"), height: 400)
-                        : DynamicHeightGridView(
+                        :    DynamicHeightGridView(
+                  physics: BouncingScrollPhysics(),
                             itemCount: questionnaire!.maked.keys.length,
                             crossAxisCount: crossAxisCount.toInt() <= 0
                                 ? 1
@@ -61,7 +62,7 @@ class ViewResponses extends StatelessWidget {
                               var key =
                                   questionnaire!.maked.keys.toList()[index];
                               var maked = questionnaire!.maked[key];
-                              return GestureDetector(
+                              return InkWell(
                                 onTap: () {
                                   Get.to(
                                       ViewUserQuestionnaire(
@@ -91,7 +92,7 @@ class ViewResponses extends StatelessWidget {
                                             width: 60,
                                             height: 60,
                                             child: CircleAvatar(
-                                              backgroundColor: Colors.purple,
+                                              backgroundColor: Colors.pink,
                                               child: Icon(
                                                 CupertinoIcons.person,
                                                 color: Colors.white,

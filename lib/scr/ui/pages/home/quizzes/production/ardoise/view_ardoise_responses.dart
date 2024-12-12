@@ -1,10 +1,10 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
-import 'package:immobilier_apk/scr/data/models/ardoise_question.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/ardoise/widgets/ardoise_card.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/ardoise/widgets/user_ardoise_card.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/widgets/admin_ardoise_card.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/widgets/user_ardoise_reponse_card.dart';
 import 'package:lottie/lottie.dart';
+import 'package:my_widgets/data/models/ardoise_question.dart';
 
 class ViewArdoiseResponses extends StatelessWidget {
   final String id;
@@ -41,13 +41,14 @@ class ViewArdoiseResponses extends StatelessWidget {
               ),
               body: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: sortByDate(question.maked).isEmpty?Lottie.asset(Assets.image("empty.json"),  height: 400): DynamicHeightGridView(
+                child: sortByDate(question.maked).isEmpty?Lottie.asset(Assets.image("empty.json"),  height: 400):    DynamicHeightGridView(
+                  physics: BouncingScrollPhysics(),
                     itemCount: sortByDate(question.maked).length,
                     crossAxisCount: crossAxisCount.toInt() <= 0 ? 1 : crossAxisCount.toInt(),
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     builder: (ctx, index) {
-                      return UserArdoiseQuestionCard(
+                      return UserArdoiseResponseCard(
                           id: sortByDate(question.maked)[index],
                           question: question);
                     }),

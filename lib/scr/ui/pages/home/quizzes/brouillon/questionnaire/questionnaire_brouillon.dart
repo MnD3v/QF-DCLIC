@@ -1,16 +1,13 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
-import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/create_questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/brouillon/questionnaire/questionnaire_brouillon.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/home_page.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/view_questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/view_responses.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/widgets/questionnaire_card.dart';
-import 'package:lottie/lottie.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/create_questionnaire.dart';
 
-class ViewAllQuestionnaires extends StatelessWidget {
-  ViewAllQuestionnaires({
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/questionnaire_card.dart';
+import 'package:lottie/lottie.dart';
+import 'package:my_widgets/my_widgets.dart';
+
+class QuestionnaireBrouillon extends StatelessWidget {
+  QuestionnaireBrouillon({
     super.key,
   });
 
@@ -37,6 +34,8 @@ class ViewAllQuestionnaires extends StatelessWidget {
             stream: DB
                 .firestore(Collections.classes)
                 .doc(user.classe)
+                .collection(Collections.brouillon)
+                .doc(user.classe)
                 .collection(Collections.questionnaires)
                 .orderBy("date", descending: true)
                 .snapshots(),
@@ -53,10 +52,13 @@ class ViewAllQuestionnaires extends StatelessWidget {
 
               return AnimatedSwitcher(
                 duration: 666.milliseconds,
-                child:questionnaires.isEmpty?Lottie.asset(Assets.image("empty.json"),  height: 400): DynamicHeightGridView(
-                  key: Key( questionnaires.length.toString()),
+                child: questionnaires.isEmpty?Lottie.asset(Assets.image("empty.json"),  height: 400):    DynamicHeightGridView(
+                  physics: BouncingScrollPhysics(),
+                    key: Key(questionnaires.length.toString()),
                     itemCount: questionnaires.length,
-                    crossAxisCount: crossAxisCount.toInt() <= 0 ? 1 : crossAxisCount.toInt(),
+                    crossAxisCount: crossAxisCount.toInt() <= 0
+                        ? 1
+                        : crossAxisCount.toInt(),
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     builder: (ctx, index) {
@@ -64,18 +66,27 @@ class ViewAllQuestionnaires extends StatelessWidget {
                       var dejaRepondu =
                           questionnaire.maked.containsKey(telephone).obs;
                       return QuestionnaireCard(
-                        navigationId: 1,
+                          navigationId: 3,
+                          brouillon: true,
                           dejaRepondu: dejaRepondu,
                           questionnaire: questionnaire,
                           width: width);
                     }),
               );
             }),
-        floatingActionButton: FloatingActionButton(onPressed: () {
-          Get.to(SizedBox(width: 600, child: CreateQuestionnaire()), id: 1);
-        }, child: Icon(Icons.add),),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Get.to(
+                SizedBox(
+                    width: 600,
+                    child: CreateQuestionnaire(
+                      brouillon: true,
+                    )),
+                id: 3);
+          },
+          child: Icon(Icons.add),
+        ),
       );
     });
   }
 }
-

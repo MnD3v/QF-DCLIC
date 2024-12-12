@@ -5,11 +5,12 @@ import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 
 import 'package:immobilier_apk/scr/config/app/export.dart';
-import 'package:immobilier_apk/scr/data/models/maked.dart';
-import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/add_question.dart';
-import 'package:immobilier_apk/scr/ui/widgets/question_card.dart';
-import 'package:immobilier_apk/scr/ui/widgets/user_question_card.dart';
+
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/question_card.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/user_question_card.dart';
+import 'package:my_widgets/data/models/question_type.dart';
+import 'package:my_widgets/data/models/questionnaire.dart';
 
 class ViewUserQuestionnaire extends StatefulWidget {
   Questionnaire questionnaire;
@@ -66,7 +67,8 @@ class _ViewUserQuestionnaireState extends State<ViewUserQuestionnaire> {
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 9.0),
-          child: DynamicHeightGridView(
+          child:    DynamicHeightGridView(
+                  physics: BouncingScrollPhysics(),
                 itemCount: widget.questionnaire.questions.length,
               crossAxisCount: crossAxisCount.toInt() <= 0 ? 1 : crossAxisCount.toInt(),
                 crossAxisSpacing: 10,

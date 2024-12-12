@@ -2,13 +2,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:immobilier_apk/firebase_options.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/config/theme/app_theme.dart';
 import 'package:immobilier_apk/scr/ui/pages/precache/precache.dart';
 import 'package:immobilier_apk/scr/ui/pages/update/update_page.dart';
+import 'package:immobilier_apk/test.dart';
 
 String version = "1.0.1+14";
 
@@ -47,6 +46,12 @@ void main() async {
     transitionDuration: 444.milliseconds,
     debugShowCheckedModeBanner: false,
     theme: AppTheme.theme,
+    // home: Scaffold(
+    //   body: SizedBox(
+    //     height: 300,
+    //     width: 300,
+    //     child: LineChartSample2()),
+    // ),
     home: LoadingPage(),
   ));
 }
@@ -78,27 +83,27 @@ Future<Update> getUpdateVersion() async {
   return Update.fromMap(q.data() ?? update.toMap());
 }
 
-Future<void> requestNotificationPermission() async {
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+// Future<void> requestNotificationPermission() async {
+//   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  // Demander la permission
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
+//   // Demander la permission
+//   NotificationSettings settings = await messaging.requestPermission(
+//     alert: true,
+//     announcement: false,
+//     badge: true,
+//     carPlay: false,
+//     criticalAlert: false,
+//     provisional: false,
+//     sound: true,
+//   );
 
-  if (settings.authorizationStatus == AuthorizationStatus.denied) {
-    print('Permission refusée par l\'utilisateur.');
-  } else if (settings.authorizationStatus ==
-      AuthorizationStatus.notDetermined) {
-    print('Permission non encore déterminée.');
-  } else {
-    print('Permission accordée : ${settings.authorizationStatus}');
-  }
-}
+//   if (settings.authorizationStatus == AuthorizationStatus.denied) {
+//     print('Permission refusée par l\'utilisateur.');
+//   } else if (settings.authorizationStatus ==
+//       AuthorizationStatus.notDetermined) {
+//     print('Permission non encore déterminée.');
+//   } else {
+//     print('Permission accordée : ${settings.authorizationStatus}');
+//   }
+// }
 

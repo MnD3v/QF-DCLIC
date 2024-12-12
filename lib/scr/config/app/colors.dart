@@ -13,6 +13,7 @@ class AppColors {
   static Color color200 = const Color(0xFFFFD0C2);
   static Color coffee = color700;
   static Color white = Colors.white;
-  static Color background =
-      Color.fromARGB(255, 9, 39, 78); // Color.fromARGB(255, 255, 248, 245);
+  static Color background = const Color.fromARGB(255, 29, 0, 75);
+  static Color background900 = const Color.fromARGB(
+      255, 29, 0, 75); // Color.fromARGB(255, 255, 248, 245);
 }

@@ -25,7 +25,7 @@ class Compte extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: EColumn(children: [
           12.h,
-          GestureDetector(
+          InkWell(
             onTap: () {
               if (Utilisateur.currentUser.value == null) {
                 Get.to(
@@ -116,7 +116,7 @@ class Compte extends StatelessWidget {
                 ? 0.h
                 : Column(
                     children: [
-                      GestureDetector(
+                      InkWell(
                         onTap: () {
                           Custom.showDialog( dialog: TwoOptionsDialog(
                               confirmationText: "Me deconnecter",
@@ -175,7 +175,7 @@ class _Element extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       child: Container(
         height: 55,

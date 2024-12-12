@@ -1,21 +1,38 @@
 import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
-import 'package:immobilier_apk/scr/data/models/question.dart';
-import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
-import 'package:immobilier_apk/scr/data/repository/const.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/add_question.dart';
-import 'package:immobilier_apk/scr/ui/widgets/question_card.dart';
 
-class CreateQuestionnaire extends StatelessWidget {
-  CreateQuestionnaire({super.key, this.brouillon});
+import 'package:immobilier_apk/scr/data/repository/const.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/question_card.dart';
+import 'package:my_widgets/data/models/questionnaire.dart';
+import 'package:my_widgets/my_widgets.dart';
+
+class CreateQuestionnaire extends StatefulWidget {
+  Questionnaire? questionnaire;
+  CreateQuestionnaire({super.key, this.brouillon, this.questionnaire});
 
   final bool? brouillon;
 
+  @override
+  State<CreateQuestionnaire> createState() => _CreateQuestionnaireState();
+}
+
+class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
   var questions = RxList<Question>();
 
   var titre = "";
 
   final _loading = false.obs;
+
+  @override
+  void initState() {
+    if (widget.questionnaire != null) {
+      questions.value = widget.questionnaire!.questions;
+      titre = widget.questionnaire!.title;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -43,7 +60,7 @@ class CreateQuestionnaire extends StatelessWidget {
                     EText("Titre du questionnaire"),
                     6.h,
                     ETextField(
-                      initialValue: titre,
+                        initialValue: titre,
                         placeholder: "Saisissez le questionnaire",
                         onChanged: (value) {
                           titre = value;
@@ -119,19 +136,21 @@ class CreateQuestionnaire extends StatelessWidget {
                   }
                   _loading.value = true;
 
-                  var q =
-                      await DB.firestore(Collections.utils).doc("lastID").get();
-                  var lastIDKey = q.data()!["lastID"];
-                  print(lastIDKey);
-                  var id = ids[lastIDKey];
+                  var id = DateTime.now().millisecondsSinceEpoch.toString();
+       
+                  //verifier si c'est une mise a jour
+                  if (widget.questionnaire != null) {
+                    id = widget.questionnaire!.id;
+                  }
+                  //verifier si c'est une mise a jour
 
                   var questionnaire = Questionnaire(
-                      id: id!,
+                      id: id,
                       date: DateTime.now().toString(),
                       title: titre,
                       maked: {},
-                      questions: questions.value);
-                  if (brouillon == true) {
+                      questions: questions);
+                  if (widget.brouillon == true) {
                     await DB
                         .firestore(Collections.classes)
                         .doc(user.classe)
@@ -149,17 +168,12 @@ class CreateQuestionnaire extends StatelessWidget {
                         .set(questionnaire.toMap());
                   }
 
-                  lastIDKey += 1;
                   _loading.value = false;
 
-                  Get.back(id: brouillon == true ? 3 : 1);
-                  await DB
-                      .firestore(Collections.utils)
-                      .doc("lastID")
-                      .set({"lastID": lastIDKey});
+                  Get.back(id: widget.brouillon == true ? 3 : 1);
                 },
-                child: Obx(()=>
-                   _loading.value
+                child: Obx(
+                  () => _loading.value
                       ? SizedBox(
                           height: 20,
                           width: 20,

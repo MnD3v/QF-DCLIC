@@ -6,10 +6,9 @@ import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 
 import 'package:immobilier_apk/scr/config/app/export.dart';
-import 'package:immobilier_apk/scr/data/models/maked.dart';
-import 'package:immobilier_apk/scr/data/models/questionnaire.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/questionnaires/add_question.dart';
-import 'package:immobilier_apk/scr/ui/widgets/question_card.dart';
+
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/question_card.dart';
+import 'package:my_widgets/my_widgets.dart';
 
 class ViewQuestionnaire extends StatefulWidget {
   Questionnaire questionnaire;
@@ -57,15 +56,16 @@ class _ViewQuestionnaireState extends State<ViewQuestionnaire> {
         return EScaffold(
           appBar: AppBar(
            
-            backgroundColor: Color(0xff0d1b2a),
-            surfaceTintColor: Color(0xff0d1b2a),
-            title: EText("Questionnaire", size: 22,),
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            title: EText("Questionnaire", size: 24, weight: FontWeight.bold,),
          ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 9.0),
             child:
             
-                    DynamicHeightGridView(
+                       DynamicHeightGridView(
+                  physics: BouncingScrollPhysics(),
                     itemCount: widget.questionnaire!.questions.length,
                  crossAxisCount: crossAxisCount.toInt() <= 0 ? 1 : crossAxisCount.toInt(),
                     crossAxisSpacing: 10,

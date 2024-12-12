@@ -120,7 +120,7 @@ FlBorderData get borderData => FlBorderData(
 
 LinearGradient get _barsGradient => LinearGradient(
       colors: [
-        Colors.purple,
+        Colors.pink,
         Colors.amber,
       ],
       begin: Alignment.bottomCenter,
