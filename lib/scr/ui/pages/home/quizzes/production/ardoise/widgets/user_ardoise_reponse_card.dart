@@ -18,10 +18,7 @@ class UserArdoiseResponseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (question.type == QuestionType.qcm) {
-      print(((question.maked[id]!.response[0] as List)
-              .map((element) => element.toString() as String)
-              .toList())
-          .runtimeType);
+
 
       qcmResponse.value = (question.maked[id]!.response[0] as List)
           .map((element) => element.toString() as String)
@@ -103,7 +100,7 @@ class UserArdoiseResponseCard extends StatelessWidget {
                 child: EColumn(
                   children: [
                     EText(question
-                        .maked[Utilisateur.currentUser.value!.telephone_id]!
+                        .maked[id]!
                         .response[0]
                         .toString()),
                     9.h,

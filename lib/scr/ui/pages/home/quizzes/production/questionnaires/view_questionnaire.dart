@@ -13,9 +13,10 @@ import 'package:my_widgets/my_widgets.dart';
 class ViewQuestionnaire extends StatefulWidget {
   Questionnaire questionnaire;
   RxBool dejaRepondu;
+  String? idUser;
 
   ViewQuestionnaire(
-      {super.key, required this.questionnaire, required this.dejaRepondu});
+      {super.key, required this.questionnaire,this.idUser, required this.dejaRepondu});
 
   @override
   State<ViewQuestionnaire> createState() => _ViewQuestionnaireState();
@@ -32,15 +33,9 @@ class _ViewQuestionnaireState extends State<ViewQuestionnaire> {
 
   var telephone = Utilisateur.currentUser.value!.telephone_id;
 
-  @override
-  void initState() {
-    waitAfter(10, (){
-    widget.dejaRepondu.value =
-        widget.questionnaire!.maked.keys.contains(telephone);
-    });
 
-    super.initState();
-  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +66,11 @@ class _ViewQuestionnaireState extends State<ViewQuestionnaire> {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     builder: (ctx, index) {
-                      var element =  widget.questionnaire!.questions[index];
+                      var element =  widget.questionnaire.questions[index];
                       var qcmResponse = RxList<String>([]);
                 var qcuResponse = "".obs;
                 return QuestionCard(
+                  idUser: widget.idUser,
                     element: element,
                     index: index,
                     dejaRepondu: widget.dejaRepondu,

@@ -6,15 +6,11 @@ import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/chart.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/student_card.dart';
 import 'package:lottie/lottie.dart';
-import 'package:my_widgets/data/models/questionnaire.dart';
 
 class Students extends StatelessWidget {
   Students({super.key});
-
-  final _user = Utilisateur.currentUser.value!;
-
+  final formateur = Utilisateur.currentUser.value!;
   var users = RxList<Utilisateur>([]);
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -23,9 +19,10 @@ class Students extends StatelessWidget {
       print(crossAxisCount);
       return FutureBuilder(
           future: DB
-              .firestore(Collections.utilistateurs)
-              .where("classe", isEqualTo: _user.classe)
-              // .orderBy("points", descending: true)
+              .firestore(Collections.classes)
+              .doc(formateur.classe)
+              .collection(Collections.utilistateurs)
+              .orderBy("points", descending: true)
               .get(),
           builder: (context, snapshot) {
             if (DB.waiting(snapshot)) {
@@ -57,7 +54,8 @@ class Students extends StatelessWidget {
                           onChanged: (value) {
                             users.value = tempUsers
                                 .where((element) =>
-                                    ("${element.nom} ${element.prenom}").toLowerCase()
+                                    ("${element.nom} ${element.prenom}")
+                                        .toLowerCase()
                                         .contains(value.toLowerCase()))
                                 .toList();
                           },
@@ -68,7 +66,7 @@ class Students extends StatelessWidget {
               ),
               body: Obx(
                 () => AnimatedSwitcher(
-                        duration: 666.milliseconds,
+                  duration: 666.milliseconds,
                   child: users.isEmpty
                       ? Lottie.asset(Assets.image("empty.json"), height: 400)
                       : DynamicHeightGridView(

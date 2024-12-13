@@ -13,7 +13,9 @@ class QuestionnaireCard extends StatelessWidget {
       required this.width,
       required this.navigationId,
       this.justUserInfos,
+      this.idUser,
       this.brouillon});
+      final String? idUser;
   final bool? justUserInfos;
   final RxBool dejaRepondu;
   final Questionnaire questionnaire;
@@ -30,6 +32,7 @@ class QuestionnaireCard extends StatelessWidget {
         Get.to(
             SizedBox(
               child: ViewQuestionnaire(
+                idUser: idUser,
                 dejaRepondu: dejaRepondu,
                 questionnaire: questionnaire,
               ),
@@ -41,10 +44,11 @@ class QuestionnaireCard extends StatelessWidget {
         padding: EdgeInsets.all(24),
         margin: EdgeInsets.symmetric(vertical: 6, horizontal: 9),
         decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Color.fromARGB(255, 16, 0, 43),
-              const Color.fromARGB(255, 29, 0, 75)
-            ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+          color: idUser.isNotNul && !questionnaire.maked.containsKey(idUser)? Colors.red.withOpacity(.1): null,
+            // gradient: LinearGradient(colors: [
+            //   Color.fromARGB(255, 16, 0, 43),
+            //   const Color.fromARGB(255, 29, 0, 75)
+            // ], begin: Alignment.topLeft, end: Alignment.bottomRight),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: Colors.white24)),
         child: Column(

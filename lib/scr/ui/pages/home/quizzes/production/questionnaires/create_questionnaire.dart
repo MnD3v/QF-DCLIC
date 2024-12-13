@@ -75,6 +75,7 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                               element.type == QuestionType.qcm ? [] : "")
                           .toList();
                       return QuestionCard(
+                        idUser: null,
                         dejaRepondu: false.obs,
                         element: element,
                         index: index,

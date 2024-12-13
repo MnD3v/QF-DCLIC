@@ -63,7 +63,7 @@ class ArdoiseQuestionCard extends StatelessWidget {
         question.type == QuestionType.qct
             ? Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 18),
+                    const EdgeInsets.symmetric(horizontal: 6.0, vertical: 18),
                 child: EColumn(
                   children: [
                     EText(

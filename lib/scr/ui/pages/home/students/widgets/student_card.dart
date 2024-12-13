@@ -1,6 +1,7 @@
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/all_quizes.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/chart.dart';
+import 'package:immobilier_apk/scr/ui/widgets/fl_chart.dart';
 import 'package:immobilier_apk/test.dart';
 
 class StudentCard extends StatelessWidget {
@@ -116,4 +117,5 @@ class StudentCard extends StatelessWidget {
     print(points);
     print("..........");
   }
+
 }

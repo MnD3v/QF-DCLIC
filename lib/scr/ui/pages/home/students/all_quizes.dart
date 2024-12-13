@@ -40,9 +40,7 @@ class AllQuizes extends StatelessWidget {
                         mainAxisSpacing: 10,
                         builder: (ctx, index) {
                           var questionnaire = questionnaires[index];
-                          var dejaRepondu = questionnaire.maked
-                              .containsKey(user.telephone_id)
-                              .obs;
+                    
 
                           var pointsGagne =
                               questionnaire.maked.containsKey(user.telephone_id)
@@ -53,9 +51,10 @@ class AllQuizes extends StatelessWidget {
                             alignment: Alignment.bottomLeft,
                             children: [
                               QuestionnaireCard(
+                                idUser: user.telephone_id,
                                   justUserInfos: true,
                                   navigationId: 0,
-                                  dejaRepondu: dejaRepondu,
+                                  dejaRepondu: true.obs,
                                   questionnaire: questionnaire,
                                   width: width),
                               Padding(

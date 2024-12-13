@@ -8,12 +8,14 @@ class QuestionCard extends StatelessWidget {
   const QuestionCard(
       {super.key,
       required this.index,
+      this.idUser,
       required this.dejaRepondu,
       required this.qcuResponse,
       required this.questionnaire,
       required this.initalResponses,
       required this.qcmResponse,
       required this.element});
+  final String? idUser;
   final Question element;
   final int index;
   final RxBool dejaRepondu;
@@ -24,6 +26,24 @@ class QuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(dejaRepondu);
+    var qctResponse = "";
+
+    if (idUser != null && questionnaire!.maked.containsKey(idUser)) {
+      if (element.type == QuestionType.qcm) {
+        qcmResponse.value =
+            (questionnaire!.maked[idUser]!.response[index] as List)
+                .map((element) => element.toString())
+                .toList();
+      } else if (element.type == QuestionType.qcu) {
+        qcuResponse.value = questionnaire!.maked[idUser]!.response[index];
+      } else {
+        qctResponse = questionnaire!.maked[idUser]!.response[index];
+      }
+    }
+    print(qctResponse);
+    print(dejaRepondu);
+
     return Container(
       width: Get.width,
       decoration: BoxDecoration(
@@ -68,10 +88,7 @@ class QuestionCard extends StatelessWidget {
                             horizontal: 12.0, vertical: 18),
                         child: EColumn(
                           children: [
-                            EText(questionnaire!
-                                .maked[Utilisateur
-                                    .currentUser.value!.telephone_id]!
-                                .response[index]),
+                            EText(qctResponse),
                             9.h,
                             EText(
                               element.reponse,
@@ -81,17 +98,18 @@ class QuestionCard extends StatelessWidget {
                         ),
                       )
                     : Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: ETextField(
-                          maxLines: 6,
-                          minLines: 3,
-                          radius: 18,
-                          placeholder: "Saisissez votre reponse",
-                          onChanged: (value) {
-                            initalResponses[index] = value;
-                          },
-                          phoneScallerFactor: phoneScallerFactor),
-                    ),
+                        padding: const EdgeInsets.all(6.0),
+                        child: ETextField(
+                            maxLines: 6,
+                            minLines: 3,
+                            radius: 18,
+                            placeholder: "Saisissez votre reponse",
+                            onChanged: (value) {
+                              print(dejaRepondu);
+                              initalResponses[index] = value;
+                            },
+                            phoneScallerFactor: phoneScallerFactor),
+                      ),
               )
             : Obx(
                 () => EColumn(
@@ -126,7 +144,9 @@ class QuestionCard extends StatelessWidget {
                                             border: Border.all(
                                               color: element.reponse == e
                                                   ? Colors.greenAccent
-                                                  : Colors.white,
+                                                  : qcuResponse.value == e
+                                                      ? Colors.red
+                                                      : Colors.white,
                                             )),
                                         child: ClipRRect(
                                           borderRadius:
@@ -153,10 +173,11 @@ class QuestionCard extends StatelessWidget {
                                   )
                                 : EText(
                                     element.choix[e],
-                                    color: 
-                                            element.reponse == e
+                                    color: element.reponse == e
                                         ? Colors.greenAccent
-                                        :  Colors.white,
+                                        : qcuResponse.value == e
+                                            ? Colors.red
+                                            : Colors.white,
                                   ),
                           ),
                         )
@@ -190,11 +211,9 @@ class QuestionCard extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(15),
                                           border: Border.all(
-                                              color: 
-                                                      element.reponse
-                                                          .contains(e)
+                                              color: element.reponse.contains(e)
                                                   ? Colors.greenAccent
-                                                  :  Colors.white)),
+                                                  : qcmResponse.contains(e)? Colors.red: Colors.white)),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
                                         child: InkWell(
@@ -221,10 +240,9 @@ class QuestionCard extends StatelessWidget {
                                 )
                               : EText(
                                   element.choix[e],
-                                  color: 
-                                          element.reponse.contains(e)
+                                  color: element.reponse.contains(e)
                                       ? Colors.greenAccent
-                                      :  Colors.white,
+                                      : Colors.white,
                                 ),
                         );
                 }).toList()),
