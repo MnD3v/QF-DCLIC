@@ -2,6 +2,7 @@ import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/questionnaire_card.dart';
+import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
 import 'package:lottie/lottie.dart';
 
 class AllQuizes extends StatelessWidget {
@@ -36,8 +37,9 @@ class AllQuizes extends StatelessWidget {
                   () => questionnaires.value.isNul
                       ? ECircularProgressIndicator()
                       : questionnaires.value!.isEmpty
-                          ? Lottie.asset(Assets.image("empty.json"),
-                              height: 400)
+                          ? Empty(
+                              constraints: constraints,
+                            )
                           : DynamicHeightGridView(
                               physics: BouncingScrollPhysics(),
                               key: Key(questionnaires.value!.length.toString()),

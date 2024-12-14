@@ -5,6 +5,7 @@ import 'package:immobilier_apk/scr/config/app/export.dart';
 
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/chart.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/student_card.dart';
+import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
 import 'package:lottie/lottie.dart';
 
 class Students extends StatelessWidget {
@@ -68,7 +69,9 @@ class Students extends StatelessWidget {
                 () => AnimatedSwitcher(
                   duration: 666.milliseconds,
                   child: users.isEmpty
-                      ? Lottie.asset(Assets.image("empty.json"), height: 400)
+                      ? Empty(
+                              constraints: constraints,
+                            )
                       : DynamicHeightGridView(
                           key: Key(users.length.toString()),
                           physics: BouncingScrollPhysics(),

@@ -3,6 +3,7 @@ import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/create_questionnaire.dart';
 
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/questionnaire_card.dart';
+import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_widgets/my_widgets.dart';
 
@@ -58,34 +59,37 @@ class QuestionnaireBrouillon extends StatelessWidget {
                 questionnaires.value = tempQuestionnaires;
               });
 
-              return Obx(()=>
-                  AnimatedSwitcher(
+              return Obx(
+                () => AnimatedSwitcher(
                   duration: 666.milliseconds,
                   child: questionnaires.value.isNul
-                     ? ECircularProgressIndicator()
-                     : questionnaires.value!.isEmpty
-                         ? Lottie.asset(Assets.image("empty.json"), height: 400)
-                         : DynamicHeightGridView(
-                             physics: BouncingScrollPhysics(),
-                             key: Key(questionnaires.value!.length.toString()),
-                             itemCount: questionnaires.value!.length,
-                             crossAxisCount: crossAxisCount.toInt() <= 0
-                                 ? 1
-                                 : crossAxisCount.toInt(),
-                             crossAxisSpacing: 10,
-                             mainAxisSpacing: 10,
-                             builder: (ctx, index) {
-                               var questionnaire = questionnaires.value![index];
-                               var dejaRepondu = questionnaire.maked
-                                   .containsKey(telephone)
-                                   .obs;
-                               return QuestionnaireCard(
-                                   navigationId: 3,
-                                   brouillon: true,
-                                   dejaRepondu: dejaRepondu,
-                                   questionnaire: questionnaire,
-                                   width: width);
-                             }),
+                      ? ECircularProgressIndicator()
+                      : questionnaires.value!.isEmpty
+                          ? Empty(
+                              constraints: constraints,
+                            )
+                          : DynamicHeightGridView(
+                              physics: BouncingScrollPhysics(),
+                              key: Key(questionnaires.value!.length.toString()),
+                              itemCount: questionnaires.value!.length,
+                              crossAxisCount: crossAxisCount.toInt() <= 0
+                                  ? 1
+                                  : crossAxisCount.toInt(),
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              builder: (ctx, index) {
+                                var questionnaire =
+                                    questionnaires.value![index];
+                                var dejaRepondu = questionnaire.maked
+                                    .containsKey(telephone)
+                                    .obs;
+                                return QuestionnaireCard(
+                                    navigationId: 3,
+                                    brouillon: true,
+                                    dejaRepondu: dejaRepondu,
+                                    questionnaire: questionnaire,
+                                    width: width);
+                              }),
                 ),
               );
             }),

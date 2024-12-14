@@ -3,6 +3,7 @@ import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/create_questionnaire.dart';
 
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/questionnaire_card.dart';
+import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_widgets/data/models/questionnaire.dart';
 
@@ -83,8 +84,9 @@ class ViewAllQuestionnaires extends StatelessWidget {
                   child: questionnaires.value.isNul
                       ? ECircularProgressIndicator()
                       : questionnaires.value!.isEmpty
-                          ? Lottie.asset(Assets.image("empty.json"),
-                              height: 400)
+                          ?Empty(
+                              constraints: constraints,
+                            )
                           : DynamicHeightGridView(
                               physics: BouncingScrollPhysics(),
                               key: Key(questionnaires.value!.length.toString()),

@@ -8,6 +8,7 @@ import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnair
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/widgets/admin_ardoise_card.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/home_page.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/question_card.dart';
+import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_widgets/my_widgets.dart';
 
@@ -55,7 +56,9 @@ class ArdoiseBrouillon extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 9.0),
                 child: questions.isEmpty
-                    ? Lottie.asset(Assets.image("empty.json"), height: 400)
+                    ?Empty(
+                              constraints: constraints,
+                            )
                     : AnimatedSwitcher(
                         duration: 666.milliseconds,
                         child: DynamicHeightGridView(

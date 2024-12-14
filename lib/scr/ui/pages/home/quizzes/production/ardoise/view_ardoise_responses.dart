@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/widgets/admin_ardoise_card.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/widgets/user_ardoise_reponse_card.dart';
+import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_widgets/data/models/ardoise_question.dart';
 
@@ -47,7 +48,9 @@ class ViewArdoiseResponses extends StatelessWidget {
                 child: AnimatedSwitcher(
                   duration: 666.milliseconds,
                   child: sortByDate(question.maked).isEmpty
-                      ? Lottie.asset(Assets.image("empty.json"), height: 400)
+                      ?Empty(
+                              constraints: constraints,
+                            )
                       : DynamicHeightGridView(
                         key: Key(sortByDate(question.maked).length.toString()),
                           physics: BouncingScrollPhysics(),

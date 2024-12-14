@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/view_user_questionnaire.dart';
+import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_widgets/data/other/collections.dart';
 import 'package:my_widgets/my_widgets.dart';
@@ -61,8 +62,9 @@ class ViewResponses extends StatelessWidget {
                         child: questionnaire.value.isNul
                             ? ECircularProgressIndicator()
                             : questionnaire.value!.maked.keys.isEmpty
-                                ? Lottie.asset(Assets.image("empty.json"),
-                                    height: 400)
+                                ? Empty(
+                              constraints: constraints,
+                            )
                                 : DynamicHeightGridView(
                                     key: Key(questionnaire
                                         .value!.maked.keys.length
