@@ -16,7 +16,7 @@ import 'package:my_widgets/my_widgets.dart';
 class Ardoise extends StatelessWidget {
   Ardoise({super.key});
 
-  var questions = RxList<ArdoiseQuestion>([]);
+  var questions = Rx<List<ArdoiseQuestion>?>(null);
   var user = Utilisateur.currentUser.value!;
 
   @override
@@ -35,7 +35,7 @@ class Ardoise extends StatelessWidget {
               .orderBy("date", descending: true)
               .snapshots(),
           builder: (context, snapshot) {
-            if (DB.waiting(snapshot)) {
+            if (DB.waiting(snapshot) && questions.value.isNul) {
               return ECircularProgressIndicator();
             }
 
@@ -47,7 +47,11 @@ class Ardoise extends StatelessWidget {
             questions.value = tempQuestions;
             return EScaffold(
               appBar: AppBar(
-                     leading:Get.width>600?null: MenuBoutton(user: user, constraints: constraints, width: width),      backgroundColor: Colors.transparent,
+                leading: Get.width > 600
+                    ? null
+                    : MenuBoutton(
+                        user: user, constraints: constraints, width: width),
+                backgroundColor: Colors.transparent,
                 surfaceTintColor: Colors.transparent,
                 title: EText(
                   "Ardoise",
@@ -78,42 +82,42 @@ class Ardoise extends StatelessWidget {
               body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 9.0),
                 child: Obx(
-                  () => questions.isEmpty
-                      ? Empty(
-                              constraints: constraints,
-                            )
-                      : AnimatedSwitcher(
-                          duration: 666.milliseconds,
-                          child: DynamicHeightGridView(
-                              physics: BouncingScrollPhysics(),
-                              key: Key(questions.length.toString()),
-                              itemCount: questions.length,
-                              crossAxisCount: crossAxisCount.toInt() <= 0
-                                  ? 1
-                                  : crossAxisCount.toInt(),
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              builder: (ctx, index) {
-                                var element = questions[index];
-                                var qcmResponse = RxList<String>([]);
-                                var qcuResponse = "".obs;
-                                var qctResponse = "".obs;
+                  () => AnimatedSwitcher(
+                    duration: 666.milliseconds,
+                    child: questions.value!.isEmpty
+                        ? Empty(
+                            constraints: constraints,
+                          )
+                        : DynamicHeightGridView(
+                            physics: BouncingScrollPhysics(),
+                            key: Key(questions.value!.length.toString()),
+                            itemCount: questions.value!.length,
+                            crossAxisCount: crossAxisCount.toInt() <= 0
+                                ? 1
+                                : crossAxisCount.toInt(),
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            builder: (ctx, index) {
+                              var element = questions.value![index];
+                              var qcmResponse = RxList<String>([]);
+                              var qcuResponse = "".obs;
+                              var qctResponse = "".obs;
 
-                                // var index = questions.indexOf(element);
+                              // var index = questions.indexOf(element);
 
-                                var dejaRepondu = false.obs;
+                              var dejaRepondu = false.obs;
 
-                                dejaRepondu.value =
-                                    element!.maked.keys.contains(telephone);
+                              dejaRepondu.value =
+                                  element!.maked.keys.contains(telephone);
 
-                                return ArdoiseQuestionCard(
-                                    dejaRepondu: dejaRepondu,
-                                    qctResponse: qctResponse,
-                                    qcuResponse: qcuResponse,
-                                    qcmResponse: qcmResponse,
-                                    question: element);
-                              }),
-                        ),
+                              return ArdoiseQuestionCard(
+                                  dejaRepondu: dejaRepondu,
+                                  qctResponse: qctResponse,
+                                  qcuResponse: qcuResponse,
+                                  qcmResponse: qcmResponse,
+                                  question: element);
+                            }),
+                  ),
                 ),
               ),
               floatingActionButton: FloatingActionButton(

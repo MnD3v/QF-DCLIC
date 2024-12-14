@@ -13,14 +13,14 @@ import 'package:lottie/lottie.dart';
 class Students extends StatelessWidget {
   Students({super.key});
   final formateur = Utilisateur.currentUser.value!;
-  var users = RxList<Utilisateur>([]);
+  var users = Rx<List<Utilisateur>?>(null);
 
   var user = Utilisateur.currentUser.value!;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final width = constraints.maxWidth;
-      final crossAxisCount = width / 400;
+      final crossAxisCount = width / 250;
       print(crossAxisCount);
       return FutureBuilder(
           future: DB
@@ -30,7 +30,7 @@ class Students extends StatelessWidget {
               .orderBy("points", descending: true)
               .get(),
           builder: (context, snapshot) {
-            if (DB.waiting(snapshot)) {
+            if (DB.waiting(snapshot) && users.value.isNul) {
               return ECircularProgressIndicator();
             }
             var tempUsers = <Utilisateur>[];
@@ -72,21 +72,21 @@ class Students extends StatelessWidget {
               body: Obx(
                 () => AnimatedSwitcher(
                   duration: 666.milliseconds,
-                  child: users.isEmpty
+                  child: users.value!.isEmpty
                       ? Empty(
                               constraints: constraints,
                             )
                       : DynamicHeightGridView(
-                          key: Key(users.length.toString()),
+                          key: Key(users.value!.length.toString()),
                           physics: BouncingScrollPhysics(),
-                          itemCount: users.length,
+                          itemCount: users.value!.length,
                           crossAxisCount: crossAxisCount.toInt() <= 0
                               ? 1
                               : crossAxisCount.toInt(),
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
                           builder: (ctx, index) {
-                            var user = users[index];
+                            var user = users.value![index];
                             return StudentCard(user: user);
                           }),
                 ),

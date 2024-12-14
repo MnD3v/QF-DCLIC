@@ -34,7 +34,7 @@ class ViewAllQuestionnaires extends StatelessWidget {
               .orderBy("date", descending: true)
               .snapshots(),
           builder: (context, snapshot) {
-            if (DB.waiting(snapshot)) {
+            if (DB.waiting(snapshot) && questionnaires.value.isNul) {
               return ECircularProgressIndicator();
             }
 

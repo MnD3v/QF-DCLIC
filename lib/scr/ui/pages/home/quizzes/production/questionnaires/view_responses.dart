@@ -137,11 +137,12 @@ class UserCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24)),
             child: Column(
               children: [
-                Row(
+                Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(
-                      width: 40,
-                      height: 40,
+                      width: 55,
+                      height: 55,
                       child: CircleAvatar(
                         backgroundColor: Colors.pink,
                         child: Icon(
@@ -150,8 +151,8 @@ class UserCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    9.w,
-                    SizedBox(width: 165, child: EText("${maked!.nom} ${maked.prenom}",maxLines: 1,)),
+                    9.h,
+                    SizedBox(width: 165, child: Center(child: EText("${maked!.nom} ${maked.prenom}",maxLines: 1,))),
                           
                   ],
                 ),
@@ -181,8 +182,8 @@ Icon(Icons.remove_red_eye)
               ? Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Icon(
-                    Icons.circle,
-                    size: 16,
+                    Icons.warning_rounded,
+                    size: 30,
                     color: Colors.amberAccent,
                   ),
                 )

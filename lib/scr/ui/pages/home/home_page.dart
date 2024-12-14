@@ -417,6 +417,7 @@ class Menu extends StatelessWidget {
               },
               child: EText("Deconnexion"),
             )
+          ,64.h,
           ]),
         ),
       ),

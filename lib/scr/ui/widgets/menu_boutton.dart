@@ -37,18 +37,15 @@ class MenuBoutton extends StatelessWidget {
                           currentIndex: currentMenuIndex,
                           showBrouillonElements: true.obs),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        margin: EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                            color: Colors.pink, shape: BoxShape.circle),
-                        child: IconButton(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            icon: Icon(Icons.close)),
-                      ),
+                    Container(
+                      margin: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                          color: Colors.pink, shape: BoxShape.circle),
+                      child: IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          icon: Icon(Icons.close)),
                     )
                   ],
                 ),
