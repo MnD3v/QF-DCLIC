@@ -7,8 +7,8 @@ import 'package:lottie/lottie.dart';
 import 'package:my_widgets/data/models/ardoise_question.dart';
 
 class ViewArdoiseResponses extends StatelessWidget {
-  final String id;
-  ViewArdoiseResponses({super.key, required this.id});
+  final String ardoiseQuestionID;
+  ViewArdoiseResponses({super.key, required this.ardoiseQuestionID});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,9 @@ class ViewArdoiseResponses extends StatelessWidget {
             .firestore(Collections.classes)
             .doc(Utilisateur.currentUser.value!.classe)
             .collection(Collections.ardoise)
-            .doc(id)
+            .doc(Utilisateur.currentUser.value!.classe)
+            .collection(Collections.production)
+            .doc(ardoiseQuestionID)
             .snapshots(),
         builder: (context, snapshot) {
           if (DB.waiting(snapshot)) {
@@ -26,6 +28,7 @@ class ViewArdoiseResponses extends StatelessWidget {
 
           ArdoiseQuestion question =
               ArdoiseQuestion.fromMap(snapshot.data!.data()!);
+
           return LayoutBuilder(builder: (context, constraints) {
             final width = constraints.maxWidth;
             final crossAxisCount = width / 400;
@@ -41,18 +44,25 @@ class ViewArdoiseResponses extends StatelessWidget {
               ),
               body: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: sortByDate(question.maked).isEmpty?Lottie.asset(Assets.image("empty.json"),  height: 400):    DynamicHeightGridView(
-                  physics: BouncingScrollPhysics(),
-                    itemCount: sortByDate(question.maked).length,
-                    crossAxisCount: crossAxisCount.toInt() <= 0 ? 1 : crossAxisCount.toInt(),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    builder: (ctx, index) {
-                      return UserArdoiseResponseCard(
-                          id: sortByDate(question.maked)[index],
-                          question: question);
-                    }),
-             
+                child: AnimatedSwitcher(
+                  duration: 666.milliseconds,
+                  child: sortByDate(question.maked).isEmpty
+                      ? Lottie.asset(Assets.image("empty.json"), height: 400)
+                      : DynamicHeightGridView(
+                        key: Key(sortByDate(question.maked).length.toString()),
+                          physics: BouncingScrollPhysics(),
+                          itemCount: sortByDate(question.maked).length,
+                          crossAxisCount: crossAxisCount.toInt() <= 0
+                              ? 1
+                              : crossAxisCount.toInt(),
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          builder: (ctx, index) {
+                            return UserArdoiseResponseCard(
+                                id: sortByDate(question.maked)[index],
+                                question: question);
+                          }),
+                ),
               ),
             );
           });

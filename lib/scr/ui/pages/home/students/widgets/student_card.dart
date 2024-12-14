@@ -93,6 +93,8 @@ class StudentCard extends StatelessWidget {
         .firestore(Collections.classes)
         .doc(user.classe)
         .collection(Collections.questionnaires)
+         .doc(user.classe)
+        .collection(Collections.production)
         .orderBy(
           "date",
         )
@@ -100,9 +102,12 @@ class StudentCard extends StatelessWidget {
         .get();
     var questionnaires = <Questionnaire>[];
 
-    q.docs.forEach((element) {
-      questionnaires.add(Questionnaire.fromMap(element.data()));
-    });
+    for (var element in q.docs) {
+      questionnaires.add(await Questionnaire.fromMap(element.data()));
+    }
+        print("....1......");
+    print(questionnaires);
+    print("......r....");
     points = [];
     questionnaires.forEach((element) {
       if (element.maked.containsKey(user.telephone_id)) {

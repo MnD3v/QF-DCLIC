@@ -16,12 +16,14 @@ class ViewResponses extends StatelessWidget {
 
   var user = Utilisateur.currentUser.value!;
 
-  Questionnaire? questionnaire;
+  var questionnaire = Rx<Questionnaire?>(null);
+
+  var notCorrected = false.obs;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final width = constraints.maxWidth;
-      final crossAxisCount = width / 400;
+      final crossAxisCount = width / 270;
 
       return EScaffold(
           appBar: AppBar(
@@ -38,101 +40,166 @@ class ViewResponses extends StatelessWidget {
                   .firestore(Collections.classes)
                   .doc(user.classe)
                   .collection(Collections.questionnaires)
+                  .doc(user.classe)
+                  .collection(Collections.production)
                   .doc(id)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (DB.waiting(snapshot)) {
                   return ECircularProgressIndicator();
                 }
+                waitAfter(0, () async {
+                  questionnaire.value =
+                      await Questionnaire.fromMap(snapshot.data!.data()!);
+                });
 
-                questionnaire = Questionnaire.fromMap(snapshot.data!.data()!);
                 return Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: questionnaire!.maked.keys.isEmpty
-                        ? Lottie.asset(Assets.image("empty.json"), height: 400)
-                        :    DynamicHeightGridView(
-                  physics: BouncingScrollPhysics(),
-                            itemCount: questionnaire!.maked.keys.length,
-                            crossAxisCount: crossAxisCount.toInt() <= 0
-                                ? 1
-                                : crossAxisCount.toInt(),
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            builder: (ctx, index) {
-                              var key =
-                                  questionnaire!.maked.keys.toList()[index];
-                              var maked = questionnaire!.maked[key];
-                              return InkWell(
-                                onTap: () {
-                                  Get.to(
-                                      ViewUserQuestionnaire(
-                                          userID: key,
-                                          questionnaire: questionnaire!,
-                                          dejaRepondu: true.obs),
-                                      id: 1);
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(12),
-                                  margin: EdgeInsets.all(6),
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white12),
-                                      gradient: LinearGradient(colors: [
-                                        const Color(0xff0d1b2a),
-                                        const Color.fromARGB(255, 29, 0, 75)
-                                      ]),
-                                      borderRadius: BorderRadius.circular(24)),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 60,
-                                            height: 60,
-                                            child: CircleAvatar(
-                                              backgroundColor: Colors.pink,
-                                              child: Icon(
-                                                CupertinoIcons.person,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          9.w,
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              EText(
-                                                  "${maked!.nom} ${maked.prenom}"),
-                                              ETextRich(
-                                                textSpans: [
-                                                  ETextSpan(
-                                                      text: maked.pointsGagne
-                                                          .toStringAsFixed(2),
-                                                      color:
-                                                          Colors.greenAccent),
-                                                  ETextSpan(
-                                                    text:
-                                                        "/${questionnaire!.questions.length}",
-                                                    color: Colors.white,
-                                                  )
-                                                ],
-                                                size: 30,
-                                                font: Fonts.sevenSegment,
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Icon(Icons.keyboard_arrow_right_rounded)
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }));
+                    child: Obx(
+                      () => AnimatedSwitcher(
+                        duration: 666.milliseconds,
+                        child: questionnaire.value.isNul
+                            ? ECircularProgressIndicator()
+                            : questionnaire.value!.maked.keys.isEmpty
+                                ? Lottie.asset(Assets.image("empty.json"),
+                                    height: 400)
+                                : DynamicHeightGridView(
+                                    key: Key(questionnaire
+                                        .value!.maked.keys.length
+                                        .toString()),
+                                    physics: BouncingScrollPhysics(),
+                                    itemCount:
+                                        questionnaire.value!.maked.keys.length,
+                                    crossAxisCount: crossAxisCount.toInt() <= 0
+                                        ? 1
+                                        : crossAxisCount.toInt(),
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    builder: (ctx, index) {
+                                      var id = questionnaire.value!.maked.keys
+                                          .toList()[index];
+                                      var maked =
+                                          questionnaire.value!.maked[id];
+                                      return UserCard(
+                                          id: id,
+                                          questionnaire: questionnaire,
+                                          maked: maked!,
+                                          notCorrected: notCorrected);
+                                    }),
+                      ),
+                    ));
               }));
     });
+  }
+}
+
+class UserCard extends StatelessWidget {
+  const UserCard({
+    super.key,
+    required this.id,
+    required this.questionnaire,
+    required this.maked,
+    required this.notCorrected,
+  });
+
+  final String id;
+  final Rx<Questionnaire?> questionnaire;
+  final Maked maked;
+  final RxBool notCorrected;
+
+  @override
+  Widget build(BuildContext context) {
+    verifyNoCorrected(maked);
+    return InkWell(
+      onTap: () {
+        Get.to(
+            ViewUserQuestionnaire(
+                userID: id,
+                questionnaire: questionnaire.value!,
+                dejaRepondu: true.obs),
+            id: 1);
+      },
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          Container(
+            padding: EdgeInsets.all(12),
+            margin: EdgeInsets.all(6),
+            width: double.infinity,
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.white12),
+                gradient: LinearGradient(colors: [
+                  Color.fromARGB(255, 16, 0, 43),
+                  const Color.fromARGB(255, 29, 0, 75)
+                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                borderRadius: BorderRadius.circular(24)),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.pink,
+                        child: Icon(
+                          CupertinoIcons.person,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    9.w,
+                    SizedBox(width: 165, child: EText("${maked!.nom} ${maked.prenom}",maxLines: 1,)),
+                          
+                  ],
+                ),
+                  ETextRich(
+                          textSpans: [
+                            ETextSpan(
+                                text: maked.pointsGagne.toStringAsFixed(2),
+                                weight: FontWeight.bold,
+                                color: Colors.greenAccent),
+                            ETextSpan(
+                              text:
+                                  "/${questionnaire.value!.questions.length.toDouble().toStringAsFixed(2)}",
+                              weight: FontWeight.bold,
+                              color: Colors.white,
+                            )
+                          ],
+                          size: 30,
+                          font: Fonts.sevenSegment,
+                        ),
+                        6.h,
+                        
+Icon(Icons.remove_red_eye)
+              ],
+            ),
+          ),
+          notCorrected.value
+              ? Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Icon(
+                    Icons.circle,
+                    size: 16,
+                    color: Colors.amberAccent,
+                  ),
+                )
+              : 0.h
+        ],
+      ),
+    );
+  }
+
+  verifyNoCorrected(Maked maked) {
+    for (var e in maked.response) {
+      if (e is String) {
+        if (e.contains('--none')) {
+          notCorrected.value = true;
+          return;
+        }
+      }
+
+      notCorrected.value = false;
+    }
   }
 }

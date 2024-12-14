@@ -15,7 +15,7 @@ class QuestionnaireCard extends StatelessWidget {
       this.justUserInfos,
       this.idUser,
       this.brouillon});
-      final String? idUser;
+  final String? idUser;
   final bool? justUserInfos;
   final RxBool dejaRepondu;
   final Questionnaire questionnaire;
@@ -44,7 +44,9 @@ class QuestionnaireCard extends StatelessWidget {
         padding: EdgeInsets.all(24),
         margin: EdgeInsets.symmetric(vertical: 6, horizontal: 9),
         decoration: BoxDecoration(
-          color: idUser.isNotNul && !questionnaire.maked.containsKey(idUser)? Colors.red.withOpacity(.1): null,
+            color: idUser.isNotNul && !questionnaire.maked.containsKey(idUser)
+                ? Colors.red.withOpacity(.1)
+                : null,
             // gradient: LinearGradient(colors: [
             //   Color.fromARGB(255, 16, 0, 43),
             //   const Color.fromARGB(255, 29, 0, 75)
@@ -67,195 +69,165 @@ class QuestionnaireCard extends StatelessWidget {
               weight: FontWeight.bold,
             ),
             9.h,
-        justUserInfos == true
-                    ? 24.h:      Wrap(
-              children: [
-              
-                    brouillon == true
-                        ? Padding(
-                            padding: EdgeInsets.symmetric(vertical: 6),
-                            child: SimpleButton(
-                              width: 122,
-                              height: 35,
-                              onTap: () async {
-                                _loading.value = true;
-                                await DB
-                                    .firestore(Collections.classes)
-                                    .doc(Utilisateur.currentUser.value!.classe)
-                                    .collection(Collections.questionnaires)
-                                    .doc(questionnaire.id)
-                                    .set(questionnaire.toMap());
-                                await DB
-                                    .firestore(Collections.classes)
-                                    .doc(Utilisateur.currentUser.value!.classe)
-                                    .collection(Collections.brouillon)
-                                    .doc(Utilisateur.currentUser.value!.classe)
-                                    .collection(Collections.questionnaires)
-                                    .doc(questionnaire.id)
-                                    .delete();
-                                _loading.value = false;
-                              },
-                              child: Obx(
-                                () => _loading.value
-                                    ? SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 1.2,
+            justUserInfos == true
+                ? 24.h
+                : Wrap(
+                    children: [
+                      brouillon == true
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(vertical: 6),
+                              child: SimpleButton(
+                                width: 122,
+                                height: 35,
+                                onTap: () async {
+                                  _loading.value = true;
+                                  await questionnaire.toProduction();
+                                  _loading.value = false;
+                                },
+                                child: Obx(
+                                  () => _loading.value
+                                      ? SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 1.2,
+                                            color: Colors.black,
+                                          ),
+                                        )
+                                      : EText(
+                                          "Publier",
                                           color: Colors.black,
                                         ),
-                                      )
-                                    : EText(
-                                        "Publier",
-                                        color: Colors.black,
+                                ),
+                              ),
+                            )
+                          : Padding(
+                              padding: EdgeInsets.symmetric(vertical: 6),
+                              child: SimpleButton(
+                                width: 122,
+                                height: 35,
+                                onTap: () {
+                                  Get.to(
+                                      ViewResponses(
+                                        id: questionnaire.id,
                                       ),
+                                      id: 1);
+                                },
+                                child: EText(
+                                  "Reponses",
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
-                          )
-                        : Padding(
-                            padding: EdgeInsets.symmetric(vertical: 6),
-                            child: SimpleButton(
-                              width: 122,
-                              height: 35,
-                              onTap: () {
-                                Get.to(
-                                    ViewResponses(
-                                      id: questionnaire.id,
-                                    ),
-                                    id: 1);
-                              },
+                      6.w,
+                      Container(
+                        alignment: Alignment.center,
+                        width: 90,
+                        margin: EdgeInsets.symmetric(vertical: 6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(45),
+                          color: Colors.white12,
+                        ),
+                        height: 35,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 9.0, top: 3),
                               child: EText(
-                                "Reponses",
-                                color: Colors.black,
+                                "Voir",
+                                color: const Color.fromARGB(255, 255, 255, 255),
                               ),
                             ),
-                          ),
-                6.w,
-                Container(
-                  alignment: Alignment.center,
-                  width: 90,
-                  margin: EdgeInsets.symmetric(vertical: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(45),
-                    color: Colors.white12,
-                  ),
-                  height: 35,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 9.0, top: 3),
-                        child: EText(
-                          "Voir",
-                          color: const Color.fromARGB(255, 255, 255, 255),
+                            Icon(
+                              Icons.arrow_right_rounded,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              size: 30,
+                            )
+                          ],
                         ),
                       ),
-                      Icon(
-                        Icons.arrow_right_rounded,
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        size: 30,
+                      12.w,
+         brouillon != true? 0.h:             Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0),
+                        child: InkWell(
+                          onTap: () {
+                            Get.to(
+                                CreateQuestionnaire(
+                                  brouillon: brouillon,
+                                  questionnaire: questionnaire,
+                                ),
+                                id: brouillon == true ? 3 : 1);
+                          },
+                          child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: Colors.white24,
+                                  borderRadius: BorderRadius.circular(24)),
+                              child: Obx(
+                                () => _delete_loading.value
+                                    ? SizedBox(
+                                        height: 15,
+                                        width: 15,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 1.2,
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.mode_edit_outlined,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
+                              )),
+                        ),
+                      ),
+                      12.w,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0),
+                        child: InkWell(
+                          onTap: () {
+                            Custom.showDialog(
+                                dialog: TwoOptionsDialog(
+                                    confirmFunction: () async {
+                                      Get.back();
+                                      _delete_loading.value = true;
+                                      await questionnaire.delete(
+                                          brouillon: brouillon == true);
+                                      _delete_loading.value = false;
+                                    },
+                                    body:
+                                        "Voulez-vous vraiment supprimer cet element ?",
+                                    confirmationText: "Supprimer",
+                                    title: "Suppression"));
+                          },
+                          child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(24)),
+                              child: Obx(
+                                () => _delete_loading.value
+                                    ? SizedBox(
+                                        height: 15,
+                                        width: 15,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 1.2,
+                                        ),
+                                      )
+                                    : Icon(
+                                        CupertinoIcons.trash,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
+                              )),
+                        ),
                       )
                     ],
                   ),
-                ),
-                12.w,
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                  child: InkWell(
-                    onTap: () {
-                      Get.to(
-                          CreateQuestionnaire(
-                            questionnaire: questionnaire,
-                          ),
-                          id: brouillon == true ? 3 : 1);
-                    },
-                    child: Container(
-                        height: 35,
-                        width: 35,
-                        decoration: BoxDecoration(
-                            color: Colors.white24,
-                            borderRadius: BorderRadius.circular(24)),
-                        child: Obx(
-                          () => _delete_loading.value
-                              ? SizedBox(
-                                  height: 15,
-                                  width: 15,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 1.2,
-                                  ),
-                                )
-                              : Icon(
-                                  Icons.mode_edit_outlined,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                        )),
-                  ),
-                ),
-                12.w,
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                  child: InkWell(
-                    onTap: () {
-                      Custom.showDialog(
-                          dialog: TwoOptionsDialog(
-                              confirmFunction: () async {
-                                Get.back();
-                                _delete_loading.value = true;
-                                if (brouillon == true) {
-                                  await DB
-                                      .firestore(Collections.classes)
-                                      .doc(
-                                          Utilisateur.currentUser.value!.classe)
-                                      .collection(Collections.brouillon)
-                                      .doc(
-                                          Utilisateur.currentUser.value!.classe)
-                                      .collection(Collections.questionnaires)
-                                      .doc(questionnaire.id)
-                                      .delete();
-                                } else {
-                                  await DB
-                                      .firestore(Collections.classes)
-                                      .doc(
-                                          Utilisateur.currentUser.value!.classe)
-                                      .collection(Collections.questionnaires)
-                                      .doc(questionnaire.id)
-                                      .delete();
-                                }
-                                _delete_loading.value = false;
-                              },
-                              body:
-                                  "Voulez-vous vraiment supprimer cet element ?",
-                              confirmationText: "Supprimer",
-                              title: "Suppression"));
-                    },
-                    child: Container(
-                        height: 35,
-                        width: 35,
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(24)),
-                        child: Obx(
-                          () => _delete_loading.value
-                              ? SizedBox(
-                                  height: 15,
-                                  width: 15,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 1.2,
-                                  ),
-                                )
-                              : Icon(
-                                  CupertinoIcons.trash,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                        )),
-                  ),
-                )
-              ],
-            ),
           ],
         ),
       ),

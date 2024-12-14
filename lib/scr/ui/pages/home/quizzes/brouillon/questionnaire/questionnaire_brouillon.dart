@@ -11,7 +11,8 @@ class QuestionnaireBrouillon extends StatelessWidget {
     super.key,
   });
 
-  var questionnaires = <Questionnaire>[];
+  var questionnaires = Rx<List<Questionnaire>?>(null);
+
   var user = Utilisateur.currentUser.value!;
 
   @override
@@ -34,9 +35,9 @@ class QuestionnaireBrouillon extends StatelessWidget {
             stream: DB
                 .firestore(Collections.classes)
                 .doc(user.classe)
-                .collection(Collections.brouillon)
-                .doc(user.classe)
                 .collection(Collections.questionnaires)
+                .doc(user.classe)
+                .collection(Collections.brouillon)
                 .orderBy("date", descending: true)
                 .snapshots(),
             builder: (context, snapshot) {
@@ -45,33 +46,47 @@ class QuestionnaireBrouillon extends StatelessWidget {
               }
 
               var telephone = Utilisateur.currentUser.value!.telephone_id;
-              questionnaires.clear();
-              snapshot.data!.docs.forEach((element) {
-                questionnaires.add(Questionnaire.fromMap(element.data()));
+
+              var tempQuestionnaires = <Questionnaire>[];
+
+              waitAfter(0, () async {
+                for (var element in snapshot.data!.docs) {
+                  tempQuestionnaires
+                      .add(await Questionnaire.fromMap(element.data()));
+                }
+
+                questionnaires.value = tempQuestionnaires;
               });
 
-              return AnimatedSwitcher(
-                duration: 666.milliseconds,
-                child: questionnaires.isEmpty?Lottie.asset(Assets.image("empty.json"),  height: 400):    DynamicHeightGridView(
-                  physics: BouncingScrollPhysics(),
-                    key: Key(questionnaires.length.toString()),
-                    itemCount: questionnaires.length,
-                    crossAxisCount: crossAxisCount.toInt() <= 0
-                        ? 1
-                        : crossAxisCount.toInt(),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    builder: (ctx, index) {
-                      var questionnaire = questionnaires[index];
-                      var dejaRepondu =
-                          questionnaire.maked.containsKey(telephone).obs;
-                      return QuestionnaireCard(
-                          navigationId: 3,
-                          brouillon: true,
-                          dejaRepondu: dejaRepondu,
-                          questionnaire: questionnaire,
-                          width: width);
-                    }),
+              return Obx(()=>
+                  AnimatedSwitcher(
+                  duration: 666.milliseconds,
+                  child: questionnaires.value.isNul
+                     ? ECircularProgressIndicator()
+                     : questionnaires.value!.isEmpty
+                         ? Lottie.asset(Assets.image("empty.json"), height: 400)
+                         : DynamicHeightGridView(
+                             physics: BouncingScrollPhysics(),
+                             key: Key(questionnaires.value!.length.toString()),
+                             itemCount: questionnaires.value!.length,
+                             crossAxisCount: crossAxisCount.toInt() <= 0
+                                 ? 1
+                                 : crossAxisCount.toInt(),
+                             crossAxisSpacing: 10,
+                             mainAxisSpacing: 10,
+                             builder: (ctx, index) {
+                               var questionnaire = questionnaires.value![index];
+                               var dejaRepondu = questionnaire.maked
+                                   .containsKey(telephone)
+                                   .obs;
+                               return QuestionnaireCard(
+                                   navigationId: 3,
+                                   brouillon: true,
+                                   dejaRepondu: dejaRepondu,
+                                   questionnaire: questionnaire,
+                                   width: width);
+                             }),
+                ),
               );
             }),
         floatingActionButton: FloatingActionButton(

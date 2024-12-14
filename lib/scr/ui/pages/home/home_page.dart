@@ -66,7 +66,6 @@ class _HomePageState extends State<HomePage> {
         );
       },
     ),
-    
     Navigator(
       key: Get.nestedKey(2), // Clé pour le Navigator local
       initialRoute: '/', // Page initiale
@@ -500,9 +499,9 @@ StreamSubscription streamQuestionnairesAndUpdate() {
     List<Questionnaire> questionnaires = [];
 
     // Traitement des documents reçus
-    for (var element in snapshot.docs) {
-      questionnaires.add(Questionnaire.fromMap(element.data()));
-    }
+    snapshot.docs.toList().forEach((element) async {
+      questionnaires.add(await Questionnaire.fromMap(element.data()));
+    });
 
     // Mise à jour de `newQuestionnaires` avec le nombre de nouveaux questionnaires
     HomePage.newQuestionnaires.value = questionnaires

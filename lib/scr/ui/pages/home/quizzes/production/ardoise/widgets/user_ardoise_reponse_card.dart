@@ -2,7 +2,7 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 
-import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/add_ardoise_question.dart';
 
 class UserArdoiseResponseCard extends StatelessWidget {
   UserArdoiseResponseCard(

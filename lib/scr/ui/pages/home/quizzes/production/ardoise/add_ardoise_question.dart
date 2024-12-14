@@ -43,7 +43,9 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
         qcuResponse.value = widget.question!.reponse;
       } else {
         print(widget.question!.reponse);
-        qcmResponse.value = (widget.question!.reponse as List).map((element)=>element.toString()).toList();
+        qcmResponse.value = (widget.question!.reponse as List)
+            .map((element) => element.toString())
+            .toList();
       }
     }
     super.initState();
@@ -74,7 +76,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                 EText("Ajoutez l'intitulé de la question"),
                 6.h,
                 ETextField(
-                  initialValue: title,
+                    initialValue: title,
                     placeholder: "Saisissez l'intitulé de la question",
                     onChanged: (value) {
                       title = value;
@@ -147,7 +149,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                             children: [
                               EText("Entrez la réponse"),
                               ETextField(
-                                initialValue: qctResponse,
+                                  initialValue: qctResponse,
                                   placeholder:
                                       "Saisissez la reponse à la question",
                                   onChanged: (value) {
@@ -306,27 +308,15 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                     // questions.add(question);
                     _loading.value = true;
                     //verifier si c'est une mise a jour
-                    if(widget.question != null){
+                    if (widget.question != null) {
                       question.id = widget.question!.id;
                     }
                     //verifier si c'est une mise a jour
 
                     if (widget.brouillon == true) {
-                      await DB
-                          .firestore(Collections.classes)
-                          .doc(user.classe)
-                          .collection(Collections.brouillon)
-                          .doc(user.classe)
-                          .collection(Collections.ardoise)
-                          .doc(question.id)
-                          .set(question.toMap());
+                      question.save(brouillon: true);
                     } else {
-                      await DB
-                          .firestore(Collections.classes)
-                          .doc(user.classe)
-                          .collection(Collections.ardoise)
-                          .doc(question.id)
-                          .set(question.toMap());
+                      question.save(brouillon: false);
                     }
 
                     _loading.value = false;

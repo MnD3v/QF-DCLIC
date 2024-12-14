@@ -3,6 +3,7 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/question_card.dart';
 
 class UserQuestionCard extends StatelessWidget {
   UserQuestionCard(
@@ -15,33 +16,35 @@ class UserQuestionCard extends StatelessWidget {
       required this.initalResponses,
       required this.qcmResponse,
       required this.element});
-      final userID;
+  final userID;
   final Question element;
   final int index;
   final RxBool dejaRepondu;
   final RxString qcuResponse;
-  final Questionnaire? questionnaire;
+  final Questionnaire questionnaire;
   final List initalResponses;
   final RxList qcmResponse;
-  String qctResponse = "";
-  @override 
-  Widget build(BuildContext context) {
-    if(element.type == QuestionType.qcu){
-    qcuResponse.value = initalResponses[index];
+  var qctResponse = "".obs;
 
+  var inLoading = false.obs;
+
+  var user = Utilisateur.currentUser.value!;
+  @override
+  Widget build(BuildContext context) {
+    if (element.type == QuestionType.qcu) {
+      qcuResponse.value = initalResponses[index];
+    } else if (element.type == QuestionType.qcm) {
+      List<String> qcmR = (initalResponses[index] as List)
+          .map((element) => element.toString())
+          .toList();
+      qcmResponse.value = qcmR;
+    } else {
+      qctResponse.value = initalResponses[index];
     }
-    else if(element.type == QuestionType.qcm){
-    List<String> qcmR = (initalResponses[index] as List).map((element)=>element.toString()).toList() ;
-     qcmResponse.value = qcmR;
-    }
-    else{
-      qctResponse = initalResponses[index];
-    }
-    print(qcmResponse);
     return Container(
       width: Get.width,
       decoration: BoxDecoration(
-        // color: Colors.red,
+          // color: Colors.red,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(width: .5, color: Colors.white54)),
       margin: EdgeInsets.symmetric(vertical: 6),
@@ -58,7 +61,7 @@ class UserQuestionCard extends StatelessWidget {
                 child: ETextRich(
                   textSpans: [
                     ETextSpan(
-                        text: (index + 1).toString() + ". ",
+                        text: "${index + 1}. ",
                         color: Colors.amber,
                         weight: FontWeight.bold),
                     ETextSpan(text: element.question, color: Colors.white60),
@@ -83,29 +86,107 @@ class UserQuestionCard extends StatelessWidget {
                             horizontal: 12.0, vertical: 18),
                         child: EColumn(
                           children: [
-                            EText(questionnaire!
-                                .maked[userID]!
-                                .response[index]),
+                            EText(
+                              supprimerTirets(qctResponse.value),
+                              color: qctResponse.contains("--false")
+                                  ? Colors.red
+                                  : qctResponse.contains("--true")
+                                      ? Colors.green
+                                      : Colors.white,
+                            ),
                             9.h,
                             EText(
                               element.reponse,
                               color: Colors.greenAccent,
                             ),
+                            Obx(
+                              () => AnimatedSwitcher(
+                                duration: 666.milliseconds,
+                                child: inLoading.value
+                                    ? Row(
+                                        children: [
+                                          //row parceque ça refuse de s'aligner
+                                          ECircularProgressIndicator(
+                                            height: 20,
+                                          ),
+                                        ],
+                                      )
+                                    : !qctResponse.contains("--none")
+                                        ? 0.h
+                                        : Row(
+                                            children: [
+                                              IconButton(
+                                                  onPressed: () async {
+                                                    inLoading.value = true;
+                                                    qctResponse.value =
+                                                        qctResponse.replaceAll(
+                                                            "--none", "--true");
+
+                                                    initalResponses[index] =
+                                                        qctResponse.value;
+                                                    var tempMaked =
+                                                        questionnaire!
+                                                            .maked[userID]!;
+                                                    tempMaked.pointsGagne += 1;
+                                                    await getAndUpdateUserPoints();
+                                                    tempMaked.response =
+                                                        initalResponses;
+                                                    await updateMaked(
+                                                        maked: tempMaked);
+                                                    waitAfter(2000, () {
+                                                      inLoading.value = false;
+                                                    });
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.check,
+                                                    color: Colors.greenAccent,
+                                                  )),
+                                              IconButton(
+                                                  onPressed: () async {
+                                                    inLoading.value = true;
+                                                    qctResponse.value =
+                                                        qctResponse.replaceAll(
+                                                            "--none",
+                                                            "--false");
+
+                                                    initalResponses[index] =
+                                                        qctResponse.value;
+                                                    var tempMaked =
+                                                        questionnaire!
+                                                            .maked[userID];
+
+                                                    tempMaked!.response =
+                                                        initalResponses;
+                                                    await updateMaked(
+                                                        maked: tempMaked);
+
+                                                    waitAfter(2000, () {
+                                                      inLoading.value = false;
+                                                    });
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.close,
+                                                    color: Colors.red,
+                                                  )),
+                                            ],
+                                          ),
+                              ),
+                            )
                           ],
                         ),
                       )
                     : Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: ETextField(
-                          maxLines: 6,
-                          minLines: 3,
-                          radius: 24,
-                          placeholder: "Saisissez votre reponse",
-                          onChanged: (value) {
-                            initalResponses[index] = value;
-                          },
-                          phoneScallerFactor: phoneScallerFactor),
-                    ),
+                        padding: const EdgeInsets.all(6.0),
+                        child: ETextField(
+                            maxLines: 6,
+                            minLines: 3,
+                            radius: 24,
+                            placeholder: "Saisissez votre reponse",
+                            onChanged: (value) {
+                              initalResponses[index] = value;
+                            },
+                            phoneScallerFactor: phoneScallerFactor),
+                      ),
               )
             : Obx(
                 () => EColumn(
@@ -138,7 +219,6 @@ class UserQuestionCard extends StatelessWidget {
                                             borderRadius:
                                                 BorderRadius.circular(15),
                                             border: Border.all(
-                                              
                                               color: dejaRepondu.value &&
                                                       element.reponse == e
                                                   ? Colors.greenAccent
@@ -155,8 +235,9 @@ class UserQuestionCard extends StatelessWidget {
                                           child: InkWell(
                                             onTap: () {
                                               showImageViewer(
-                                                  context, NetworkImage(
-                                                  element.choix[e]!),
+                                                  context,
+                                                  NetworkImage(
+                                                      element.choix[e]!),
                                                   onViewerDismissed: () {
                                                 print("dismissed");
                                               });
@@ -213,7 +294,6 @@ class UserQuestionCard extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(15),
                                           border: Border.all(
-                                              
                                               color: dejaRepondu.value &&
                                                       element.reponse
                                                           .contains(e)
@@ -226,14 +306,16 @@ class UserQuestionCard extends StatelessWidget {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
                                         child: InkWell(
-                                          onTap: (){
-                                             showImageViewer(
-
-                                                  context, NetworkImage(
-                                                  element.choix[e]!),
-                                                  onViewerDismissed: () {
-                                                print("dismissed");
-                                              }, doubleTapZoomable: true, backgroundColor: Colors.black, barrierColor: Colors.black, useSafeArea: true);
+                                          onTap: () {
+                                            showImageViewer(context,
+                                                NetworkImage(element.choix[e]!),
+                                                onViewerDismissed: () {
+                                              print("dismissed");
+                                            },
+                                                doubleTapZoomable: true,
+                                                backgroundColor: Colors.black,
+                                                barrierColor: Colors.black,
+                                                useSafeArea: true);
                                           },
                                           child: EFadeInImage(
                                             height: 90,
@@ -260,5 +342,31 @@ class UserQuestionCard extends StatelessWidget {
               )
       ]),
     );
+  }
+
+  Future<void> updateMaked({required Maked maked}) async {
+    await DB
+        .firestore(Collections.classes)
+        .doc(user.classe)
+        .collection(Collections.questionnaires)
+        .doc(user.classe)
+        .collection(Collections.production)
+        .doc(questionnaire!.id)
+        .collection(Collections.maked)
+        .doc(userID)
+        .set(maked.toMap());
+        //histoire de declancher le stream de recuperation de questionnaire
+    questionnaire!.date =
+        '${questionnaire!.date.split(".")[0]}.${Random().nextInt(900)}';
+        //histoire de declancher le stream de recuperation de questionnaire
+
+    questionnaire!.save(brouillon: false);
+  }
+
+  Future<void> getAndUpdateUserPoints() async {
+    var q = await DB.firestore(Collections.utilistateurs).doc(userID).get();
+    var user = Utilisateur.fromMap(q.data()!);
+    user.points += 1;
+    Utilisateur.setUser(user);
   }
 }

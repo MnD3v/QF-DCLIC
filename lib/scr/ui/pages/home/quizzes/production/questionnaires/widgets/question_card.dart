@@ -26,7 +26,6 @@ class QuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(dejaRepondu);
     var qctResponse = "";
 
     if (idUser != null && questionnaire!.maked.containsKey(idUser)) {
@@ -41,8 +40,7 @@ class QuestionCard extends StatelessWidget {
         qctResponse = questionnaire!.maked[idUser]!.response[index];
       }
     }
-    print(qctResponse);
-    print(dejaRepondu);
+  
 
     return Container(
       width: Get.width,
@@ -88,7 +86,14 @@ class QuestionCard extends StatelessWidget {
                             horizontal: 12.0, vertical: 18),
                         child: EColumn(
                           children: [
-                            EText(qctResponse),
+                            EText(
+                              supprimerTirets(qctResponse),
+                              color: qctResponse.contains("--false")
+                                  ? Colors.red
+                                  : qctResponse.contains("--true")
+                                      ? Colors.green
+                                      : Colors.white,
+                            ),
                             9.h,
                             EText(
                               element.reponse,
@@ -213,7 +218,9 @@ class QuestionCard extends StatelessWidget {
                                           border: Border.all(
                                               color: element.reponse.contains(e)
                                                   ? Colors.greenAccent
-                                                  : qcmResponse.contains(e)? Colors.red: Colors.white)),
+                                                  : qcmResponse.contains(e)
+                                                      ? Colors.red
+                                                      : Colors.white)),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
                                         child: InkWell(
@@ -250,4 +257,12 @@ class QuestionCard extends StatelessWidget {
       ]),
     );
   }
+
+
 }
+  String supprimerTirets(String qctResponse) {
+    return qctResponse
+        .replaceAll("--none", "")
+        .replaceAll("--false", "")
+        .replaceAll("--true", "");
+  }

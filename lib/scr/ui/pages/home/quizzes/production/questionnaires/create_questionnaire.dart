@@ -138,7 +138,7 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                   _loading.value = true;
 
                   var id = DateTime.now().millisecondsSinceEpoch.toString();
-       
+
                   //verifier si c'est une mise a jour
                   if (widget.questionnaire != null) {
                     id = widget.questionnaire!.id;
@@ -152,21 +152,9 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                       maked: {},
                       questions: questions);
                   if (widget.brouillon == true) {
-                    await DB
-                        .firestore(Collections.classes)
-                        .doc(user.classe)
-                        .collection(Collections.brouillon)
-                        .doc(user.classe)
-                        .collection(Collections.questionnaires)
-                        .doc(id)
-                        .set(questionnaire.toMap());
+                    questionnaire.save( brouillon: true);
                   } else {
-                    await DB
-                        .firestore(Collections.classes)
-                        .doc(user.classe)
-                        .collection(Collections.questionnaires)
-                        .doc(id)
-                        .set(questionnaire.toMap());
+                    questionnaire.save( brouillon: false);
                   }
 
                   _loading.value = false;

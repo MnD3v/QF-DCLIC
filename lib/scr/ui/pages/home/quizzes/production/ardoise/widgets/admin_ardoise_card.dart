@@ -2,7 +2,7 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 
-import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/add_ardoise_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/view_ardoise_responses.dart';
 
 class ArdoiseQuestionCard extends StatelessWidget {
@@ -175,20 +175,7 @@ class ArdoiseQuestionCard extends StatelessWidget {
                         width: 140,
                         onTap: () async {
                           sendLoading.value = true;
-                          await DB
-                              .firestore(Collections.classes)
-                              .doc(Utilisateur.currentUser.value!.classe)
-                              .collection(Collections.ardoise)
-                              .doc(question.id)
-                              .set(question.toMap());
-                          await DB
-                              .firestore(Collections.classes)
-                              .doc(Utilisateur.currentUser.value!.classe)
-                              .collection(Collections.brouillon)
-                              .doc(Utilisateur.currentUser.value!.classe)
-                              .collection(Collections.ardoise)
-                              .doc(question.id)
-                              .delete();
+                          await question.toProduction();
                           sendLoading.value = false;
                         },
                         child: Obx(
@@ -212,7 +199,7 @@ class ArdoiseQuestionCard extends StatelessWidget {
                       height: 35,
                       width: 140,
                       onTap: () {
-                        Get.to(ViewArdoiseResponses(id: question.id), id: 2);
+                        Get.to(ViewArdoiseResponses(ardoiseQuestionID: question.id), id: 2);
                       },
                       child: EText(
                         "Reponses",
@@ -222,11 +209,16 @@ class ArdoiseQuestionCard extends StatelessWidget {
                   ),
             Row(
               children: [
-                         Padding(
+                Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6.0),
                   child: InkWell(
-                    onTap: (){
-                      Get.to(AddArdoiseQuestion(question: question,), id: brouillon == true? 4:2);
+                    onTap: () {
+                      Get.to(
+                          AddArdoiseQuestion(
+                            question: question,
+                            brouillon: brouillon,
+                          ),
+                          id: brouillon == true ? 4 : 2);
                     },
                     child: Container(
                         height: 35,
@@ -253,7 +245,6 @@ class ArdoiseQuestionCard extends StatelessWidget {
                   ),
                 ),
                 12.w,
-            
                 InkWell(
                   onTap: () {
                     Custom.showDialog(
@@ -261,26 +252,12 @@ class ArdoiseQuestionCard extends StatelessWidget {
                             confirmFunction: () async {
                               Get.back();
                               _delete_loading.value = true;
-                              if (brouillon == true) {
-                                await DB
-                                    .firestore(Collections.classes)
-                                    .doc(Utilisateur.currentUser.value!.classe)
-                                    .collection(Collections.brouillon)
-                                    .doc(Utilisateur.currentUser.value!.classe)
-                                    .collection(Collections.ardoise)
-                                    .doc(question.id)
-                                    .delete();
-                              } else {
-                                await DB
-                                    .firestore(Collections.classes)
-                                    .doc(Utilisateur.currentUser.value!.classe)
-                                    .collection(Collections.ardoise)
-                                    .doc(question.id)
-                                    .delete();
-                              }
+                              await question.delete(
+                                  brouillon: brouillon == true);
                               _delete_loading.value = false;
                             },
-                            body: "Voulez-vous vraiment supprimer cet element ?",
+                            body:
+                                "Voulez-vous vraiment supprimer cet element ?",
                             confirmationText: "Supprimer",
                             title: "Suppression"));
                   },

@@ -1,11 +1,9 @@
-
-
 import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 
-import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/add_ardoise_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/add_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/widgets/admin_ardoise_card.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/home_page.dart';
@@ -39,9 +37,9 @@ class ArdoiseBrouillon extends StatelessWidget {
             stream: DB
                 .firestore(Collections.classes)
                 .doc(user.classe)
-                 .collection(Collections.brouillon)
-                          .doc(user.classe)
                 .collection(Collections.ardoise)
+                .doc(user.classe)
+                .collection(Collections.brouillon)
                 .orderBy("date", descending: true)
                 .snapshots(),
             builder: (context, snapshot) {
@@ -56,43 +54,50 @@ class ArdoiseBrouillon extends StatelessWidget {
               });
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 9.0),
-                child: questions.isEmpty?Lottie.asset(Assets.image("empty.json"),  height: 400): AnimatedSwitcher(
-                  duration: 666.milliseconds,
-                  child:    DynamicHeightGridView(
-                  physics: BouncingScrollPhysics(),
-                  key: Key(questions.length.toString()),
+                child: questions.isEmpty
+                    ? Lottie.asset(Assets.image("empty.json"), height: 400)
+                    : AnimatedSwitcher(
+                        duration: 666.milliseconds,
+                        child: DynamicHeightGridView(
+                            physics: BouncingScrollPhysics(),
+                            key: Key(questions.length.toString()),
+                            itemCount: questions.length,
+                            crossAxisCount: crossAxisCount.toInt() <= 0
+                                ? 1
+                                : crossAxisCount.toInt(),
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            builder: (ctx, index) {
+                              var element = questions[index];
+                              var qcmResponse = RxList<String>([]);
+                              var qcuResponse = "".obs;
+                              var qctResponse = "".obs;
 
-                      itemCount: questions.length,
-                      crossAxisCount: crossAxisCount.toInt() <= 0 ? 1 : crossAxisCount.toInt(),
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      builder: (ctx, index) {
-                        var element = questions[index];
-                        var qcmResponse = RxList<String>([]);
-                        var qcuResponse = "".obs;
-                        var qctResponse = "".obs;
-                  
-                        // var index = questions.indexOf(element);
-                  
-                        var dejaRepondu = false.obs;
-                  
-                        dejaRepondu.value =
-                            element!.maked.keys.contains(telephone);
-                  
-                        return ArdoiseQuestionCard(
-                          brouillon: true,
-                            dejaRepondu: dejaRepondu,
-                            qctResponse: qctResponse,
-                            qcuResponse: qcuResponse,
-                            qcmResponse: qcmResponse,
-                            question: element);
-                      }),
-                ),
+                              // var index = questions.indexOf(element);
+
+                              var dejaRepondu = false.obs;
+
+                              dejaRepondu.value =
+                                  element!.maked.keys.contains(telephone);
+
+                              return ArdoiseQuestionCard(
+                                  brouillon: true,
+                                  dejaRepondu: dejaRepondu,
+                                  qctResponse: qctResponse,
+                                  qcuResponse: qcuResponse,
+                                  qcmResponse: qcmResponse,
+                                  question: element);
+                            }),
+                      ),
               );
             }),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Get.to(AddArdoiseQuestion(brouillon: true,), id: 4);
+            Get.to(
+                AddArdoiseQuestion(
+                  brouillon: true,
+                ),
+                id: 4);
           },
           child: Icon(Icons.add),
         ),

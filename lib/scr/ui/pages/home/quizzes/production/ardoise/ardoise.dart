@@ -3,7 +3,7 @@ import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 
-import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/add_question.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/add_ardoise_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/add_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/widgets/admin_ardoise_card.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/home_page.dart';
@@ -28,6 +28,8 @@ class Ardoise extends StatelessWidget {
               .firestore(Collections.classes)
               .doc(user.classe)
               .collection(Collections.ardoise)
+              .doc(user.classe)
+              .collection(Collections.production)
               .orderBy("date", descending: true)
               .snapshots(),
           builder: (context, snapshot) {
