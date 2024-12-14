@@ -57,13 +57,15 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
       final width = constraints.maxWidth > 700.0 ? 700.0 : constraints.maxWidth;
 
       return EScaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.background900,
-        ),
+        appBar: Get.width < 600
+            ? null
+            : AppBar(
+                backgroundColor: AppColors.background900,
+              ),
         body: Center(
           child: Container(
-            margin: EdgeInsets.all(12),
-            padding: EdgeInsets.all(12),
+            margin: Get.width < 600 ? null : EdgeInsets.all(12),
+            padding: Get.width < 600 ? null : EdgeInsets.all(12),
             decoration: BoxDecoration(
                 color: AppColors.background900,
                 borderRadius: BorderRadius.circular(12)),
@@ -73,7 +75,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 surfaceTintColor: Colors.transparent,
-                automaticallyImplyLeading: false,
+                automaticallyImplyLeading: Get.width < 600,
                 title: EText(
                   "Ajouter une question",
                   size: 24,
@@ -315,14 +317,14 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                                         },
                                         title: isFirebaseStorageLink(element)
                                             ? Align(
-                                    alignment: Alignment.centerLeft,
-                                              child: EFadeInImage(
+                                                alignment: Alignment.centerLeft,
+                                                child: EFadeInImage(
                                                   width: 120,
                                                   height: 90,
                                                   radius: 24,
                                                   image: NetworkImage(element),
                                                 ),
-                                            )
+                                              )
                                             : EText(element),
                                       )
                                     : RadioListTile(
@@ -338,15 +340,15 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                                           qcuResponse.value = value!;
                                         },
                                         title: isFirebaseStorageLink(element)
-                                            ?Align(
-                                    alignment: Alignment.centerLeft,
-                                              child: EFadeInImage(
+                                            ? Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: EFadeInImage(
                                                   width: 120,
                                                   height: 90,
                                                   radius: 24,
                                                   image: NetworkImage(element),
                                                 ),
-                                            )
+                                              )
                                             : EText(element),
                                       );
                               }).toList(),
@@ -373,7 +375,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
     });
   }
 
-    void showAddPropositionDialog() {
+  void showAddPropositionDialog() {
     String proposition = "";
     var loadingImage = false.obs;
     Get.dialog(Dialog(
@@ -381,8 +383,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
         constraints: BoxConstraints(maxWidth: 500),
         child: Padding(
           padding: const EdgeInsets.all(24.0),
-          child:
-              EColumn(children: [
+          child: EColumn(children: [
             EText("Saisissez la proposition"),
             9.h,
             ETextField(
@@ -412,7 +413,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
               ),
             ),
             EText("Selectionnez une image"),
-                    6.h,
+            6.h,
             InkWell(
               onTap: () {
                 ImagePicker()
@@ -445,7 +446,9 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                     height: 95,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                   border: Border.all     (color: Colors.pinkAccent,),
+                        border: Border.all(
+                          color: Colors.pinkAccent,
+                        ),
                         borderRadius: BorderRadius.circular(12)),
                     child: loadingImage.value
                         ? ECircularProgressIndicator(
@@ -484,9 +487,6 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
       ),
     ));
   }
-
-
-
 }
 
 bool isFirebaseStorageLink(String url) {

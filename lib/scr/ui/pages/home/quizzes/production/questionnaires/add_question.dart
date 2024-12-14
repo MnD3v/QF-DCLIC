@@ -31,11 +31,75 @@ class AddQuestion extends StatelessWidget {
             icon: Icon(Icons.close)),
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
-        title: EText(
-          "Ajouter une question",
-          weight: FontWeight.bold,
-          size: 24,
-        ),
+        
+        actions: [
+          Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SimpleButton(
+            radius: 12,
+            width: 120,
+            color: Colors.pinkAccent,
+            onTap: () {
+              if (title.isEmpty) {
+                Fluttertoast.showToast(
+                    msg: "Veuillez saisir l'intitulé de la question");
+                return;
+              }
+              if (type.value != QuestionType.qct && propositions.length < 2) {
+                Fluttertoast.showToast(
+                    msg: "Veuillez ajouter au-moins deux propositions");
+                return;
+              }
+              var question;
+
+              //liste en map
+              Map<String, String> choix = {};
+              propositions.forEach((value) {
+                var index = propositions.indexOf(value);
+                choix.putIfAbsent(index.toString(), () => value);
+              });
+              //liste en map
+              if (type == QuestionType.qcu) {
+                if (qcuResponse.value.isEmpty) {
+                  Fluttertoast.showToast(msg: "Veuillez choisir la reponse");
+                  return;
+                }
+                question = Question(
+                    question: title,
+                    choix: choix,
+                    reponse: qcuResponse.value,
+                    type: QuestionType.qcu);
+              } else if (type == QuestionType.qcm) {
+                if (qcmResponse.value.isEmpty) {
+                  Fluttertoast.showToast(msg: "Veuillez choisir la reponse");
+                  return;
+                }
+                question = Question(
+                    question: title,
+                    choix: choix,
+                    reponse: qcmResponse.value,
+                    type: QuestionType.qcm);
+              } else {
+                if (qctResponse.isEmpty) {
+                  Fluttertoast.showToast(
+                      msg: "Veuillez saisir la réponse à la question");
+                  return;
+                }
+                question = Question(
+                    question: title,
+                    choix: choix,
+                    reponse: qctResponse,
+                    type: QuestionType.qct);
+              }
+              questions.add(question);
+              Get.back();
+            },
+            child: EText(
+              "Enregistrer",
+              color: Colors.white,
+            )),
+      ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -106,7 +170,7 @@ class AddQuestion extends StatelessWidget {
                     ],
                   )
                 : EColumn(children: [
-                    EText("Ajouter une proposition"),
+                    EText("Ajouter des propositions"),
                     ...propositions.value.map((element) {
                       var index = propositions.value.indexOf(element);
                       return type.value == QuestionType.qcm
@@ -169,7 +233,7 @@ class AddQuestion extends StatelessWidget {
                         showAddPropositionDialog();
                       },
                       child: EText(
-                        "Add",
+                        "Ajouter une proposition",
                         color: Colors.pinkAccent,
                       ),
                     )
@@ -177,71 +241,7 @@ class AddQuestion extends StatelessWidget {
           ),
         ]),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SimpleButton(
-            radius: 12,
-            color: Colors.pinkAccent,
-            onTap: () {
-              if (title.isEmpty) {
-                Fluttertoast.showToast(
-                    msg: "Veuillez saisir l'intitulé de la question");
-                return;
-              }
-              if (type.value != QuestionType.qct && propositions.length < 2) {
-                Fluttertoast.showToast(
-                    msg: "Veuillez ajouter au-moins deux propositions");
-                return;
-              }
-              var question;
-
-              //liste en map
-              Map<String, String> choix = {};
-              propositions.forEach((value) {
-                var index = propositions.indexOf(value);
-                choix.putIfAbsent(index.toString(), () => value);
-              });
-              //liste en map
-              if (type == QuestionType.qcu) {
-                if (qcuResponse.value.isEmpty) {
-                  Fluttertoast.showToast(msg: "Veuillez choisir la reponse");
-                  return;
-                }
-                question = Question(
-                    question: title,
-                    choix: choix,
-                    reponse: qcuResponse.value,
-                    type: QuestionType.qcu);
-              } else if (type == QuestionType.qcm) {
-                if (qcmResponse.value.isEmpty) {
-                  Fluttertoast.showToast(msg: "Veuillez choisir la reponse");
-                  return;
-                }
-                question = Question(
-                    question: title,
-                    choix: choix,
-                    reponse: qcmResponse.value,
-                    type: QuestionType.qcm);
-              } else {
-                if (qctResponse.isEmpty) {
-                  Fluttertoast.showToast(
-                      msg: "Veuillez saisir la réponse à la question");
-                  return;
-                }
-                question = Question(
-                    question: title,
-                    choix: choix,
-                    reponse: qctResponse,
-                    type: QuestionType.qct);
-              }
-              questions.add(question);
-              Get.back();
-            },
-            child: EText(
-              "Enregistrer",
-              color: Colors.white,
-            )),
-      ),
+     
     );
   }
 

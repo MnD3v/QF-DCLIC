@@ -79,9 +79,9 @@ icons_launcher:
       enable: true
 
 flutter_native_splash:
-  color: "#0d1b2a"
+  color: "#1D004B"
 
-  color_dark: "#0d1b2a"
+  color_dark: "#1D004B"
   # image_dark: assets/icons/launch_icon.png
   # android_gravity: center
 

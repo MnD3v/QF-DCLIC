@@ -69,6 +69,22 @@ class LoadingPage extends StatelessWidget {
     // "home_s",
     // "location"
   ];
+
+
+  var images = [
+    "empty",
+    "logo",
+    // "estimer",
+    // "vendre",
+    // "account_us",
+    // "favoris_us",
+    // "search_us",
+    // "search_s",
+    // "proprio_us",
+    // "home_s",
+    // "location"
+  ];
+  
   var noAwaitPrecache = [
     // "arrow-left",
     // "sell_locate",
@@ -110,9 +126,9 @@ class LoadingPage extends StatelessWidget {
       soir = true;
     }
 
-    for (String element in awaitPrecache) {
+    for (String element in images) {
       final image = Image.asset(
-        Assets.icons("$element.png"),
+        Assets.image("$element.png"),
         height: 90,
       );
       await precacheImage(image.image, context);

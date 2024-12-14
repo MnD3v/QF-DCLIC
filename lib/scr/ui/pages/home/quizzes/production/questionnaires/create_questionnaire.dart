@@ -37,21 +37,27 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final width = constraints.maxWidth > 700.0 ? 700.0 : constraints.maxWidth;
-
+      print(Get.width);
       return EScaffold(
-        appBar: AppBar(backgroundColor: AppColors.background900,),
+        appBar: Get.width < 600
+            ? null
+            : AppBar(
+                backgroundColor: AppColors.background900,
+              ),
         body: Center(
           child: Container(
-            margin: EdgeInsets.all(12),
-            padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(color: AppColors.background900, borderRadius: BorderRadius.circular(12)),
+            margin: Get.width < 600 ? null : EdgeInsets.all(12),
+            padding:Get.width < 600 ? null : EdgeInsets.all(12),
+            decoration: BoxDecoration(
+                color: AppColors.background900,
+                borderRadius: BorderRadius.circular(12)),
             width: width,
             child: EScaffold(
               color: Colors.transparent,
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 surfaceTintColor: Colors.transparent,
-                automaticallyImplyLeading: false,
+                automaticallyImplyLeading: Get.width < 600,
                 title: EText(
                   "Questionnaire",
                   color: Colors.pinkAccent,
@@ -60,66 +66,69 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                 ),
                 actions: [
                   Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SimpleButton(
-                  radius: 12,
-                  width: 120,
-                  onTap: () async {
-                    var user = Utilisateur.currentUser.value!;
-          
-                    if (titre.isEmpty) {
-                      Fluttertoast.showToast(
-                          msg: "Veuillez saisir le titre du questionnaire");
-                      return;
-                    }
-                    if (questions.isEmpty) {
-                      Fluttertoast.showToast(
-                          msg: "Veuillez ajouter au moin une question");
-                      return;
-                    }
-                    _loading.value = true;
-          
-                    var id = DateTime.now().millisecondsSinceEpoch.toString();
-          
-                    //verifier si c'est une mise a jour
-                    if (widget.questionnaire != null) {
-                      id = widget.questionnaire!.id;
-                    }
-                    //verifier si c'est une mise a jour
-          
-                    var questionnaire = Questionnaire(
-                        id: id,
-                        date: DateTime.now().toString(),
-                        title: titre,
-                        maked: {},
-                        questions: questions);
-                    if (widget.brouillon == true) {
-                      questionnaire.save( brouillon: true);
-                    } else {
-                      questionnaire.save( brouillon: false);
-                    }
-          
-                    _loading.value = false;
-          
-                    Get.back(id: widget.brouillon == true ? 3 : 1);
-                  },
-                  child: Obx(
-                    () => _loading.value
-                        ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 1.2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : EText(
-                     widget.brouillon == true?       "Enregistrer": "Publier",
-                            color: Colors.white,
-                          ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: SimpleButton(
+                      radius: 12,
+                      width: 120,
+                      onTap: () async {
+                        var user = Utilisateur.currentUser.value!;
+
+                        if (titre.isEmpty) {
+                          Fluttertoast.showToast(
+                              msg: "Veuillez saisir le titre du questionnaire");
+                          return;
+                        }
+                        if (questions.isEmpty) {
+                          Fluttertoast.showToast(
+                              msg: "Veuillez ajouter au moin une question");
+                          return;
+                        }
+                        _loading.value = true;
+
+                        var id =
+                            DateTime.now().millisecondsSinceEpoch.toString();
+
+                        //verifier si c'est une mise a jour
+                        if (widget.questionnaire != null) {
+                          id = widget.questionnaire!.id;
+                        }
+                        //verifier si c'est une mise a jour
+
+                        var questionnaire = Questionnaire(
+                            id: id,
+                            date: DateTime.now().toString(),
+                            title: titre,
+                            maked: {},
+                            questions: questions);
+                        if (widget.brouillon == true) {
+                          questionnaire.save(brouillon: true);
+                        } else {
+                          questionnaire.save(brouillon: false);
+                        }
+
+                        _loading.value = false;
+
+                        Get.back(id: widget.brouillon == true ? 3 : 1);
+                      },
+                      child: Obx(
+                        () => _loading.value
+                            ? SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 1.2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : EText(
+                                widget.brouillon == true
+                                    ? "Enregistrer"
+                                    : "Publier",
+                                color: Colors.white,
+                              ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
                 ],
               ),
               body: Obx(
@@ -164,7 +173,6 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                       EText("Ajouter des questions"),
                       6.h,
                       SimpleOutlineButton(
-      
                           onTap: () {
                             Get.dialog(
                               Dialog(
@@ -181,14 +189,13 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                             );
                           },
                           child: EText(
-                            "Ajouter",
+                            "Ajouter une question",
                             color: Colors.pinkAccent,
                           )),
                     ],
                   ),
                 ),
               ),
-        
             ),
           ),
         ),
