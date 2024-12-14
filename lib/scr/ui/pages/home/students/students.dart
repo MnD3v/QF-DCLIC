@@ -2,16 +2,20 @@ import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/home_page.dart';
 
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/chart.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/student_card.dart';
 import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
+import 'package:immobilier_apk/scr/ui/widgets/menu_boutton.dart';
 import 'package:lottie/lottie.dart';
 
 class Students extends StatelessWidget {
   Students({super.key});
   final formateur = Utilisateur.currentUser.value!;
   var users = RxList<Utilisateur>([]);
+
+  var user = Utilisateur.currentUser.value!;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -38,7 +42,7 @@ class Students extends StatelessWidget {
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 surfaceTintColor: Colors.transparent,
-                title: EText(
+                leading:Get.width>600?null: MenuBoutton(user: user, constraints: constraints, width: width), title: EText(
                   "Etudiants",
                   size: 24,
                   weight: FontWeight.bold,

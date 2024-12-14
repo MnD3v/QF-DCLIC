@@ -21,6 +21,8 @@ import 'package:immobilier_apk/scr/ui/pages/signIn/connexion.dart';
 import 'package:my_widgets/data/models/ardoise_question.dart';
 import 'package:my_widgets/data/models/questionnaire.dart';
 
+  var currentMenuIndex = 0.obs;
+
 class HomePage extends StatefulWidget {
   static var newQuestionnaires = 0.obs;
   static var newQuestionsArdoise = 0.obs;
@@ -41,7 +43,6 @@ class _HomePageState extends State<HomePage> {
 
   PageController pageController = PageController();
 
-  var currentIndex = 0.obs;
 
   var loading = false.obs;
 
@@ -136,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                         maxHeight: constraints.maxHeight,
                         width: width,
                         user: user,
-                        currentIndex: currentIndex,
+                        currentIndex: currentMenuIndex,
                         showBrouillonElements: showBrouillonElements),
                 Obx(
                   () => SizedBox(
@@ -144,52 +145,13 @@ class _HomePageState extends State<HomePage> {
                       child: AnimatedSwitcher(
                           duration: 666.milliseconds,
                           child: SizedBox(
-                              key: Key(currentIndex.value.toString()),
-                              child: pages[currentIndex.value]))),
+                              key: Key(currentMenuIndex.value.toString()),
+                              child: pages[currentMenuIndex.value]))),
                 ),
               ],
             ),
           ),
-          constraints.maxWidth > 600
-              ? 0.h
-              : Container(
-                  margin: EdgeInsets.all(24),
-                  decoration:
-                      BoxDecoration(color: Colors.pink, shape: BoxShape.circle),
-                  child: IconButton(
-                    onPressed: () {
-                      Get.dialog(
-                        Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Scaffold(
-                              backgroundColor: Colors.black38,
-                              body: Menu(
-                                  maxHeight: constraints.maxHeight,
-                                  width: width,
-                                  user: user,
-                                  currentIndex: currentIndex,
-                                  showBrouillonElements: showBrouillonElements),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                margin: EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                    color: Colors.pink, shape: BoxShape.circle),
-                                child: IconButton(
-                                    onPressed: () {
-                                      Get.back();
-                                    },
-                                    icon: Icon(Icons.close)),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    icon: Icon(Icons.menu),
-                  ))
+         
         ],
       )
 

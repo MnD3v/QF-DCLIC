@@ -1,9 +1,11 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/home_page.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/create_questionnaire.dart';
 
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/questionnaire_card.dart';
 import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
+import 'package:immobilier_apk/scr/ui/widgets/menu_boutton.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_widgets/data/models/questionnaire.dart';
 
@@ -52,7 +54,7 @@ class ViewAllQuestionnaires extends StatelessWidget {
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 surfaceTintColor: Colors.transparent,
-                title: EText(
+                     leading:Get.width>600?null: MenuBoutton(user: user, constraints: constraints, width: width),   title: EText(
                   "Questionnaires",
                   size: 24,
                   weight: FontWeight.bold,

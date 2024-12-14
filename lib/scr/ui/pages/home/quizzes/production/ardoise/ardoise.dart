@@ -9,6 +9,7 @@ import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/widg
 import 'package:immobilier_apk/scr/ui/pages/home/home_page.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/question_card.dart';
 import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
+import 'package:immobilier_apk/scr/ui/widgets/menu_boutton.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_widgets/my_widgets.dart';
 
@@ -46,7 +47,7 @@ class Ardoise extends StatelessWidget {
             questions.value = tempQuestions;
             return EScaffold(
               appBar: AppBar(
-                backgroundColor: Colors.transparent,
+                     leading:Get.width>600?null: MenuBoutton(user: user, constraints: constraints, width: width),      backgroundColor: Colors.transparent,
                 surfaceTintColor: Colors.transparent,
                 title: EText(
                   "Ardoise",
