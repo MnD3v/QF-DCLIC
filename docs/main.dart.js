@@ -94537,7 +94537,7 @@ if(J.e3(j))l=new A.k4(n.b,m)
 else{j=l.e
 s=t.VO
 r=t.p
-s=A.b([new A.l5(m,A.b([A.k3(B.v,22,"Axe X: ",B.F),A.k3(m,m,"Le numero du questionnaire",B.F)],s),m,m),new A.l5(m,A.b([A.k3(B.v,22,"Axe X: ",B.F),A.k3(m,m,"Le Pourcentage de r\xe9ussite",B.F)],s),m,m),new A.W(m,24,m,m),A.as("Questionnaires",m,m,m,m,24,B.F)],r)
+s=A.b([new A.l5(m,A.b([A.k3(B.v,22,"Axe X: ",B.F),A.k3(m,m,"Le numero du questionnaire",B.F)],s),m,m),new A.l5(m,A.b([A.k3(B.v,22,"Axe Y: ",B.F),A.k3(m,m,"Le Pourcentage de r\xe9ussite",B.F)],s),m,m),new A.W(m,24,m,m),A.as("Questionnaires",m,m,m,m,24,B.F)],r)
 q=n.c
 p=k.gj(0)
 p.toString

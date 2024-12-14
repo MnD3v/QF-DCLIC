@@ -71,7 +71,7 @@ class StudentDetails extends StatelessWidget {
                                         ]),
                                         ETextRich(textSpans: [
                                           ETextSpan(
-                                              text: "Axe X: ",
+                                              text: "Axe Y: ",
                                               color: Colors.pinkAccent,
                                               weight: FontWeight.bold,
                                               size: 22),
