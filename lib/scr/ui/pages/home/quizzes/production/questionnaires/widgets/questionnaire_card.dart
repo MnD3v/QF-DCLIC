@@ -33,7 +33,7 @@ class QuestionnaireCard extends StatelessWidget {
             SizedBox(
               child: ViewQuestionnaire(
                 idUser: idUser,
-                dejaRepondu: dejaRepondu,
+                dejaRepondu: true.obs,
                 questionnaire: questionnaire,
               ),
             ),
@@ -47,10 +47,10 @@ class QuestionnaireCard extends StatelessWidget {
             color: idUser.isNotNul && !questionnaire.maked.containsKey(idUser)
                 ? Colors.red.withOpacity(.1)
                 : null,
-            // gradient: LinearGradient(colors: [
-            //   Color.fromARGB(255, 16, 0, 43),
-            //   const Color.fromARGB(255, 29, 0, 75)
-            // ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+           gradient: LinearGradient(colors: [
+          Color.fromARGB(255, 16, 0, 43),
+          const Color.fromARGB(255, 29, 0, 75)
+        ], begin: Alignment.topLeft, end: Alignment.bottomRight),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: Colors.white24)),
         child: Column(
@@ -64,7 +64,7 @@ class QuestionnaireCard extends StatelessWidget {
             9.h,
             EText(
               questionnaire.date.split(" ")[0].split("-").reversed.join("-"),
-              color: Colors.pinkAccent,
+              color: Colors.greenAccent,
               size: 18,
               weight: FontWeight.bold,
             ),
@@ -115,7 +115,7 @@ class QuestionnaireCard extends StatelessWidget {
                                 },
                                 child: EText(
                                   "Reponses",
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),

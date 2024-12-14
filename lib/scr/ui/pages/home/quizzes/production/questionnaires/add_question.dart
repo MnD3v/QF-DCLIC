@@ -22,6 +22,7 @@ class AddQuestion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EScaffold(
+      color: AppColors.background900,
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
@@ -32,6 +33,7 @@ class AddQuestion extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         title: EText(
           "Ajouter une question",
+          weight: FontWeight.bold,
           size: 24,
         ),
       ),
@@ -51,7 +53,7 @@ class AddQuestion extends StatelessWidget {
                 RadioListTile(
                   fillColor: MaterialStateColor.resolveWith((states) =>
                       type.value == QuestionType.qcm
-                          ? Colors.amber
+                          ? Colors.pinkAccent
                           : Colors.grey),
                   value: QuestionType.qcm,
                   groupValue: type.value,
@@ -63,7 +65,7 @@ class AddQuestion extends StatelessWidget {
                 RadioListTile(
                   fillColor: MaterialStateColor.resolveWith((states) =>
                       type.value == QuestionType.qcu
-                          ? Colors.amber
+                          ? Colors.pinkAccent
                           : Colors.grey),
                   value: QuestionType.qcu,
                   groupValue: type.value,
@@ -75,7 +77,7 @@ class AddQuestion extends StatelessWidget {
                 RadioListTile(
                   fillColor: MaterialStateColor.resolveWith((states) =>
                       type.value == QuestionType.qct
-                          ? Colors.amber
+                          ? Colors.pinkAccent
                           : Colors.grey),
                   value: QuestionType.qct,
                   groupValue: type.value,
@@ -112,9 +114,9 @@ class AddQuestion extends StatelessWidget {
                               fillColor: MaterialStateColor.resolveWith(
                                   (states) =>
                                       qcmResponse.contains(index.toString())
-                                          ? Colors.amber
+                                          ? Colors.pinkAccent
                                           : Colors.transparent),
-                              activeColor: Colors.amber,
+                              activeColor: Colors.pinkAccent,
                               side: BorderSide(width: 2, color: Colors.grey),
                               controlAffinity: ListTileControlAffinity.leading,
                               value: qcmResponse.contains(index.toString()),
@@ -126,21 +128,22 @@ class AddQuestion extends StatelessWidget {
                                 }
                               },
                               title: isFirebaseStorageLink(element)
-                                  ? Container(
-                                      height: 90,
-                                      decoration: BoxDecoration(),
+                                  ? Align(
                                       alignment: Alignment.centerLeft,
                                       child: EFadeInImage(
-                                        radius: 12,
+                                        width: 120,
+                                        height: 90,
+                                        radius: 24,
                                         image: NetworkImage(element),
-                                      ))
+                                      ),
+                                    )
                                   : EText(element),
                             )
                           : RadioListTile(
                               fillColor: MaterialStateColor.resolveWith(
                                   (states) =>
                                       qcuResponse.value == index.toString()
-                                          ? Colors.amber
+                                          ? Colors.pinkAccent
                                           : Colors.grey),
                               value: index.toString(),
                               groupValue: qcuResponse.value,
@@ -148,25 +151,26 @@ class AddQuestion extends StatelessWidget {
                                 qcuResponse.value = value!;
                               },
                               title: isFirebaseStorageLink(element)
-                                  ? Container(
-                                      width: Get.width,
+                                  ? Align(
                                       alignment: Alignment.centerLeft,
-                                      height: 90,
                                       child: EFadeInImage(
-                                        radius: 12,
+                                        width: 120,
+                                        height: 90,
+                                        radius: 24,
                                         image: NetworkImage(element),
-                                      ))
+                                      ),
+                                    )
                                   : EText(element),
                             );
                     }).toList(),
                     SimpleOutlineButton(
-                      radius: 3,
+                      radius: 12,
                       onTap: () {
                         showAddPropositionDialog();
                       },
                       child: EText(
                         "Add",
-                        color: Colors.amber,
+                        color: Colors.pinkAccent,
                       ),
                     )
                   ]),
@@ -177,7 +181,7 @@ class AddQuestion extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: SimpleButton(
             radius: 12,
-            color: Colors.amber,
+            color: Colors.pinkAccent,
             onTap: () {
               if (title.isEmpty) {
                 Fluttertoast.showToast(
@@ -235,7 +239,7 @@ class AddQuestion extends StatelessWidget {
             },
             child: EText(
               "Enregistrer",
-              color: Colors.black,
+              color: Colors.white,
             )),
       ),
     );
@@ -246,12 +250,11 @@ class AddQuestion extends StatelessWidget {
     var loadingImage = false.obs;
     Get.dialog(Dialog(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 700),
+        constraints: BoxConstraints(maxWidth: 500),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child:
-              EColumn(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            EText("Entrez la proposition"),
+          padding: const EdgeInsets.all(24.0),
+          child: EColumn(children: [
+            EText("Saisissez la proposition"),
             9.h,
             ETextField(
                 placeholder: "Saisissez une proposition",
@@ -273,10 +276,14 @@ class AddQuestion extends StatelessWidget {
                   proposition = value;
                 },
                 phoneScallerFactor: phoneScallerFactor),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: EText("Ou"),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: EText("Ou"),
+              ),
             ),
+            EText("Selectionnez une image"),
+            6.h,
             InkWell(
               onTap: () {
                 ImagePicker()
@@ -307,24 +314,25 @@ class AddQuestion extends StatelessWidget {
               },
               child: Obx(() => Container(
                     height: 95,
-                    width: 95,
+                    width: double.infinity,
                     decoration: BoxDecoration(
-                        color: Colors.greenAccent,
-                        borderRadius: BorderRadius.circular(18)),
+                        border: Border.all(
+                          color: Colors.pinkAccent,
+                        ),
+                        borderRadius: BorderRadius.circular(12)),
                     child: loadingImage.value
                         ? ECircularProgressIndicator(
-                            color: Colors.black,
+                            color: Colors.pinkAccent,
                           )
                         : Icon(
                             Icons.image_outlined,
-                            color: Colors.black,
+                            color: Colors.pinkAccent,
                           ),
                   )),
             ),
-            9.h,
-            SimpleOutlineButton(
-              color: Colors.amber,
-              radius: 3,
+            18.h,
+            SimpleButton(
+              color: Colors.pinkAccent,
               onTap: () {
                 if (proposition.isEmpty) {
                   Fluttertoast.showToast(
@@ -341,7 +349,7 @@ class AddQuestion extends StatelessWidget {
               },
               child: EText(
                 "Ajouter",
-                color: Colors.amber,
+                color: Colors.white,
               ),
             )
           ]),

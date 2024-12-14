@@ -203,7 +203,7 @@ class ArdoiseQuestionCard extends StatelessWidget {
                       },
                       child: EText(
                         "Reponses",
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     ),
                   ),

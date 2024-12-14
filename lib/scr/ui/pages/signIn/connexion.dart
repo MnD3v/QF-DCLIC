@@ -46,7 +46,11 @@ class Connexion extends StatelessWidget {
                       onPressed: () {
                         Get.to(Inscription(function: () {}));
                       },
-                      child: EText("Inscription"))
+                      child: EText(
+                        "Inscription",
+                        size: 22,
+                        weight: FontWeight.bold,
+                      ))
                 ],
               ),
               body: Obx(
@@ -105,7 +109,7 @@ class Connexion extends StatelessWidget {
                             24.h,
                             SimpleButton(
                                 radius: 12,
-                                color: const Color.fromARGB(255, 0, 114, 59),
+                                color: Colors.pinkAccent,
                                 onTap: () async {
                                   FocusManager.instance.primaryFocus?.unfocus();
                                   if (!GFunctions.isPhoneNumber(
@@ -195,7 +199,7 @@ class Connexion extends StatelessWidget {
                                           height: 25,
                                           width: 25,
                                           child: CircularProgressIndicator(
-                                            color: Colors.black,
+                                            color: Colors.white,
                                             strokeWidth: 1.3,
                                           ))
                                       : const EText(
@@ -234,7 +238,7 @@ class Connexion extends StatelessWidget {
           var utilisateur = Utilisateur.fromMap(q.data()!);
 
           if (utilisateur.formateur != true) {
-                                        isLoading.value = false;
+            isLoading.value = false;
 
             Custom.showDialog(
                 dialog: WarningWidget(

@@ -15,5 +15,5 @@ class AppColors {
   static Color white = Colors.white;
   static Color background = const Color.fromARGB(255, 29, 0, 75);
   static Color background900 = const Color.fromARGB(
-      255, 29, 0, 75); // Color.fromARGB(255, 255, 248, 245);
+      255, 16, 0, 43);  // Color.fromARGB(255, 255, 248, 245);
 }

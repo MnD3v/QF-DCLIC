@@ -16,11 +16,7 @@ class Empty extends StatelessWidget {
           image: AssetImage(Assets.image("empty.png")),
           width: constraints.maxWidth * .6,
         ),
-        12.h,
-        EText(
-          "Rien trouvé",
-          size: 24,
-        )
+       
       ],
     ));
   }
