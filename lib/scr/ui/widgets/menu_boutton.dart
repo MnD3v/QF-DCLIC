@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/home_page.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/menu.dart';
 
 class MenuBoutton extends StatelessWidget {
   const MenuBoutton(
@@ -13,9 +14,6 @@ class MenuBoutton extends StatelessWidget {
   final width;
   @override
   Widget build(BuildContext context) {
-    print("get....");
-    print(Get.width);
-    print("get....");
 
     return Center(
       child: Container(

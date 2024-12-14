@@ -62,20 +62,26 @@ class ViewAllQuestionnaires extends StatelessWidget {
                 actions: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: SizedBox(
-                      width: width / 3,
-                      child: ETextField(
-                          radius: 12,
-                          border: true,
-                          placeholder: "Rechercher",
-                          onChanged: (value) {
-                            questionnaires.value = tempQuestionnaires
-                                .where((element) => (element.title)
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase()))
-                                .toList();
-                          },
-                          phoneScallerFactor: phoneScallerFactor),
+                    child: Row(
+                      children: [
+                        Icon(Icons.search, color: Colors.white24,),
+                        SizedBox(
+                          width: width / 3,
+                          child: ETextField(
+                            smallHeight: true,
+                              radius: 40,
+                              border: true,
+                              placeholder: "Rechercher",
+                              onChanged: (value) {
+                                questionnaires.value = tempQuestionnaires
+                                    .where((element) => (element.title)
+                                        .toLowerCase()
+                                        .contains(value.toLowerCase()))
+                                    .toList();
+                              },
+                              phoneScallerFactor: phoneScallerFactor),
+                        ),
+                      ],
                     ),
                   )
                 ],
