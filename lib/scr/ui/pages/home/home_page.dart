@@ -52,6 +52,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  var menuIsOpen = false.obs;
+
   var pages = [
     Navigator(
       key: Get.nestedKey(0), // Clé pour le Navigator local
@@ -120,253 +122,75 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final width = constraints.maxWidth;
-
+      print(constraints.maxWidth);
       return EScaffold(
-          body: Center(
-        child: Row(
-          children: [
-            Container(
-              width: 240,
-              padding: EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 16, 0, 43),
-              ),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                        child: Image(
-                      image: AssetImage(Assets.image("logo.png")),
-                      height: 60,
-                    )),
-                    12.h,
-                    DottedDashedLine(
-                      height: 1,
-                      width: width,
-                      axis: Axis.horizontal,
-                      dashColor: Colors.white38,
-                    ),
-                    12.h,
-                    Row(
-                      children: [
-                        SizedBox(
-                          height: 65,
-                          width: 65,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.pinkAccent,
-                            child: Icon(
-                              Icons.person_outline,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        6.w,
-                        EColumn(children: [
-                          EText(
-                            "${user.nom} ${user.prenom}",
-                            weight: FontWeight.bold,
-                          ),
-                          6.h,
-                          EText(
-                            "Formateur",
-                            size: 16,
-                          ),
-                        ])
-                      ],
-                    ),
-                    12.h,
-                    DottedDashedLine(
-                      height: 1,
-                      width: width,
-                      axis: Axis.horizontal,
-                      dashColor: Colors.white38,
-                    ),
-                    12.h,
-                    MneuItem(
-                      currentIndex: currentIndex,
-                      label: "Etudiants",
-                      icon: CupertinoIcons.person_2_fill,
-                      index: 0,
-                    ),
-                    MneuItem(
-                      currentIndex: currentIndex,
-                      label: "Ardoise",
-                      icon: CupertinoIcons.square,
-                      index: 1,
-                    ),
-                    MneuItem(
-                      currentIndex: currentIndex,
-                      label: "Questionnaires",
-                      icon: CupertinoIcons.question_diamond_fill,
-                      index: 2,
-                    ),
-                    12.h,
-                    InkWell(
-                      onTap: () {
-                        showBrouillonElements.value =
-                            !showBrouillonElements.value;
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Center(
+            child: Row(
+              children: [
+                constraints.maxWidth < 600
+                    ? 0.h
+                    : Menu(
+                        maxHeight: constraints.maxHeight,
+                        width: width,
+                        user: user,
+                        currentIndex: currentIndex,
+                        showBrouillonElements: showBrouillonElements),
+                Obx(
+                  () => SizedBox(
+                      width: constraints.maxWidth < 600 ? width : width - 240,
+                      child: AnimatedSwitcher(
+                          duration: 666.milliseconds,
+                          child: SizedBox(
+                              key: Key(currentIndex.value.toString()),
+                              child: pages[currentIndex.value]))),
+                ),
+              ],
+            ),
+          ),
+          constraints.maxWidth > 600
+              ? 0.h
+              : Container(
+                  margin: EdgeInsets.all(24),
+                  decoration:
+                      BoxDecoration(color: Colors.pink, shape: BoxShape.circle),
+                  child: IconButton(
+                    onPressed: () {
+                      Get.dialog(
+                        Stack(
+                          alignment: Alignment.topRight,
                           children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  CupertinoIcons.archivebox,
-                                  color:
-                                      const Color.fromARGB(255, 255, 255, 255),
-                                ),
-                                9.w,
-                                EText("Brouillon",
-                                    color: const Color.fromARGB(
-                                        255, 255, 255, 255)),
-                              ],
+                            Scaffold(
+                              backgroundColor: Colors.black38,
+                              body: Menu(
+                                  maxHeight: constraints.maxHeight,
+                                  width: width,
+                                  user: user,
+                                  currentIndex: currentIndex,
+                                  showBrouillonElements: showBrouillonElements),
                             ),
-                            Obx(
-                              () => AnimatedSwitcher(
-                                duration: 333.milliseconds,
-                                child: Icon(
-                                  key: Key(
-                                      showBrouillonElements.value.toString()),
-                                  !showBrouillonElements.value
-                                      ? Icons.keyboard_arrow_right_rounded
-                                      : Icons.keyboard_arrow_down_outlined,
-                                  color:
-                                      const Color.fromARGB(255, 255, 255, 255),
-                                  size: 20,
-                                ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                margin: EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                    color: Colors.pink, shape: BoxShape.circle),
+                                child: IconButton(
+                                    onPressed: () {
+                                      Get.back();
+                                    },
+                                    icon: Icon(Icons.close)),
                               ),
                             )
                           ],
                         ),
-                      ),
-                    ),
-                    12.h,
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40.0),
-                      child: Obx(
-                        () => AnimatedContainer(
-                          duration: 333.milliseconds,
-                          height: showBrouillonElements.value ? 100 : 0,
-                          child: EColumn(
-                            children: [
-                              3.h,
-                              InkWell(
-                                onTap: () {
-                                  currentIndex.value = 3;
-                                  // waitAfter(50, () {
-                                  //   Get.to(QuestionnaireBrouillon(), id: 3);
-                                  // });
-                                },
-                                child: Container(
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(24),
-                                      color: Colors.transparent),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        CupertinoIcons.question_diamond,
-                                        color: currentIndex.value == 3
-                                            ? Colors.pink
-                                            : Colors.white60,
-                                      ),
-                                      6.w,
-                                      EText(
-                                        "Questionnaires",
-                                        color: currentIndex.value == 3
-                                            ? Colors.pink
-                                            : Colors.white60,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              6.h,
-                              InkWell(
-                                onTap: () {
-                                  currentIndex.value = 4;
-                                },
-                                child: Container(
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(24),
-                                      color: Colors.transparent),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        CupertinoIcons.square,
-                                        color: currentIndex.value == 4
-                                            ? Colors.pink
-                                            : Colors.white60,
-                                      ),
-                                      6.w,
-                                      EText(
-                                        "Ardoise",
-                                        color: currentIndex.value == 4
-                                            ? Colors.pink
-                                            : Colors.white60,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    12.h,
-                    DottedDashedLine(
-                      height: 1,
-                      width: width,
-                      axis: Axis.horizontal,
-                      dashColor: Colors.white38,
-                    ),
-                    24.h,
-                    SimpleOutlineButton(
-                      radius: 12,
-                      color: Colors.pink,
-                      onTap: () {
-                        Custom.showDialog(
-                            dialog: TwoOptionsDialog(
-                                confirmationText: "Me deconnecter",
-                                confirmFunction: () {
-                                  FirebaseAuth.instance.signOut();
-                                  Utilisateur.currentUser.value = null;
-
-                                  //  Get.off(Connexion());
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Connexion(),
-                                    ),
-                                    (route) => false,
-                                  );
-                                  Toasts.success(context,
-                                      description:
-                                          "Vous vous êtes déconnecté avec succès");
-                                },
-                                body: "Voulez-vous vraiment vous deconnecter ?",
-                                title: "Déconnexion"));
-                      },
-                      child: EText("Deconnexion"),
-                    )
-                  ]),
-            ),
-            Obx(
-              () => SizedBox(
-                  width: width - 240,
-                  child: AnimatedSwitcher(
-                      duration: 666.milliseconds,
-                      child: SizedBox(
-                          key: Key(currentIndex.value.toString()),
-                          child: pages[currentIndex.value]))),
-            ),
-          ],
-        ),
+                      );
+                    },
+                    icon: Icon(Icons.menu),
+                  ))
+        ],
       )
 
           // PageView(
@@ -382,12 +206,268 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class MneuItem extends StatelessWidget {
+class Menu extends StatelessWidget {
+  const Menu({
+    super.key,
+    required this.width,
+    required this.user,
+    required this.maxHeight,
+    required this.currentIndex,
+    required this.showBrouillonElements,
+  });
+  final double maxHeight;
+  final double width;
+  final Utilisateur user;
+  final RxInt currentIndex;
+  final RxBool showBrouillonElements;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 240,
+      padding: EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 16, 0, 43),
+      ),
+      child: SingleChildScrollView(
+        child: SizedBox(
+          height: maxHeight,
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Center(
+                child: Image(
+              image: AssetImage(Assets.image("logo.png")),
+              height: 60,
+            )),
+            12.h,
+            DottedDashedLine(
+              height: 1,
+              width: width,
+              axis: Axis.horizontal,
+              dashColor: Colors.white38,
+            ),
+            12.h,
+            Row(
+              children: [
+                SizedBox(
+                  height: 65,
+                  width: 65,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.pinkAccent,
+                    child: Icon(
+                      Icons.person_outline,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                6.w,
+                EColumn(children: [
+                  EText(
+                    "${user.nom} ${user.prenom}",
+                    weight: FontWeight.bold,
+                  ),
+                  6.h,
+                  EText(
+                    "Formateur",
+                    size: 16,
+                  ),
+                ])
+              ],
+            ),
+            12.h,
+            DottedDashedLine(
+              height: 1,
+              width: width,
+              axis: Axis.horizontal,
+              dashColor: Colors.white38,
+            ),
+            12.h,
+            MenuItem(
+              currentIndex: currentIndex,
+              label: "Etudiants",
+              icon: CupertinoIcons.person_2_fill,
+              index: 0,
+            ),
+            MenuItem(
+              currentIndex: currentIndex,
+              label: "Ardoise",
+              icon: CupertinoIcons.square,
+              index: 1,
+            ),
+            MenuItem(
+              currentIndex: currentIndex,
+              label: "Questionnaires",
+              icon: CupertinoIcons.question_diamond_fill,
+              index: 2,
+            ),
+            12.h,
+            InkWell(
+              onTap: () {
+                showBrouillonElements.value = !showBrouillonElements.value;
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 18),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.archivebox,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
+                        9.w,
+                        EText("Brouillon",
+                            color: const Color.fromARGB(255, 255, 255, 255)),
+                      ],
+                    ),
+                    Obx(
+                      () => AnimatedSwitcher(
+                        duration: 333.milliseconds,
+                        child: Icon(
+                          key: Key(showBrouillonElements.value.toString()),
+                          !showBrouillonElements.value
+                              ? Icons.keyboard_arrow_right_rounded
+                              : Icons.keyboard_arrow_down_outlined,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                          size: 20,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            12.h,
+            Padding(
+              padding: const EdgeInsets.only(left: 40.0),
+              child: Obx(
+                () => AnimatedContainer(
+                  duration: 333.milliseconds,
+                  height: showBrouillonElements.value ? 100 : 0,
+                  child: EColumn(
+                    children: [
+                      3.h,
+                      InkWell(
+                        onTap: () {
+                          if (Get.isDialogOpen ?? false) {
+                            Get.back();
+                          }
+                          currentIndex.value = 3;
+                          // waitAfter(50, () {
+                          //   Get.to(QuestionnaireBrouillon(), id: 3);
+                          // });
+                        },
+                        child: Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              color: Colors.transparent),
+                          child: Row(
+                            children: [
+                              Icon(
+                                CupertinoIcons.question_diamond,
+                                color: currentIndex.value == 3
+                                    ? Colors.pink
+                                    : Colors.white60,
+                              ),
+                              6.w,
+                              EText(
+                                "Questionnaires",
+                                color: currentIndex.value == 3
+                                    ? Colors.pink
+                                    : Colors.white60,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      6.h,
+                      InkWell(
+                        onTap: () {
+                          if (Get.isDialogOpen ?? false) {
+                            Get.back();
+                          }
+                          currentIndex.value = 4;
+                        },
+                        child: Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              color: Colors.transparent),
+                          child: Row(
+                            children: [
+                              Icon(
+                                CupertinoIcons.square,
+                                color: currentIndex.value == 4
+                                    ? Colors.pink
+                                    : Colors.white60,
+                              ),
+                              6.w,
+                              EText(
+                                "Ardoise",
+                                color: currentIndex.value == 4
+                                    ? Colors.pink
+                                    : Colors.white60,
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            12.h,
+            DottedDashedLine(
+              height: 1,
+              width: width,
+              axis: Axis.horizontal,
+              dashColor: Colors.white38,
+            ),
+            24.h,
+            SimpleOutlineButton(
+              radius: 12,
+              color: Colors.pink,
+              onTap: () {
+                Custom.showDialog(
+                    dialog: TwoOptionsDialog(
+                        confirmationText: "Me deconnecter",
+                        confirmFunction: () {
+                          FirebaseAuth.instance.signOut();
+                          Utilisateur.currentUser.value = null;
+
+                          //  Get.off(Connexion());
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Connexion(),
+                            ),
+                            (route) => false,
+                          );
+                          Toasts.success(context,
+                              description:
+                                  "Vous vous êtes déconnecté avec succès");
+                        },
+                        body: "Voulez-vous vraiment vous deconnecter ?",
+                        title: "Déconnexion"));
+              },
+              child: EText("Deconnexion"),
+            )
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+class MenuItem extends StatelessWidget {
   String label;
   IconData icon;
   RxInt currentIndex;
   int index;
-  MneuItem(
+  MenuItem(
       {super.key,
       required this.icon,
       required this.currentIndex,
@@ -398,6 +478,9 @@ class MneuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
+          if (Get.isDialogOpen ?? false) {
+            Get.back();
+          }
           currentIndex.value = index;
         },
         child: Obx(
