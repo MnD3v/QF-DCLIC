@@ -13,9 +13,11 @@ class Empty extends StatelessWidget {
 
       children: [
         Image(
-          image: AssetImage(Assets.image("empty.png")),
-          width: constraints.maxWidth * .6,
+          image: AssetImage(Assets.image("empty-2.png")),
+          width: constraints.maxWidth * .2,
+          fit: BoxFit.contain,
         ),
+        EText("Aucun element", color: Colors.pinkAccent,)
        
       ],
     ));

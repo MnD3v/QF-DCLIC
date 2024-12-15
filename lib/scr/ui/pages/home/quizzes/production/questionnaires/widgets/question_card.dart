@@ -40,38 +40,52 @@ class QuestionCard extends StatelessWidget {
         qctResponse = questionnaire!.maked[idUser]!.response[index];
       }
     }
-  
 
     return Container(
       width: Get.width,
+          padding: EdgeInsets.all(18),
+
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
           border: Border.all(width: .5, color: Colors.white54)),
       margin: EdgeInsets.symmetric(vertical: 6),
       child: EColumn(children: [
-        Container(
-          padding: EdgeInsets.all(6),
+        SizedBox(
           width: Get.width,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 6),
-                child: ETextRich(
-                  textSpans: [
-                    ETextSpan(
-                        text: (index + 1).toString() + ". ",
-                        color: Colors.amber,
-                        weight: FontWeight.bold),
-                    ETextSpan(text: element.question, color: Colors.white60),
-                  ],
-                  size: 22,
-                ),
+              ETextRich(
+                textSpans: [
+                  ETextSpan(
+                      text: "${index + 1}. ",
+                      color: Colors.amber,
+                      weight: FontWeight.bold),
+                  ETextSpan(text: element.question, color: Colors.white60),
+                ],
+                size: 22,
               ),
+
+              element.image.isNotNul
+                  ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 9.0),
+                    child: InkWell(
+                      
+                      onTap: (){
+                        showImageViewer(context, NetworkImage(element.image!));
+                      },
+                      child: EFadeInImage(
+                        height: 120,
+                        width: 120,
+                        radius: 12,
+                        image: NetworkImage(element.image!)),
+                    ),
+                  )
+                  : 0.h
             ],
           ),
         ),
+        12.h,
         DottedDashedLine(
           height: 0,
           width: Get.width - 24,
@@ -81,27 +95,23 @@ class QuestionCard extends StatelessWidget {
         element.type == QuestionType.qct
             ? Obx(
                 () => dejaRepondu.value
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 18),
-                        child: EColumn(
-                          children: [
-                            EText(
-                              supprimerTirets(qctResponse),
-                              color: qctResponse.contains("--false")
-                                  ? Colors.red
-                                  : qctResponse.contains("--true")
-                                      ? Colors.green
-                                      : Colors.white,
-                            ),
-                            9.h,
-                            EText(
-                              element.reponse,
-                              color: Colors.greenAccent,
-                            ),
-                          ],
+                    ? EColumn(
+                      children: [
+                        EText(
+                          supprimerTirets(qctResponse),
+                          color: qctResponse.contains("--false")
+                              ? Colors.red
+                              : qctResponse.contains("--true")
+                                  ? Colors.green
+                                  : Colors.white,
                         ),
-                      )
+                        9.h,
+                        EText(
+                          element.reponse,
+                          color: Colors.greenAccent,
+                        ),
+                      ],
+                    )
                     : Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: ETextField(
@@ -257,12 +267,11 @@ class QuestionCard extends StatelessWidget {
       ]),
     );
   }
-
-
 }
-  String supprimerTirets(String qctResponse) {
-    return qctResponse
-        .replaceAll("--none", "")
-        .replaceAll("--false", "")
-        .replaceAll("--true", "");
-  }
+
+String supprimerTirets(String qctResponse) {
+  return qctResponse
+      .replaceAll("--none", "")
+      .replaceAll("--false", "")
+      .replaceAll("--true", "");
+}

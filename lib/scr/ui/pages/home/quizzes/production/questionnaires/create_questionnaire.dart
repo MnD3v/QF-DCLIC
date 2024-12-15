@@ -146,8 +146,15 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                           },
                           phoneScallerFactor: phoneScallerFactor),
                       12.h,
-                      Column(
-                          children: questions.value.map((element) {
+                         EText("Ajouter des questions"),
+                      6.h,
+             questions.isEmpty? Column(
+               children: [
+                 Image(image: AssetImage(Assets.image("empty-2.png"), ),height: 80,),
+                 EText("Aucune question ajoutée", color: Colors.pinkAccent,)
+               ],
+             ):        Column(
+                          children: questions.map((element) {
                         var index = questions.indexOf(element);
                         var initalResponses = questions
                             .map((element) =>
@@ -170,31 +177,37 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                         );
                       }).toList()),
                       12.h,
-                      EText("Ajouter des questions"),
-                      6.h,
-                      SimpleOutlineButton(
-                          onTap: () {
-                            Get.dialog(
-                              Dialog(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(maxWidth: 700),
-                                    child: AddQuestion(
-                                      questions: questions,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          child: EText(
-                            "Ajouter une question",
-                            color: Colors.pinkAccent,
-                          )),
+                   
+                     
                     ],
                   ),
                 ),
+              ),
+              bottomNavigationBar:  Container(
+                height: 55,
+                width: Get.width,
+                alignment: Alignment.center,
+                child: SimpleOutlineButton(
+                  width: 200,
+                            onTap: () {
+                              Get.dialog(
+                                Dialog(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(maxWidth: 700),
+                                      child: AddQuestion(
+                                        questions: questions,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: EText(
+                              "Ajouter une question",
+                              color: Colors.pinkAccent,
+                            )),
               ),
             ),
           ),

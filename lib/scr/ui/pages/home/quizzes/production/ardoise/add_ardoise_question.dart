@@ -51,6 +51,9 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
     super.initState();
   }
 
+  var titleImage = Rx<String?>(null);
+  var loadingImage = false.obs;
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -90,6 +93,12 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                         color: Colors.pink,
                         onTap: () async {
                           var user = Utilisateur.currentUser.value!;
+
+                          if (loadingImage.value) {
+                            Fluttertoast.showToast(
+                                msg: "Attendez que l'image finisse de charger");
+                            return;
+                          }
                           if (title.isEmpty) {
                             Fluttertoast.showToast(
                                 msg:
@@ -170,6 +179,8 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                           }
                           //verifier si c'est une mise a jour
 
+                          question.image = titleImage.value;
+
                           if (widget.brouillon == true) {
                             question.save(brouillon: true);
                           } else {
@@ -201,18 +212,76 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                 child: EColumn(children: [
                   EText("Ajoutez l'intitulé de la question"),
                   6.h,
-                  ETextField(
-                      initialValue: title,
-                      placeholder: "Saisissez l'intitulé de la question",
-                      onChanged: (value) {
-                        title = value;
-                      },
-                      phoneScallerFactor: phoneScallerFactor),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: constraints.maxWidth - 120,
+                        child: ETextField(
+                            placeholder: "Saisissez l'intitulé de la question",
+                            onChanged: (value) {
+                              title = value;
+                            },
+                            phoneScallerFactor: phoneScallerFactor),
+                      ),
+                      6.w,
+                      InkWell(
+                        onTap: () {
+                          ImagePicker()
+                              .pickImage(
+                            source: ImageSource.gallery,
+                          )
+                              .then(
+                            (value) async {
+                              loadingImage.value = true;
+
+                              var link;
+                              if (kIsWeb) {
+                                link = await FStorage.putData(
+                                    await value!.readAsBytes());
+                              } else {
+                                link =
+                                    await FStorage.putFile(File(value!.path));
+                              }
+                              loadingImage.value = false;
+                              print(link);
+                              titleImage.value = link;
+                            },
+                          ).onError((_, __) {
+                            loadingImage.value = false;
+                          });
+                        },
+                        child: Container(
+                            height: 50,
+                            width: 50,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(9),
+                                border: Border.all(color: Colors.pinkAccent)),
+                            child: Obx(
+                              () => titleImage.value != null
+                                  ? EFadeInImage(
+                                      height: 50,
+                                      width: 50,
+                                      radius: 9,
+                                      image: NetworkImage(titleImage.value!))
+                                  : loadingImage.value
+                                      ? ECircularProgressIndicator(
+                                          height: 16,
+                                        )
+                                      : Icon(
+                                          Icons.image_outlined,
+                                          color: Colors.pinkAccent,
+                                        ),
+                            )),
+                      )
+                    ],
+                  ),
                   12.h,
                   Container(
                     padding: EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                        color: Colors.white10,
+                        // color: Colors.white10,
                         borderRadius: BorderRadius.circular(12)),
                     child: EColumn(
                       children: [
@@ -264,9 +333,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                       ],
                     ),
                   ),
-                  3.h,
-                  9.h,
-                  3.h,
+                  18.h,
                   Obx(
                     () => AnimatedSwitcher(
                       duration: 666.milliseconds,
@@ -286,8 +353,24 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                               ],
                             )
                           : EColumn(children: [
-                              EText("Ajouter une proposition"),
+                              EText("Propositions"),
                               6.h,
+                              propositions.isEmpty
+                                  ? Column(
+                                      children: [
+                                        Image(
+                                          image: AssetImage(
+                                            Assets.image("empty-2.png"),
+                                          ),
+                                          height: 80,
+                                        ),
+                                        EText(
+                                          "Aucune proposition ajoutée",
+                                          color: Colors.pinkAccent,
+                                        )
+                                      ],
+                                    )
+                                  : 0.h,
                               ...propositions.map((element) {
                                 var index = propositions.indexOf(element);
                                 return type.value == QuestionType.qcm
@@ -352,21 +435,31 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                                             : EText(element),
                                       );
                               }).toList(),
-                              SimpleOutlineButton(
-                                radius: 12,
-                                color: Colors.pinkAccent,
-                                onTap: () {
-                                  showAddPropositionDialog();
-                                },
-                                child: EText(
-                                  "Ajouter",
-                                  color: Colors.pinkAccent,
-                                ),
-                              )
                             ]),
                     ),
                   ),
                 ]),
+              ),
+              floatingActionButton: Obx(
+                () => type.value == QuestionType.qct
+                    ? 0.h
+                    : SizedBox(
+                        height: 55,
+                        child: Center(
+                          child: SimpleOutlineButton(
+                            radius: 12,
+                            width: 230,
+                            color: Colors.pinkAccent,
+                            onTap: () {
+                              showAddPropositionDialog();
+                            },
+                            child: EText(
+                              "Ajouter une proposition",
+                              color: Colors.pinkAccent,
+                            ),
+                          ),
+                        ),
+                      ),
               ),
             ),
           ),

@@ -28,7 +28,7 @@ class ArdoiseQuestionCard extends StatelessWidget {
     return AnimatedContainer(
       duration: 333.milliseconds,
       width: Get.width,
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
         // color: Color.fromARGB(0, 30, 95, 145),
         // gradient: LinearGradient(colors: [Colors.transparent, const Color.fromARGB(255, 15, 53, 88)]),
@@ -45,25 +45,35 @@ class ArdoiseQuestionCard extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 6),
-              child: ETextRich(
-                textSpans: [
-                  ETextSpan(
-                      text: question.question,
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                      weight: FontWeight.bold),
-                ],
-                size: 22,
-              ),
+            ETextRich(
+              textSpans: [
+                ETextSpan(
+                    text: question.question,
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    weight: FontWeight.bold),
+              ],
+              size: 22,
             ),
+            9.h,
+              question.image.isNotNul
+                  ? InkWell(
+                    
+                    onTap: (){
+                      showImageViewer(context, NetworkImage(question.image!));
+                    },
+                    child: EFadeInImage(
+                      height: 120,
+                      width: 120,
+                      radius: 12,
+                      image: NetworkImage(question.image!)),
+                  )
+                  : 0.h
           ],
         ),
         question.type == QuestionType.qct
             ? Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 6.0, vertical: 18),
+                    const EdgeInsets.symmetric( vertical: 18),
                 child: EColumn(
                   children: [
                     EText(
@@ -169,7 +179,7 @@ class ArdoiseQuestionCard extends StatelessWidget {
           children: [
             brouillon == true
                 ? Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 9.0),
                     child: SimpleButton(
                         height: 35,
                         width: 140,
@@ -184,12 +194,12 @@ class ArdoiseQuestionCard extends StatelessWidget {
                                   height: 20,
                                   width: 20,
                                   child: CircularProgressIndicator(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     strokeWidth: 1.2,
                                   ))
                               : EText(
                                   "Publier",
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                         )),
                   )

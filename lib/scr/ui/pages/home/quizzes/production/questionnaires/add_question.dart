@@ -18,231 +18,338 @@ class AddQuestion extends StatelessWidget {
   var type = "qcm".obs;
 
   String title = "";
-
+  var titleImage = Rx<String?>(null);
+  var loadingImage = false.obs;
   @override
   Widget build(BuildContext context) {
-    return EScaffold(
-      color: AppColors.background900,
-      appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: Icon(Icons.close)),
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        
-        actions: [
-          Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SimpleButton(
-            radius: 12,
-            width: 120,
-            color: Colors.pinkAccent,
-            onTap: () {
-              if (title.isEmpty) {
-                Fluttertoast.showToast(
-                    msg: "Veuillez saisir l'intitulé de la question");
-                return;
-              }
-              if (type.value != QuestionType.qct && propositions.length < 2) {
-                Fluttertoast.showToast(
-                    msg: "Veuillez ajouter au-moins deux propositions");
-                return;
-              }
-              var question;
-
-              //liste en map
-              Map<String, String> choix = {};
-              propositions.forEach((value) {
-                var index = propositions.indexOf(value);
-                choix.putIfAbsent(index.toString(), () => value);
-              });
-              //liste en map
-              if (type == QuestionType.qcu) {
-                if (qcuResponse.value.isEmpty) {
-                  Fluttertoast.showToast(msg: "Veuillez choisir la reponse");
-                  return;
-                }
-                question = Question(
-                    question: title,
-                    choix: choix,
-                    reponse: qcuResponse.value,
-                    type: QuestionType.qcu);
-              } else if (type == QuestionType.qcm) {
-                if (qcmResponse.value.isEmpty) {
-                  Fluttertoast.showToast(msg: "Veuillez choisir la reponse");
-                  return;
-                }
-                question = Question(
-                    question: title,
-                    choix: choix,
-                    reponse: qcmResponse.value,
-                    type: QuestionType.qcm);
-              } else {
-                if (qctResponse.isEmpty) {
-                  Fluttertoast.showToast(
-                      msg: "Veuillez saisir la réponse à la question");
-                  return;
-                }
-                question = Question(
-                    question: title,
-                    choix: choix,
-                    reponse: qctResponse,
-                    type: QuestionType.qct);
-              }
-              questions.add(question);
-              Get.back();
-            },
-            child: EText(
-              "Enregistrer",
-              color: Colors.white,
-            )),
-      ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: EColumn(children: [
-          EText("Ajoutez l'intitulé de la question"),
-          ETextField(
-              placeholder: "Saisissez l'intitulé de la question",
-              onChanged: (value) {
-                title = value;
-              },
-              phoneScallerFactor: phoneScallerFactor),
-          Obx(
-            () => Column(
-              children: [
-                RadioListTile(
-                  fillColor: MaterialStateColor.resolveWith((states) =>
-                      type.value == QuestionType.qcm
-                          ? Colors.pinkAccent
-                          : Colors.grey),
-                  value: QuestionType.qcm,
-                  groupValue: type.value,
-                  onChanged: (value) {
-                    type.value = value!;
-                  },
-                  title: EText("QCM"),
-                ),
-                RadioListTile(
-                  fillColor: MaterialStateColor.resolveWith((states) =>
-                      type.value == QuestionType.qcu
-                          ? Colors.pinkAccent
-                          : Colors.grey),
-                  value: QuestionType.qcu,
-                  groupValue: type.value,
-                  onChanged: (value) {
-                    type.value = value!;
-                  },
-                  title: EText("QCU"),
-                ),
-                RadioListTile(
-                  fillColor: MaterialStateColor.resolveWith((states) =>
-                      type.value == QuestionType.qct
-                          ? Colors.pinkAccent
-                          : Colors.grey),
-                  value: QuestionType.qct,
-                  groupValue: type.value,
-                  onChanged: (value) {
-                    type.value = value!;
-                  },
-                  title: EText("QCT"),
-                ),
-              ],
-            ),
-          ),
-          9.h,
-          3.h,
-          Obx(
-            () => type.value == QuestionType.qct
-                ? EColumn(
-                    children: [
-                      EText("Entrez la réponse"),
-                      ETextField(
-                          placeholder: "Saisissez la reponse à la question",
+    return LayoutBuilder(builder: (context, constraints) {
+      return Container(
+        decoration: BoxDecoration(
+            color: AppColors.background900,
+            borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 9),
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              EColumn(children: [
+                75.h,
+                EText("Intitulé de la question"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: constraints.maxWidth - 85,
+                      child: ETextField(
+                          placeholder: "Saisissez l'intitulé de la question",
                           onChanged: (value) {
-                            qctResponse = value;
+                            title = value;
                           },
                           phoneScallerFactor: phoneScallerFactor),
-                      12.h,
-                    ],
-                  )
-                : EColumn(children: [
-                    EText("Ajouter des propositions"),
-                    ...propositions.value.map((element) {
-                      var index = propositions.value.indexOf(element);
-                      return type.value == QuestionType.qcm
-                          ? CheckboxListTile(
-                              fillColor: MaterialStateColor.resolveWith(
-                                  (states) =>
-                                      qcmResponse.contains(index.toString())
-                                          ? Colors.pinkAccent
-                                          : Colors.transparent),
-                              activeColor: Colors.pinkAccent,
-                              side: BorderSide(width: 2, color: Colors.grey),
-                              controlAffinity: ListTileControlAffinity.leading,
-                              value: qcmResponse.contains(index.toString()),
-                              onChanged: (value) {
-                                if (qcmResponse.contains(index.toString())) {
-                                  qcmResponse.remove(index.toString());
-                                } else {
-                                  qcmResponse.add(index.toString());
-                                }
-                              },
-                              title: isFirebaseStorageLink(element)
-                                  ? Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: EFadeInImage(
-                                        width: 120,
-                                        height: 90,
-                                        radius: 24,
-                                        image: NetworkImage(element),
-                                      ),
-                                    )
-                                  : EText(element),
-                            )
-                          : RadioListTile(
-                              fillColor: MaterialStateColor.resolveWith(
-                                  (states) =>
-                                      qcuResponse.value == index.toString()
-                                          ? Colors.pinkAccent
-                                          : Colors.grey),
-                              value: index.toString(),
-                              groupValue: qcuResponse.value,
-                              onChanged: (value) {
-                                qcuResponse.value = value!;
-                              },
-                              title: isFirebaseStorageLink(element)
-                                  ? Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: EFadeInImage(
-                                        width: 120,
-                                        height: 90,
-                                        radius: 24,
-                                        image: NetworkImage(element),
-                                      ),
-                                    )
-                                  : EText(element),
-                            );
-                    }).toList(),
-                    SimpleOutlineButton(
-                      radius: 12,
+                    ),
+                    6.w,
+                    InkWell(
                       onTap: () {
-                        showAddPropositionDialog();
+                        ImagePicker()
+                            .pickImage(
+                          source: ImageSource.gallery,
+                        )
+                            .then(
+                          (value) async {
+                            loadingImage.value = true;
+
+                            var link;
+                            if (kIsWeb) {
+                              link = await FStorage.putData(
+                                  await value!.readAsBytes());
+                            } else {
+                              link = await FStorage.putFile(File(value!.path));
+                            }
+                            loadingImage.value = false;
+                            print(link);
+                            titleImage.value = link;
+                          },
+                        ).onError((_, __) {
+                          loadingImage.value = false;
+                        });
                       },
-                      child: EText(
-                        "Ajouter une proposition",
-                        color: Colors.pinkAccent,
-                      ),
+                      child: Container(
+                          height: 50,
+                          width: 50,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(9),
+                              border: Border.all(color: Colors.pinkAccent)),
+                          child: Obx(
+                            () => titleImage.value != null
+                                ? EFadeInImage(
+                                    height: 50,
+                                    width: 50,
+                                    radius: 9,
+                                    image: NetworkImage(titleImage.value!))
+                                : loadingImage.value
+                                    ? ECircularProgressIndicator(
+                                        height: 16,
+                                      )
+                                    : Icon(
+                                        Icons.image_outlined,
+                                        color: Colors.pinkAccent,
+                                      ),
+                          )),
                     )
-                  ]),
+                  ],
+                ),
+                12.h,
+                EText("Type de la question"),
+                Obx(
+                  () => Column(
+                    children: [
+                      RadioListTile(
+                        fillColor: MaterialStateColor.resolveWith((states) =>
+                            type.value == QuestionType.qcm
+                                ? Colors.pinkAccent
+                                : Colors.grey),
+                        value: QuestionType.qcm,
+                        groupValue: type.value,
+                        onChanged: (value) {
+                          type.value = value!;
+                        },
+                        title: EText("QCM"),
+                      ),
+                      RadioListTile(
+                        fillColor: MaterialStateColor.resolveWith((states) =>
+                            type.value == QuestionType.qcu
+                                ? Colors.pinkAccent
+                                : Colors.grey),
+                        value: QuestionType.qcu,
+                        groupValue: type.value,
+                        onChanged: (value) {
+                          type.value = value!;
+                        },
+                        title: EText("QCU"),
+                      ),
+                      RadioListTile(
+                        fillColor: MaterialStateColor.resolveWith((states) =>
+                            type.value == QuestionType.qct
+                                ? Colors.pinkAccent
+                                : Colors.grey),
+                        value: QuestionType.qct,
+                        groupValue: type.value,
+                        onChanged: (value) {
+                          type.value = value!;
+                        },
+                        title: EText("QCT"),
+                      ),
+                    ],
+                  ),
+                ),
+                9.h,
+                3.h,
+                Obx(
+                  () => type.value == QuestionType.qct
+                      ? EColumn(
+                          children: [
+                            EText("Réponse attendue"),
+                            ETextField(
+                                placeholder:
+                                    "Saisissez la reponse à la question",
+                                onChanged: (value) {
+                                  qctResponse = value;
+                                },
+                                phoneScallerFactor: phoneScallerFactor),
+                            12.h,
+                          ],
+                        )
+                      : EColumn(children: [
+                          EText("Ajouter des propositions"),
+                          propositions.isEmpty
+                              ? Column(
+                                  children: [
+                                    Image(
+                                      image: AssetImage(
+                                        Assets.image("empty-2.png"),
+                                      ),
+                                      height: 80,
+                                    ),
+                                    EText(
+                                      "Aucune question ajouté",
+                                      color: Colors.pinkAccent,
+                                    )
+                                  ],
+                                )
+                              : 0.h,
+                          ...propositions.value.map((element) {
+                            var index = propositions.value.indexOf(element);
+                            return type.value == QuestionType.qcm
+                                ? CheckboxListTile(
+                                    fillColor: MaterialStateColor.resolveWith(
+                                        (states) => qcmResponse
+                                                .contains(index.toString())
+                                            ? Colors.pinkAccent
+                                            : Colors.transparent),
+                                    activeColor: Colors.pinkAccent,
+                                    side: BorderSide(
+                                        width: 2, color: Colors.grey),
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    value:
+                                        qcmResponse.contains(index.toString()),
+                                    onChanged: (value) {
+                                      if (qcmResponse
+                                          .contains(index.toString())) {
+                                        qcmResponse.remove(index.toString());
+                                      } else {
+                                        qcmResponse.add(index.toString());
+                                      }
+                                    },
+                                    title: isFirebaseStorageLink(element)
+                                        ? Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: EFadeInImage(
+                                              width: 120,
+                                              height: 90,
+                                              radius: 24,
+                                              image: NetworkImage(element),
+                                            ),
+                                          )
+                                        : EText(element),
+                                  )
+                                : RadioListTile(
+                                    fillColor: MaterialStateColor.resolveWith(
+                                        (states) => qcuResponse.value ==
+                                                index.toString()
+                                            ? Colors.pinkAccent
+                                            : Colors.grey),
+                                    value: index.toString(),
+                                    groupValue: qcuResponse.value,
+                                    onChanged: (value) {
+                                      qcuResponse.value = value!;
+                                    },
+                                    title: isFirebaseStorageLink(element)
+                                        ? Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: EFadeInImage(
+                                              width: 120,
+                                              height: 90,
+                                              radius: 24,
+                                              image: NetworkImage(element),
+                                            ),
+                                          )
+                                        : EText(element),
+                                  );
+                          }).toList(),
+                          12.h,
+                          SimpleButton(
+                            radius: 12,
+                            onTap: () {
+                              showAddPropositionDialog();
+                            },
+                            child: EText(
+                              "Ajouter une proposition",
+                              color: Colors.white,
+                            ),
+                          )
+                        ]),
+                ),
+              ]),
+              Container(
+                decoration: BoxDecoration(color: AppColors.background900),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: Icon(Icons.close)),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SimpleButton(
+                          radius: 12,
+                          width: 120,
+                          color: Colors.pinkAccent,
+                          onTap: () {
+                            if (loadingImage.value) {
+                              Fluttertoast.showToast(
+                                  msg:
+                                      "Attendez que l'image finisse de charger");
+                              return;
+                            }
+                            if (title.isEmpty) {
+                              Fluttertoast.showToast(
+                                  msg:
+                                      "Veuillez saisir l'intitulé de la question");
+                              return;
+                            }
+                            if (type.value != QuestionType.qct &&
+                                propositions.length < 2) {
+                              Fluttertoast.showToast(
+                                  msg:
+                                      "Veuillez ajouter au-moins deux propositions");
+                              return;
+                            }
+                            Question? question;
+
+                            //liste en map
+                            Map<String, String> choix = {};
+                            propositions.forEach((value) {
+                              var index = propositions.indexOf(value);
+                              choix.putIfAbsent(index.toString(), () => value);
+                            });
+                            //liste en map
+                            if (type == QuestionType.qcu) {
+                              if (qcuResponse.value.isEmpty) {
+                                Fluttertoast.showToast(
+                                    msg: "Veuillez choisir la reponse");
+                                return;
+                              }
+                              question = Question(
+                                  question: title,
+                                  choix: choix,
+                                  reponse: qcuResponse.value,
+                                  type: QuestionType.qcu);
+                            } else if (type == QuestionType.qcm) {
+                              if (qcmResponse.value.isEmpty) {
+                                Fluttertoast.showToast(
+                                    msg: "Veuillez choisir la reponse");
+                                return;
+                              }
+                              question = Question(
+                                  question: title,
+                                  choix: choix,
+                                  reponse: qcmResponse.value,
+                                  type: QuestionType.qcm);
+                            } else {
+                              if (qctResponse.isEmpty) {
+                                Fluttertoast.showToast(
+                                    msg:
+                                        "Veuillez saisir la réponse à la question");
+                                return;
+                              }
+                              question = Question(
+                                  question: title,
+                                  choix: choix,
+                                  reponse: qctResponse,
+                                  type: QuestionType.qct);
+                            }
+                            question.image = titleImage.value;
+                            questions.add(question);
+                            Get.back();
+                          },
+                          child: EText(
+                            "Ajouter",
+                            color: Colors.white,
+                          )),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
-        ]),
-      ),
-     
-    );
+        ),
+      );
+    });
   }
 
   void showAddPropositionDialog() {
@@ -310,7 +417,6 @@ class AddQuestion extends StatelessWidget {
                 ).onError((_, __) {
                   loadingImage.value = false;
                 });
-                ;
               },
               child: Obx(() => Container(
                     height: 95,
