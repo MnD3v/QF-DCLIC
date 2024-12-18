@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/students/student_details.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/students/evolution/student_details.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/chart.dart';
 import 'package:immobilier_apk/scr/ui/widgets/fl_chart.dart';
 import 'package:immobilier_apk/test.dart';
@@ -184,6 +184,81 @@ class StudentCard extends StatelessWidget {
                   textSpans: [
                     ETextSpan(
                         text: user.points.toStringAsFixed(2),
+                        weight: FontWeight.bold,
+                        color: Colors.greenAccent),
+                  ],
+                  size: 30,
+                  font: Fonts.sevenSegment,
+                ),
+                6.h,
+                Icon(Icons.remove_red_eye)
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class StudentPresenceCard extends StatelessWidget {
+  const StudentPresenceCard({
+    super.key,
+    required this.user,
+  });
+
+  final Utilisateur user;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        // Get.to(StudentDetails(user: user), id: 0);
+      },
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          Container(
+            padding: EdgeInsets.all(12),
+            margin: EdgeInsets.all(6),
+            width: double.infinity,
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.white12),
+                gradient: LinearGradient(colors: [
+                  Color.fromARGB(255, 16, 0, 43),
+                  const Color.fromARGB(255, 29, 0, 75)
+                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                borderRadius: BorderRadius.circular(24)),
+            child: Column(
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 55,
+                      height: 55,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.pink,
+                        child: Icon(
+                          CupertinoIcons.person,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    9.h,
+                    SizedBox(
+                        width: 165,
+                        child: Center(
+                            child: EText(
+                          "${user!.nom} ${user.prenom}",
+                          maxLines: 1,
+                        ))),
+                  ],
+                ),
+                ETextRich(
+                  textSpans: [
+                    ETextSpan(
+                        text: user.heuresTotal.toString(),
                         weight: FontWeight.bold,
                         color: Colors.greenAccent),
                   ],

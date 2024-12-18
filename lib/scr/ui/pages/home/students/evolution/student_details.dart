@@ -20,6 +20,14 @@ class StudentDetails extends StatelessWidget {
       final crossAxisCount =
           (width / 400).toInt() <= 0 ? 1 : (width / 400).toInt();
 
+        waitAfter(5000, (){
+          print("....................");
+            print(max(
+                                            (crossAxisCount ~/
+                                                questionnaires.value!.length),
+                                            1));
+        });
+
       return EScaffold(
         appBar: AppBar(
           title: EText(
@@ -89,8 +97,8 @@ class StudentDetails extends StatelessWidget {
                                     height: max(
                                             (crossAxisCount ~/
                                                 questionnaires.value!.length),
-                                            1) *
-                                        460,
+                                            1) * questionnaires.value!.length *
+                                        165,
                                     child: DynamicHeightGridView(
                                         physics: BouncingScrollPhysics(),
                                         key: Key(questionnaires.value!.length

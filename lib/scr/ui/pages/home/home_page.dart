@@ -15,8 +15,9 @@ import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/ardoise/ardo
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/brouillon/ardoise/ardoise_brouillon.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/brouillon/questionnaire/questionnaire_brouillon.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/view_all_questionnaires.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/students/presence/presence.dart';
 
-import 'package:immobilier_apk/scr/ui/pages/home/students/students.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/students/evolution/students.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/menu.dart';
 import 'package:immobilier_apk/scr/ui/pages/signIn/connexion.dart';
 import 'package:my_widgets/data/models/ardoise_question.dart';
@@ -45,13 +46,6 @@ class _HomePageState extends State<HomePage> {
   PageController pageController = PageController();
 
   var loading = false.obs;
-
-  @override
-  void initState() {
-    streamQuestionsAndUpdate();
-    streamQuestionnairesAndUpdate();
-    super.initState();
-  }
 
   var menuIsOpen = false.obs;
 
@@ -114,6 +108,19 @@ class _HomePageState extends State<HomePage> {
         );
       },
     ),
+     Navigator(
+      key: Get.nestedKey(5), // Clé pour le Navigator local
+      initialRoute: '/', // Page initiale
+      onGenerateRoute: (settings) {
+        // Par défaut, afficher HomePage
+        return MaterialPageRoute(
+          builder: (context) => SizedBox(
+            width: 700,
+            child: Presence(),
+          ),
+        );
+      },
+    ),
   ];
 
   var showBrouillonElements = true.obs;
@@ -141,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                         showBrouillonElements: showBrouillonElements),
                 Obx(
                   () => SizedBox(
-                      width: constraints.maxWidth < 600 ? width : width - 240,
+                      width: constraints.maxWidth < 600 ? width : width - 245,
                       child: AnimatedSwitcher(
                           duration: 666.milliseconds,
                           child: SizedBox(
@@ -155,68 +162,4 @@ class _HomePageState extends State<HomePage> {
       ));
     });
   }
-}
-
-StreamSubscription streamQuestionsAndUpdate() {
-  var user = Utilisateur.currentUser.value!;
-
-  // Téléphone de l'utilisateur actuel
-  var telephone = Utilisateur.currentUser.value!.telephone_id;
-
-  // Souscription au flux de données Firestore
-  return DB
-      .firestore(Collections.classes)
-      .doc(user.classe)
-      .collection(Collections.ardoise)
-      .orderBy("date", descending: true)
-      .snapshots()
-      .listen((snapshot) {
-    // Liste des questions à mettre à jour
-    List<ArdoiseQuestion> questions = [];
-
-    // Traitement des documents reçus
-    for (var element in snapshot.docs) {
-      questions.add(ArdoiseQuestion.fromMap(element.data()));
-    }
-
-    // Mise à jour de `newQuestionsArdoise` avec le nombre de nouvelles questions
-    HomePage.newQuestionsArdoise.value = questions
-        .where((element) => !element.maked.containsKey(telephone))
-        .length;
-  }, onError: (error) {
-    // Gestion des erreurs éventuelles
-    print('Erreur lors du streaming : $error');
-  });
-}
-
-StreamSubscription streamQuestionnairesAndUpdate() {
-  var user = Utilisateur.currentUser.value!;
-
-  // Téléphone de l'utilisateur actuel
-  var telephone = Utilisateur.currentUser.value!.telephone_id;
-
-  // Souscription au flux de données Firestore
-  return DB
-      .firestore(Collections.classes)
-      .doc(user.classe)
-      .collection(Collections.questionnaires)
-      .orderBy("date", descending: true)
-      .snapshots()
-      .listen((snapshot) {
-    // Liste des questionnaires à mettre à jour
-    List<Questionnaire> questionnaires = [];
-
-    // Traitement des documents reçus
-    snapshot.docs.toList().forEach((element) async {
-      questionnaires.add(await Questionnaire.fromMap(element.data()));
-    });
-
-    // Mise à jour de `newQuestionnaires` avec le nombre de nouveaux questionnaires
-    HomePage.newQuestionnaires.value = questionnaires
-        .where((element) => !element.maked.containsKey(telephone))
-        .length;
-  }, onError: (error) {
-    // Gestion des erreurs éventuelles
-    print('Erreur lors du streaming : $error');
-  });
 }

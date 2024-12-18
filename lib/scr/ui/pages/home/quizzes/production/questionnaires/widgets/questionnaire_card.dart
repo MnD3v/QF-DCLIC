@@ -58,6 +58,7 @@ class QuestionnaireCard extends StatelessWidget {
           children: [
             EText(
               questionnaire.title,
+              maxLines: 1,
               color: Colors.white,
               size: 22,
             ),
