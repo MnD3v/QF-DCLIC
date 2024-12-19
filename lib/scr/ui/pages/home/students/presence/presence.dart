@@ -8,6 +8,7 @@ import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/student_card.d
 import 'package:immobilier_apk/scr/ui/widgets/empty.dart';
 import 'package:immobilier_apk/scr/ui/widgets/menu_boutton.dart';
 import 'package:http/http.dart' as http;
+import 'package:ntp/ntp.dart';
 
 class Presence extends StatelessWidget {
   Presence({super.key});
@@ -31,13 +32,13 @@ class Presence extends StatelessWidget {
       final width = constraints.maxWidth;
       final crossAxisCount = width / 250;
       print(crossAxisCount);
-      return FutureBuilder(
-          future: DB
+      return StreamBuilder(
+          stream: DB
               .firestore(Collections.classes)
               .doc(formateur.classe)
               .collection(Collections.utilistateurs)
               .orderBy("heuresTotal", descending: true)
-              .get(),
+              .snapshots(),
           builder: (context, snapshot) {
             if (DB.waiting(snapshot) && users.value.isNul) {
               return ECircularProgressIndicator();
@@ -209,7 +210,7 @@ class Presence extends StatelessWidget {
                       padding: EdgeInsets.all(6),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.greenAccent)),
+                          border: Border.all(color: Colors.greenAccent, width: 3),),
                       child: AnimatedContainer(
                         onEnd: () {
                           presenceAnimation.value = !presenceAnimation.value;

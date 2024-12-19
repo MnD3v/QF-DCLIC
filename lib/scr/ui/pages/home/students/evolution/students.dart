@@ -27,13 +27,13 @@ class Students extends StatelessWidget {
       final width = constraints.maxWidth;
       final crossAxisCount = width / 250;
       print(crossAxisCount);
-      return FutureBuilder(
-          future: DB
+      return StreamBuilder(
+          stream: DB
               .firestore(Collections.classes)
               .doc(formateur.classe)
               .collection(Collections.utilistateurs)
               .orderBy("points", descending: true)
-              .get(),
+              .snapshots(),
           builder: (context, snapshot) {
             if (DB.waiting(snapshot) && users.value.isNul) {
               return ECircularProgressIndicator();
