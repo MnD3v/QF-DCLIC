@@ -64,7 +64,6 @@ class ArdoiseQuestionCard extends StatelessWidget {
                     child: EFadeInImage(
                       height: 120,
                       width: 120,
-                      radius: 12,
                       image: NetworkImage(question.image!)),
                   )
                   : 0.h
@@ -113,9 +112,8 @@ class ArdoiseQuestionCard extends StatelessWidget {
                                           );
                                         },
                                         child: EFadeInImage(
-                                          height: 90,
-                                          width: 130,
-                                          radius: 12,
+                                          height: 120,
+                                          width: 120,
                                           image:
                                               NetworkImage(question.choix[e]!),
                                         ),
@@ -159,8 +157,8 @@ class ArdoiseQuestionCard extends StatelessWidget {
                                         );
                                       },
                                       child: EFadeInImage(
-                                        radius: 12,
                                         width: 120,
+                                        height: 120,
                                         image: NetworkImage(question.choix[e]!),
                                       ),
                                     ),

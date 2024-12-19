@@ -162,7 +162,7 @@ class UserArdoiseResponseCard extends StatelessWidget {
                                               });
                                             },
                                             child: EFadeInImage(
-                                              height: 90,
+                                              height: 120,
                                               width: 120,
                                               radius: 12,
                                               image: NetworkImage(
@@ -228,7 +228,7 @@ class UserArdoiseResponseCard extends StatelessWidget {
                                             });
                                           },
                                           child: EFadeInImage(
-                                            height: 90,
+                                            height: 120,
                                             width: 120,
                                             radius: 12,
                                             image: NetworkImage(

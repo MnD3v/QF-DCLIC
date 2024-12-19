@@ -47,7 +47,8 @@ class QuestionnaireCard extends StatelessWidget {
             color: idUser.isNotNul && !questionnaire.maked.containsKey(idUser)
                 ? Colors.red.withOpacity(.1)
                 : null,
-           gradient: LinearGradient(colors: [
+           gradient: idUser.isNotNul && !questionnaire.maked.containsKey(idUser)
+                ?null: LinearGradient(colors: [
           Color.fromARGB(255, 16, 0, 43),
           const Color.fromARGB(255, 29, 0, 75)
         ], begin: Alignment.topLeft, end: Alignment.bottomRight),

@@ -72,6 +72,7 @@ class NewWidget extends StatelessWidget {
       padding: EdgeInsets.all(24),
       margin: EdgeInsets.all(6),
       decoration: BoxDecoration(
+        color: AppColors.background900,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.white12)),
       child: Column(
@@ -79,7 +80,7 @@ class NewWidget extends StatelessWidget {
           EText(element),
           Obx(
             () => present.value == null
-                ? ECircularProgressIndicator()
+                ? ECircularProgressIndicator(height: 20,)
                 : present.value == true
                     ? EText(
                         "Présent",

@@ -403,8 +403,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                                                 alignment: Alignment.centerLeft,
                                                 child: EFadeInImage(
                                                   width: 120,
-                                                  height: 90,
-                                                  radius: 24,
+                                                  height: 120,
                                                   image: NetworkImage(element),
                                                 ),
                                               )
@@ -427,8 +426,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                                                 alignment: Alignment.centerLeft,
                                                 child: EFadeInImage(
                                                   width: 120,
-                                                  height: 90,
-                                                  radius: 24,
+                                                  height: 120,
                                                   image: NetworkImage(element),
                                                 ),
                                               )
