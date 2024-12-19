@@ -2,6 +2,7 @@ import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/signIn/connexion.dart';
+import 'package:immobilier_apk/scr/ui/pages/signIn/inscription.dart';
 
 class Menu extends StatelessWidget {
   Menu({
@@ -70,6 +71,7 @@ class Menu extends StatelessWidget {
               ])
             ],
           ),
+
           12.h,
           DottedDashedLine(
             height: 1,
@@ -133,7 +135,6 @@ class Menu extends StatelessWidget {
                   ),
                   MenuItem(
                     subElement: true,
-
                     currentIndex: currentIndex,
                     label: "Presence",
                     icon: CupertinoIcons.square,
@@ -205,7 +206,6 @@ class Menu extends StatelessWidget {
                 child: EColumn(children: [
                   MenuItem(
                     subElement: true,
-
                     currentIndex: currentIndex,
                     label: "Questionnaires",
                     icon: CupertinoIcons.question_diamond_fill,
@@ -213,7 +213,6 @@ class Menu extends StatelessWidget {
                   ),
                   MenuItem(
                     subElement: true,
-
                     currentIndex: currentIndex,
                     label: "Ardoise",
                     icon: CupertinoIcons.square,
@@ -312,6 +311,16 @@ class Menu extends StatelessWidget {
             dashColor: Colors.white38,
           ),
           24.h,
+          !user.admin
+              ? 0.h
+              : SimpleButton(
+                  onTap: () {
+                    Custom.showDialog(
+                        dialog: Dialog(child: Inscription(function: () {})));
+                  },
+                  child: EText("Ajouter un foramteur"),
+                ),
+          12.h,
           SimpleOutlineButton(
             radius: 12,
             color: Colors.pink,
@@ -364,7 +373,7 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Opacity(
-      opacity: subElement == true? .6: 1,
+      opacity: subElement == true ? .6 : 1,
       child: InkWell(
           onTap: () {
             if (Get.isDialogOpen ?? false) {

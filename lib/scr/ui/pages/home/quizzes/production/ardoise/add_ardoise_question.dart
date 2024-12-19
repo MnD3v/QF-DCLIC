@@ -95,20 +95,18 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                           var user = Utilisateur.currentUser.value!;
 
                           if (loadingImage.value) {
-                            Fluttertoast.showToast(
-                                msg: "Attendez que l'image finisse de charger");
+                            Toasts.error(context,description: 
+                                 "Attendez que l'image finisse de charger");
                             return;
                           }
                           if (title.isEmpty) {
-                            Fluttertoast.showToast(
-                                msg:
+                            Toasts.error(context,description: 
                                     "Veuillez saisir l'intitulé de la question");
                             return;
                           }
                           if (type.value != QuestionType.qct &&
                               propositions.length < 2) {
-                            Fluttertoast.showToast(
-                                msg:
+                            Toasts.error(context,description: 
                                     "Veuillez ajouter au-moins deux propositions");
                             return;
                           }
@@ -123,8 +121,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                           //liste en map
                           if (type == QuestionType.qcu) {
                             if (qcuResponse.value.isEmpty) {
-                              Fluttertoast.showToast(
-                                  msg: "Veuillez choisir la reponse");
+                              Toasts.error(context,description:  "Veuillez choisir la reponse");
                               return;
                             }
                             question = ArdoiseQuestion(
@@ -139,8 +136,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                                 type: QuestionType.qcu);
                           } else if (type == QuestionType.qcm) {
                             if (qcmResponse.value.isEmpty) {
-                              Fluttertoast.showToast(
-                                  msg: "Veuillez choisir la reponse");
+                              Toasts.error(context,description:  "Veuillez choisir la reponse");
                               return;
                             }
                             question = ArdoiseQuestion(
@@ -155,8 +151,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                                 type: QuestionType.qcm);
                           } else {
                             if (qctResponse.isEmpty) {
-                              Fluttertoast.showToast(
-                                  msg:
+                              Toasts.error(context,description: 
                                       "Veuillez saisir la réponse à la question");
                               return;
                             }
@@ -481,13 +476,11 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                 placeholder: "Saisissez une proposition",
                 onSubmitted: (value) {
                   if (proposition.isEmpty) {
-                    Fluttertoast.showToast(
-                        msg: "Veuillez saisir une proposition valable");
+                    Toasts.error(context,description:  "Veuillez saisir une proposition valable");
                     return;
                   }
                   if (propositions.contains(proposition)) {
-                    Fluttertoast.showToast(
-                        msg: "Evitez d'entrer des propositions identiques");
+                    Toasts.error(context,description:  "Evitez d'entrer des propositions identiques");
                     return;
                   }
                   propositions.add(proposition);
@@ -556,13 +549,11 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
               color: Colors.pinkAccent,
               onTap: () {
                 if (proposition.isEmpty) {
-                  Fluttertoast.showToast(
-                      msg: "Veuillez saisir une proposition valable");
+                  Toasts.error(context,description:  "Veuillez saisir une proposition valable");
                   return;
                 }
                 if (propositions.contains(proposition)) {
-                  Fluttertoast.showToast(
-                      msg: "Evitez d'entrer des propositions identiques");
+                  Toasts.error(context,description:  "Evitez d'entrer des propositions identiques");
                   return;
                 }
                 propositions.add(proposition);

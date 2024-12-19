@@ -41,17 +41,7 @@ class Connexion extends StatelessWidget {
                 title: const TitleText(
                   "Connexion",
                 ),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Get.to(Inscription(function: () {}));
-                      },
-                      child: EText(
-                        "Inscription",
-                        size: 22,
-                        weight: FontWeight.bold,
-                      ))
-                ],
+              
               ),
               body: Obx(
                 () => IgnorePointer(

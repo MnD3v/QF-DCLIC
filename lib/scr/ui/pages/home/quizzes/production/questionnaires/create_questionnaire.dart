@@ -74,13 +74,11 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                         var user = Utilisateur.currentUser.value!;
 
                         if (titre.isEmpty) {
-                          Fluttertoast.showToast(
-                              msg: "Veuillez saisir le titre du questionnaire");
+                          Toasts.error(context,description:  "Veuillez saisir le titre du questionnaire");
                           return;
                         }
                         if (questions.isEmpty) {
-                          Fluttertoast.showToast(
-                              msg: "Veuillez ajouter au moin une question");
+                          Toasts.error(context,description:  "Veuillez ajouter au moin une question");
                           return;
                         }
                         _loading.value = true;
