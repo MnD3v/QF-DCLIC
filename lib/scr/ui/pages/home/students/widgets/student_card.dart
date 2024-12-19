@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/evolution/student_details.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/students/presence/presence_details.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/chart.dart';
 import 'package:immobilier_apk/scr/ui/widgets/fl_chart.dart';
 import 'package:immobilier_apk/test.dart';
@@ -213,7 +214,7 @@ class StudentPresenceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Get.to(StudentDetails(user: user), id: 0);
+        Get.to(PresenceDetails(user: user), id: 5);
       },
       child: Stack(
         alignment: Alignment.topRight,
@@ -258,9 +259,11 @@ class StudentPresenceCard extends StatelessWidget {
                 ETextRich(
                   textSpans: [
                     ETextSpan(
-                        text: user.heuresTotal.toString(),
+                        text: "${user.heuresTotal}",
                         weight: FontWeight.bold,
                         color: Colors.greenAccent),
+                        ETextSpan(text: " h", font: Fonts.poppins, size: 20)
+                      
                   ],
                   size: 30,
                   font: Fonts.sevenSegment,
