@@ -114,6 +114,7 @@ class QuestionCard extends StatelessWidget {
                     : Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: ETextField(
+                          border: false,
                             maxLines: 6,
                             minLines: 3,
                             radius: 18,

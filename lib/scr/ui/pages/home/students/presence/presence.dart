@@ -29,6 +29,7 @@ class Presence extends StatelessWidget {
     var code = Random().nextDouble().toString().split(".")[1].substring(0, 5);
 
     return LayoutBuilder(builder: (context, constraints) {
+        calculStats();
       final width = constraints.maxWidth;
       final crossAxisCount = width / 250;
       print(crossAxisCount);
@@ -130,7 +131,7 @@ class Presence extends StatelessWidget {
                     DB
                         .firestore(Collections.classes)
                         .doc(user.classe)
-                        .collection(Collections.presence)
+                        .collection(Collections.sessions)
                         .doc(date)
                         .set({"date": date});
 
@@ -139,7 +140,7 @@ class Presence extends StatelessWidget {
                       DB
                           .firestore(Collections.classes)
                           .doc(user.classe)
-                          .collection(Collections.presence)
+                          .collection(Collections.verification)
                           .doc("Verification")
                           .set({
                         "verification": true,
@@ -189,7 +190,7 @@ class Presence extends StatelessWidget {
                                         DB
                                             .firestore(Collections.classes)
                                             .doc(user.classe)
-                                            .collection(Collections.presence)
+                                            .collection(Collections.verification)
                                             .doc("Verification")
                                             .set({
                                           "verification": false,
@@ -247,5 +248,9 @@ class Presence extends StatelessWidget {
     } catch (e) {
       return 'Erreur : $e';
     }
+  }
+  calculStats()async{
+   var q = await DB.firestore(Collections.classes).doc(user.classe).collection(Collections.sessions).get();
+   print(q.docs.length);
   }
 }

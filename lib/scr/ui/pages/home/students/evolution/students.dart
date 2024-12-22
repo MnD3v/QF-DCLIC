@@ -85,10 +85,29 @@ class Students extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Obx(()=>
-                     downloadLoading.value
-                        ? ECircularProgressIndicator(
-                            height: 20,
+                  Obx(
+                    () => downloadLoading.value
+                        ? SizedBox(
+                            height: 25,
+                            width: 25,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Obx(()=>
+                                   CircularProgressIndicator(
+                                    color: Colors.pinkAccent,
+                                    backgroundColor: Colors.white30,
+                                    strokeWidth: 2.2,
+                                    value: effectue.value,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.download_rounded,
+                                  color: Colors.pinkAccent,
+                                  size: 18,
+                                )
+                              ],
+                            ),
                           )
                         : IconButton(
                             onPressed: () {
@@ -126,7 +145,23 @@ class Students extends StatelessWidget {
     });
   }
 
+  Future<bool> presenceVerification({required session, required userID}) async {
+    var q = await DB
+        .firestore(Collections.classes)
+        .doc(user.classe)
+        .collection(Collections.sessions)
+        .doc(session)
+        .collection(Collections.sessions)
+        .doc(userID)
+        .get();
+
+    return q.exists;
+  }
+
+  var effectue = 0.06.obs;
+
   void save() async {
+    effectue = 0.1.obs;
     downloadLoading.value = true;
     // Exemple de données des utilisateurs
     var students = users.value!.map((element) => element).toList();
@@ -144,7 +179,6 @@ class Students extends StatelessWidget {
     for (var student in students) {
       quizMaked = 0;
       double points = 0;
-      print("****************");
 
       for (var element in q.docs) {
         var q = await DB
@@ -159,38 +193,75 @@ class Students extends StatelessWidget {
             .get();
         if (q.exists) {
           quizMaked++;
-          print(q.data()!["pointsGagne"].toString() +
-              " " +
-              jsonDecode(q.data()!["response"]).length.toString());
           points += q.data()!["pointsGagne"] *
               100 /
               jsonDecode(q.data()!["response"]).length;
         }
       }
-      print("****************");
       var index = students.indexOf(student);
       studentsMap[index].putIfAbsent("quiz_effectue", () => quizMaked);
       studentsMap[index].putIfAbsent("reussite", () => points / quizMaked);
+
+      var qs = await DB
+          .firestore(Collections.classes)
+          .doc(user.classe)
+          .collection(Collections.sessions)
+          .get();
+
+      // ----------- presence
+
+      Map<String, bool> presence = {};
+
+      for (var element in qs.docs) {
+        var present = await presenceVerification(
+            session: element.id, userID: student.telephone_id);
+        presence.putIfAbsent(element.id, () => present);
+      }
+      studentsMap[index].putIfAbsent(
+        "presence",
+        () => presence.values.where((element) => element).length,
+      );
+      studentsMap[index].putIfAbsent(
+        "absence",
+        () => presence.values.where((element) => !element).length,
+      );
+      studentsMap[index].putIfAbsent(
+        "session_total",
+        () => presence.values.length,
+      );
+      // -------------- presence
+      print("////////////");
+      print(index);
+      print("////////////");
+
+
+      effectue.value = ((index +1)  / students.length);
     }
     List<List<dynamic>> rows = [
       [
         "Nom",
         "Prénom",
         "Numéro",
-        "Heures Présence",
         "Quiz effectués",
         "Quiz total",
-        "Moyenne de réussite"
+        "Taux de Réussite",
+        "Heures de Présence",
+        "Nombre de Présence",
+        "Nombre d'Absence",
+        "Nombre de Sessions"
       ], // En-tête
       for (var student in studentsMap)
         [
           "${student["nom"]}", // Ajout de guillemets pour les champs texte
           "${student["prenom"]}",
           "${student["telephone_id"]}",
-          student["heuresTotal"] ?? "0",
           student["quiz_effectue"],
           q.docs.length,
-          student["reussite"].toDouble().toStringAsFixed(2),
+          student["reussite"].toDouble().toStringAsFixed(2) + " %",
+          student["heuresTotal"] ?? "0",
+          "${student["presence"]}", // Ajout de guillemets pour les champs texte
+          "${student["absence"]}",
+          "${student["session_total"]}",
         ]
     ];
 
@@ -207,7 +278,7 @@ class Students extends StatelessWidget {
     // Crée un lien de téléchargement
     final anchor = AnchorElement(href: url)
       ..target = 'blank'
-      ..download = 'etudiants.csv'
+      ..download = 'etudiants_${DateTime.now()}.csv'
       ..click();
 
     // Nettoie l'URL après le téléchargement

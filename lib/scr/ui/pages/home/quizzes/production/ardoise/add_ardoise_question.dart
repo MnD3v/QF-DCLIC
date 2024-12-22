@@ -335,7 +335,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                       child: type.value == QuestionType.qct
                           ? EColumn(
                               children: [
-                                EText("Entrez la réponse"),
+                                EText("Réponse attendu"),
                                 ETextField(
                                     initialValue: qctResponse,
                                     placeholder:
