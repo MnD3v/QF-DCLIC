@@ -5,8 +5,8 @@ import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/add_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/question_card.dart';
 
-class UserQuestionCard extends StatelessWidget {
-  UserQuestionCard(
+class UserQuestionViewCard extends StatelessWidget {
+  UserQuestionViewCard(
       {super.key,
       required this.userID,
       required this.index,
@@ -69,6 +69,21 @@ class UserQuestionCard extends StatelessWidget {
                   size: 22,
                 ),
               ),
+               element.image.isNotNul
+                  ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 9.0),
+                    child: InkWell(
+                      
+                      onTap: (){
+                        showImageViewer(context, NetworkImage(element.image!));
+                      },
+                      child: EFadeInImage(
+                        height: 120,
+                        width: 120,
+                        image: NetworkImage(element.image!)),
+                    ),
+                  )
+                  : 0.h
             ],
           ),
         ),

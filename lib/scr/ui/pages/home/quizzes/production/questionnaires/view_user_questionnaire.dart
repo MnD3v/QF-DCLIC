@@ -8,7 +8,7 @@ import 'package:immobilier_apk/scr/config/app/export.dart';
 
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/add_question.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/question_card.dart';
-import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/user_question_card.dart';
+import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/widgets/user_question_view_card.dart';
 import 'package:my_widgets/data/models/question_type.dart';
 import 'package:my_widgets/data/models/questionnaire.dart';
 
@@ -77,7 +77,7 @@ class _ViewUserQuestionnaireState extends State<ViewUserQuestionnaire> {
                   var element = widget.questionnaire.questions[index];
                   var qcmResponse = RxList<String>();
                   var qcuResponse = "".obs;
-                  return UserQuestionCard(
+                  return UserQuestionViewCard(
                       userID: widget.userID,
                       element: element,
                       index: index,
