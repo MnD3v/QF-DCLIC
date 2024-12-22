@@ -318,7 +318,7 @@ class Menu extends StatelessWidget {
                     Custom.showDialog(
                         dialog: Dialog(child: Inscription(function: () {})));
                   },
-                  child: EText("Ajouter un foramteur"),
+                  child: EText("Ajouter un formateur"),
                 ),
           12.h,
           SimpleOutlineButton(

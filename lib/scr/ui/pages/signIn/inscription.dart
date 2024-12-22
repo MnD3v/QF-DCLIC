@@ -55,6 +55,7 @@ class Inscription extends StatelessWidget {
                       const BigTitleText(
                         "Inscription",
                       ),
+
                       34.h,
                       UnderLineTextField(
                         label: "Votre nom",
@@ -195,8 +196,13 @@ class Inscription extends StatelessWidget {
                                   Get.back();
                                   Toasts.success(context,
                                       description:
-                                          "Vous vous êtes connecté avec succès");
-                                  Utilisateur.refreshToken();
+                                          "Création de compte effectué avec succès");
+                                             await FirebaseAuth.instance
+                                      .signInWithEmailAndPassword(
+                                    email:
+                                        "${Utilisateur.currentUser.value!.telephone_id}@gmail.com",
+                                    password: Utilisateur.currentUser.value!.password,
+                                  );
                                   waitAfter(1000, () {
                                     function();
                                   });
