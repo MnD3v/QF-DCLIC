@@ -189,7 +189,7 @@ class Inscription extends StatelessWidget {
                                     password: utilisateur.password,
                                   );
                                   utilisateur.formateur = true;
-                                  await Utilisateur.setUser(utilisateur);
+                                  await Utilisateur.setUser(utilisateur, notSetUser: true);
 
                                   isLoading.value = false;
 
