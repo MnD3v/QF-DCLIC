@@ -248,7 +248,7 @@ class Students extends StatelessWidget {
         "Heures de Présence",
         "Nombre de Présence",
         "Nombre d'Absence",
-        "Nombre de Sessions"
+        "Nombre total de Sessions"
       ], // En-tête
       for (var student in studentsMap)
         [
