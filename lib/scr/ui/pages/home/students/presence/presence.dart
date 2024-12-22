@@ -21,6 +21,7 @@ class Presence extends StatelessWidget {
 
   var presenceAnimation = false.obs;
 
+  var useIP = true.obs;
   @override
   Widget build(BuildContext context) {
     waitAfter(555, () {
@@ -29,7 +30,7 @@ class Presence extends StatelessWidget {
     var code = Random().nextDouble().toString().split(".")[1].substring(0, 5);
 
     return LayoutBuilder(builder: (context, constraints) {
-        calculStats();
+      calculStats();
       final width = constraints.maxWidth;
       final crossAxisCount = width / 250;
       print(crossAxisCount);
@@ -145,6 +146,7 @@ class Presence extends StatelessWidget {
                           .set({
                         "verification": true,
                         "code": code,
+                        "useIP": true,
                         "date": date,
                         "ip": ipAdress.value,
                         "heures": moment == "Matin" ? 4 : 3
@@ -176,7 +178,32 @@ class Presence extends StatelessWidget {
                                                     height: 20,
                                                   )
                                                 : EText(ipAdress.value,
-                                                    color: Colors.pinkAccent)
+                                                    color: Colors.pinkAccent),
+                                            Switch(
+                                                value: useIP.value,
+                                                activeTrackColor:
+                                                    const Color.fromARGB(
+                                                        255, 255, 156, 211),
+                                                hoverColor: Colors.white,
+                                                thumbColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.pink),
+                                                onChanged: (value) {
+                                                  useIP.value = value;
+                                                  DB
+                                                      .firestore(
+                                                          Collections.classes)
+                                                      .doc(user.classe)
+                                                      .collection(Collections
+                                                          .verification)
+                                                      .doc("Verification")
+                                                      .set({
+                                                    "verification": true,
+                                                    "useIP": useIP.value,
+                                                    "date": date,
+                                                    "ip": ipAdress.value
+                                                  });
+                                                })
                                           ],
                                         )),
                                     Center(
@@ -190,10 +217,12 @@ class Presence extends StatelessWidget {
                                         DB
                                             .firestore(Collections.classes)
                                             .doc(user.classe)
-                                            .collection(Collections.verification)
+                                            .collection(
+                                                Collections.verification)
                                             .doc("Verification")
                                             .set({
                                           "verification": false,
+                                          "useIP": useIP.value,
                                           "date": date,
                                           "ip": ipAdress.value
                                         });
@@ -210,8 +239,9 @@ class Presence extends StatelessWidget {
                     () => Container(
                       padding: EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.greenAccent, width: 3),),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.greenAccent, width: 3),
+                      ),
                       child: AnimatedContainer(
                         onEnd: () {
                           presenceAnimation.value = !presenceAnimation.value;
@@ -249,8 +279,13 @@ class Presence extends StatelessWidget {
       return 'Erreur : $e';
     }
   }
-  calculStats()async{
-   var q = await DB.firestore(Collections.classes).doc(user.classe).collection(Collections.sessions).get();
-   print(q.docs.length);
+
+  calculStats() async {
+    var q = await DB
+        .firestore(Collections.classes)
+        .doc(user.classe)
+        .collection(Collections.sessions)
+        .get();
+    print(q.docs.length);
   }
 }
