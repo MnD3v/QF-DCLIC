@@ -149,7 +149,6 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
              questions.isEmpty? Column(
                children: [
                  Image(image: AssetImage(Assets.image("empty-2.png"), ),height: 80,),
-                 EText("Aucune question ajoutée", color: Colors.pinkAccent,)
                ],
              ):        Column(
                           children: questions.map((element) {
@@ -159,6 +158,8 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                                 element.type == QuestionType.qcm ? [] : "")
                             .toList();
                         return QuestionCard(
+                          withEditButtons: true,
+                          questions: questions,
                           idUser: null,
                           dejaRepondu: true.obs,
                           element: element,
@@ -195,6 +196,7 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                                     child: ConstrainedBox(
                                       constraints: BoxConstraints(maxWidth: 700),
                                       child: AddQuestion(
+                                        question: null,
                                         questions: questions,
                                       ),
                                     ),

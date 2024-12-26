@@ -70,6 +70,7 @@ class _ViewQuestionnaireState extends State<ViewQuestionnaire> {
                       var qcmResponse = RxList<String>([]);
                 var qcuResponse = "".obs;
                 return QuestionCard(
+                  questions: widget.questionnaire.questions.obs,
                   idUser: widget.idUser,
                     element: element,
                     index: index,

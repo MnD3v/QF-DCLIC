@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
@@ -47,6 +48,9 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
             .map((element) => element.toString())
             .toList();
       }
+      type.value = widget.question!.type;
+      propositions.value = widget.question!.choix.values.toList();
+      title = widget.question!.question;
     }
     super.initState();
   }
@@ -73,396 +77,447 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                 color: AppColors.background900,
                 borderRadius: BorderRadius.circular(12)),
             width: width,
-            child: EScaffold(
-              color: Colors.transparent,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                surfaceTintColor: Colors.transparent,
-                automaticallyImplyLeading: Get.width < 600,
-                title: EText(
-                  "Ajouter une question",
-                  size: 24,
-                  weight: FontWeight.bold,
-                ),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SimpleButton(
-                        radius: 12,
-                        width: 140,
-                        color: Colors.pink,
-                        onTap: () async {
-                          var user = Utilisateur.currentUser.value!;
-
-                          if (loadingImage.value) {
-                            Toasts.error(context,description: 
-                                 "Attendez que l'image finisse de charger");
-                            return;
-                          }
-                          if (title.isEmpty) {
-                            Toasts.error(context,description: 
-                                    "Veuillez saisir l'intitulé de la question");
-                            return;
-                          }
-                          if (type.value != QuestionType.qct &&
-                              propositions.length < 2) {
-                            Toasts.error(context,description: 
-                                    "Veuillez ajouter au-moins deux propositions");
-                            return;
-                          }
-                          ArdoiseQuestion question;
-
-                          //liste en map
-                          Map<String, String> choix = {};
-                          propositions.forEach((value) {
-                            var index = propositions.indexOf(value);
-                            choix.putIfAbsent(index.toString(), () => value);
-                          });
-                          //liste en map
-                          if (type == QuestionType.qcu) {
-                            if (qcuResponse.value.isEmpty) {
-                              Toasts.error(context,description:  "Veuillez choisir la reponse");
-                              return;
-                            }
-                            question = ArdoiseQuestion(
-                                date: DateTime.now().toString(),
-                                id: DateTime.now()
-                                    .millisecondsSinceEpoch
-                                    .toString(),
-                                maked: {},
-                                question: title,
-                                choix: choix,
-                                reponse: qcuResponse.value,
-                                type: QuestionType.qcu);
-                          } else if (type == QuestionType.qcm) {
-                            if (qcmResponse.value.isEmpty) {
-                              Toasts.error(context,description:  "Veuillez choisir la reponse");
-                              return;
-                            }
-                            question = ArdoiseQuestion(
-                                date: DateTime.now().toString(),
-                                id: DateTime.now()
-                                    .millisecondsSinceEpoch
-                                    .toString(),
-                                maked: {},
-                                question: title,
-                                choix: choix,
-                                reponse: qcmResponse.value,
-                                type: QuestionType.qcm);
-                          } else {
-                            if (qctResponse.isEmpty) {
-                              Toasts.error(context,description: 
-                                      "Veuillez saisir la réponse à la question");
-                              return;
-                            }
-                            question = ArdoiseQuestion(
-                                date: DateTime.now().toString(),
-                                id: DateTime.now()
-                                    .millisecondsSinceEpoch
-                                    .toString(),
-                                maked: {},
-                                question: title,
-                                choix: choix,
-                                reponse: qctResponse,
-                                type: QuestionType.qct);
-                          }
-                          // questions.add(question);
-                          _loading.value = true;
-                          //verifier si c'est une mise a jour
-                          if (widget.question != null) {
-                            question.id = widget.question!.id;
-                          }
-                          //verifier si c'est une mise a jour
-
-                          question.image = titleImage.value;
-
-                          if (widget.brouillon == true) {
-                            question.save(brouillon: true);
-                          } else {
-                            question.save(brouillon: false);
-                          }
-
-                          _loading.value = false;
-
-                          Get.back(id: widget.brouillon == true ? 4 : 2);
-                        },
-                        child: Obx(
-                          () => _loading.value
-                              ? ECircularProgressIndicator(
-                                  height: 20,
-                                  color: Colors.white,
-                                )
-                              : EText(
-                                  widget.brouillon == true
-                                      ? "Enregistrer"
-                                      : "Publier",
-                                  color: Colors.white,
-                                ),
-                        )),
+            child: LayoutBuilder(builder: (context, constraints) {
+           
+              return EScaffold(
+                color: Colors.transparent,
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  automaticallyImplyLeading: Get.width < 600,
+                  title: EText(
+                    "Ajouter une question",
+                    size: 24,
+                    weight: FontWeight.bold,
                   ),
-                ],
-              ),
-              body: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: EColumn(children: [
-                  EText("Ajoutez l'intitulé de la question"),
-                  6.h,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: constraints.maxWidth - 120,
-                        child: ETextField(
-                            placeholder: "Saisissez l'intitulé de la question",
-                            onChanged: (value) {
-                              title = value;
-                            },
-                            phoneScallerFactor: phoneScallerFactor),
-                      ),
-                      6.w,
-                      InkWell(
-                        onTap: () {
-                          ImagePicker()
-                              .pickImage(
-                            source: ImageSource.gallery,
-                          )
-                              .then(
-                            (value) async {
-                              loadingImage.value = true;
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SimpleButton(
+                          radius: 12,
+                          width: 140,
+                          color: Colors.pink,
+                          onTap: () async {
+                            var user = Utilisateur.currentUser.value!;
 
-                              var link;
-                              if (kIsWeb) {
-                                link = await FStorage.putData(
-                                    await value!.readAsBytes());
-                              } else {
-                                link =
-                                    await FStorage.putFile(File(value!.path));
+                            if (loadingImage.value) {
+                              Toasts.error(context,
+                                  description:
+                                      "Attendez que l'image finisse de charger");
+                              return;
+                            }
+                            if (title.isEmpty) {
+                              Toasts.error(context,
+                                  description:
+                                      "Veuillez saisir l'intitulé de la question");
+                              return;
+                            }
+                            if (type.value != QuestionType.qct &&
+                                propositions.length < 2) {
+                              Toasts.error(context,
+                                  description:
+                                      "Veuillez ajouter au-moins deux propositions");
+                              return;
+                            }
+                            ArdoiseQuestion question;
+
+                            //liste en map
+                            Map<String, String> choix = {};
+                            propositions.forEach((value) {
+                              var index = propositions.indexOf(value);
+                              choix.putIfAbsent(index.toString(), () => value);
+                            });
+                            //liste en map
+                            if (type == QuestionType.qcu) {
+                              if (qcuResponse.value.isEmpty) {
+                                Toasts.error(context,
+                                    description: "Veuillez choisir la reponse");
+                                return;
                               }
-                              loadingImage.value = false;
-                              print(link);
-                              titleImage.value = link;
-                            },
-                          ).onError((_, __) {
-                            loadingImage.value = false;
-                          });
-                        },
-                        child: Container(
-                            height: 50,
-                            width: 50,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(9),
-                                border: Border.all(color: Colors.pinkAccent)),
-                            child: Obx(
-                              () => titleImage.value != null
-                                  ? EFadeInImage(
-                                      height: 50,
-                                      width: 50,
-                                      radius: 9,
-                                      image: NetworkImage(titleImage.value!))
-                                  : loadingImage.value
-                                      ? ECircularProgressIndicator(
-                                          height: 16,
-                                        )
-                                      : Icon(
-                                          Icons.image_outlined,
-                                          color: Colors.pinkAccent,
-                                        ),
-                            )),
-                      )
-                    ],
-                  ),
-                  12.h,
-                  Container(
-                    padding: EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                        // color: Colors.white10,
-                        borderRadius: BorderRadius.circular(12)),
-                    child: EColumn(
+                              question = ArdoiseQuestion(
+                                  date: DateTime.now().toString(),
+                                  id: DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toString(),
+                                  maked: {},
+                                  question: title,
+                                  choix: choix,
+                                  reponse: qcuResponse.value,
+                                  type: QuestionType.qcu);
+                            } else if (type == QuestionType.qcm) {
+                              if (qcmResponse.value.isEmpty) {
+                                Toasts.error(context,
+                                    description: "Veuillez choisir la reponse");
+                                return;
+                              }
+                              question = ArdoiseQuestion(
+                                  date: DateTime.now().toString(),
+                                  id: DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toString(),
+                                  maked: {},
+                                  question: title,
+                                  choix: choix,
+                                  reponse: qcmResponse.value,
+                                  type: QuestionType.qcm);
+                            } else {
+                              if (qctResponse.isEmpty) {
+                                Toasts.error(context,
+                                    description:
+                                        "Veuillez saisir la réponse à la question");
+                                return;
+                              }
+                              question = ArdoiseQuestion(
+                                  date: DateTime.now().toString(),
+                                  id: DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toString(),
+                                  maked: {},
+                                  question: title,
+                                  choix: choix,
+                                  reponse: qctResponse,
+                                  type: QuestionType.qct);
+                            }
+                            // questions.add(question);
+                            _loading.value = true;
+                            //verifier si c'est une mise a jour
+                            if (widget.question != null) {
+                              question.id = widget.question!.id;
+                            }
+                            //verifier si c'est une mise a jour
+
+                            question.image = titleImage.value;
+
+                            if (widget.brouillon == true) {
+                              question.save(brouillon: true);
+                            } else {
+                              question.save(brouillon: false);
+                            }
+
+                            _loading.value = false;
+
+                            Get.back(id: widget.brouillon == true ? 4 : 2);
+                          },
+                          child: Obx(
+                            () => _loading.value
+                                ? ECircularProgressIndicator(
+                                    height: 20,
+                                    color: Colors.white,
+                                  )
+                                : EText(
+                                    widget.brouillon == true
+                                        ? "Enregistrer"
+                                        : "Publier",
+                                    color: Colors.white,
+                                  ),
+                          )),
+                    ),
+                  ],
+                ),
+                body: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: EColumn(children: [
+                    EText("Ajoutez l'intitulé de la question"),
+                    6.h,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        6.h,
-                        EText("Choisir le type de la question"),
-                        Obx(
-                          () => Column(
-                            children: [
-                              RadioListTile(
-                                // ignore: deprecated_member_use
-                                fillColor: MaterialStateColor.resolveWith(
-                                    (states) => type.value == QuestionType.qcm
-                                        ? Colors.pinkAccent
-                                        : Colors.grey),
-                                value: QuestionType.qcm,
-                                groupValue: type.value,
-                                onChanged: (value) {
-                                  type.value = value!;
-                                },
-                                title: EText("QCM"),
-                              ),
-                              RadioListTile(
-                                fillColor: MaterialStateColor.resolveWith(
-                                    (states) => type.value == QuestionType.qcu
-                                        ? Colors.pinkAccent
-                                        : Colors.grey),
-                                value: QuestionType.qcu,
-                                groupValue: type.value,
-                                onChanged: (value) {
-                                  type.value = value!;
-                                },
-                                title: EText("QCU"),
-                              ),
-                              RadioListTile(
-                                fillColor: MaterialStateColor.resolveWith(
-                                    (states) => type.value == QuestionType.qct
-                                        ? Colors.pinkAccent
-                                        : Colors.grey),
-                                value: QuestionType.qct,
-                                groupValue: type.value,
-                                onChanged: (value) {
-                                  type.value = value!;
-                                },
-                                title: EText("QCT"),
-                              ),
-                            ],
-                          ),
+                        SizedBox(
+                          width: constraints.maxWidth - 85,
+                          child: ETextField(
+                              initialValue: title,
+                              placeholder:
+                                  "Saisissez l'intitulé de la question",
+                              onChanged: (value) {
+                                title = value;
+                              },
+                              phoneScallerFactor: phoneScallerFactor),
                         ),
+                        6.w,
+                        InkWell(
+                          onTap: () {
+                            ImagePicker()
+                                .pickImage(
+                              source: ImageSource.gallery,
+                            )
+                                .then(
+                              (value) async {
+                                loadingImage.value = true;
+
+                                var link;
+                                if (kIsWeb) {
+                                  link = await FStorage.putData(
+                                      await value!.readAsBytes());
+                                } else {
+                                  link =
+                                      await FStorage.putFile(File(value!.path));
+                                }
+                                loadingImage.value = false;
+                                print(link);
+                                titleImage.value = link;
+                              },
+                            ).onError((_, __) {
+                              loadingImage.value = false;
+                            });
+                          },
+                          child: Container(
+                              height: 50,
+                              width: 50,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(9),
+                                  border: Border.all(color: Colors.pinkAccent)),
+                              child: Obx(
+                                () => titleImage.value != null
+                                    ? EFadeInImage(
+                                        height: 50,
+                                        width: 50,
+                                        radius: 9,
+                                        image: NetworkImage(titleImage.value!))
+                                    : loadingImage.value
+                                        ? ECircularProgressIndicator(
+                                            height: 16,
+                                          )
+                                        : Icon(
+                                            Icons.image_outlined,
+                                            color: Colors.pinkAccent,
+                                          ),
+                              )),
+                        )
                       ],
                     ),
-                  ),
-                  18.h,
-                  Obx(
-                    () => AnimatedSwitcher(
-                      duration: 666.milliseconds,
-                      child: type.value == QuestionType.qct
-                          ? EColumn(
+                    12.h,
+                    Container(
+                      padding: EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                          // color: Colors.white10,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: EColumn(
+                        children: [
+                          6.h,
+                          EText("Choisir le type de la question"),
+                          Obx(
+                            () => Column(
                               children: [
-                                EText("Réponse attendu"),
-                                ETextField(
-                                    initialValue: qctResponse,
-                                    placeholder:
-                                        "Saisissez la reponse à la question",
-                                    onChanged: (value) {
-                                      qctResponse = value;
-                                    },
-                                    phoneScallerFactor: phoneScallerFactor),
-                                12.h,
+                                RadioListTile(
+                                  // ignore: deprecated_member_use
+                                  fillColor: MaterialStateColor.resolveWith(
+                                      (states) => type.value == QuestionType.qcm
+                                          ? Colors.pinkAccent
+                                          : Colors.grey),
+                                  value: QuestionType.qcm,
+                                  groupValue: type.value,
+                                  onChanged: (value) {
+                                    type.value = value!;
+                                  },
+                                  title: EText("QCM"),
+                                ),
+                                RadioListTile(
+                                  fillColor: MaterialStateColor.resolveWith(
+                                      (states) => type.value == QuestionType.qcu
+                                          ? Colors.pinkAccent
+                                          : Colors.grey),
+                                  value: QuestionType.qcu,
+                                  groupValue: type.value,
+                                  onChanged: (value) {
+                                    type.value = value!;
+                                  },
+                                  title: EText("QCU"),
+                                ),
+                                RadioListTile(
+                                  fillColor: MaterialStateColor.resolveWith(
+                                      (states) => type.value == QuestionType.qct
+                                          ? Colors.pinkAccent
+                                          : Colors.grey),
+                                  value: QuestionType.qct,
+                                  groupValue: type.value,
+                                  onChanged: (value) {
+                                    type.value = value!;
+                                  },
+                                  title: EText("QCT"),
+                                ),
                               ],
-                            )
-                          : EColumn(children: [
-                              EText("Propositions"),
-                              6.h,
-                              propositions.isEmpty
-                                  ? Column(
-                                      children: [
-                                        Image(
-                                          image: AssetImage(
-                                            Assets.image("empty-2.png"),
-                                          ),
-                                          height: 80,
-                                        ),
-                                        EText(
-                                          "Aucune proposition ajoutée",
-                                          color: Colors.pinkAccent,
-                                        )
-                                      ],
-                                    )
-                                  : 0.h,
-                              ...propositions.map((element) {
-                                var index = propositions.indexOf(element);
-                                return type.value == QuestionType.qcm
-                                    ? CheckboxListTile(
-                                        fillColor:
-                                            MaterialStateColor.resolveWith(
-                                                (states) =>
-                                                    qcmResponse.contains(
-                                                            index.toString())
-                                                        ? Colors.pinkAccent
-                                                        : Colors.transparent),
-                                        activeColor: Colors.pinkAccent,
-                                        side: BorderSide(
-                                            width: 2, color: Colors.grey),
-                                        controlAffinity:
-                                            ListTileControlAffinity.leading,
-                                        value: qcmResponse
-                                            .contains(index.toString()),
-                                        onChanged: (value) {
-                                          if (qcmResponse
-                                              .contains(index.toString())) {
-                                            qcmResponse
-                                                .remove(index.toString());
-                                          } else {
-                                            qcmResponse.add(index.toString());
-                                          }
-                                        },
-                                        title: isFirebaseStorageLink(element)
-                                            ? Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: EFadeInImage(
-                                                  width: 120,
-                                                  height: 120,
-                                                  image: NetworkImage(element),
-                                                ),
-                                              )
-                                            : EText(element),
-                                      )
-                                    : RadioListTile(
-                                        fillColor:
-                                            MaterialStateColor.resolveWith(
-                                                (states) => qcuResponse.value ==
-                                                        index.toString()
-                                                    ? Colors.pinkAccent
-                                                    : Colors.grey),
-                                        value: index.toString(),
-                                        groupValue: qcuResponse.value,
-                                        onChanged: (value) {
-                                          qcuResponse.value = value!;
-                                        },
-                                        title: isFirebaseStorageLink(element)
-                                            ? Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: EFadeInImage(
-                                                  width: 120,
-                                                  height: 120,
-                                                  image: NetworkImage(element),
-                                                ),
-                                              )
-                                            : EText(element),
-                                      );
-                              }).toList(),
-                            ]),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ]),
-              ),
-              floatingActionButton: Obx(
-                () => type.value == QuestionType.qct
-                    ? 0.h
-                    : SizedBox(
-                        height: 55,
-                        child: Center(
-                          child: SimpleOutlineButton(
-                            radius: 12,
-                            width: 230,
-                            color: Colors.pinkAccent,
-                            onTap: () {
-                              showAddPropositionDialog();
-                            },
-                            child: EText(
-                              "Ajouter une proposition",
+                    18.h,
+                    Obx(
+                      () => AnimatedSwitcher(
+                        duration: 666.milliseconds,
+                        child: type.value == QuestionType.qct
+                            ? EColumn(
+                                children: [
+                                  EText("Réponse attendu"),
+                                  ETextField(
+                                      initialValue: qctResponse,
+                                      placeholder:
+                                          "Saisissez la reponse à la question",
+                                      onChanged: (value) {
+                                        qctResponse = value;
+                                      },
+                                      phoneScallerFactor: phoneScallerFactor),
+                                  12.h,
+                                ],
+                              )
+                            : EColumn(children: [
+                                EText("Propositions"),
+                                6.h,
+                                propositions.isEmpty
+                                    ? Column(
+                                        children: [
+                                          Image(
+                                            image: AssetImage(
+                                              Assets.image("empty-2.png"),
+                                            ),
+                                            height: 80,
+                                          ),
+                                       
+                                        ],
+                                      )
+                                    : 0.h,
+                                ...propositions.map((element) {
+                                  var index = propositions.indexOf(element);
+                                  return Row(
+                                    children: [
+                                      SizedBox(
+                                        width: constraints.maxWidth - 120,
+                                        child: type.value == QuestionType.qcm
+                                            ? CheckboxListTile(
+                                                fillColor: MaterialStateColor
+                                                    .resolveWith((states) =>
+                                                        qcmResponse.contains(
+                                                                index
+                                                                    .toString())
+                                                            ? Colors.pinkAccent
+                                                            : Colors
+                                                                .transparent),
+                                                activeColor: Colors.pinkAccent,
+                                                side: BorderSide(
+                                                    width: 2,
+                                                    color: Colors.grey),
+                                                controlAffinity:
+                                                    ListTileControlAffinity
+                                                        .leading,
+                                                value: qcmResponse
+                                                    .contains(index.toString()),
+                                                onChanged: (value) {
+                                                  if (qcmResponse.contains(
+                                                      index.toString())) {
+                                                    qcmResponse.remove(
+                                                        index.toString());
+                                                  } else {
+                                                    qcmResponse
+                                                        .add(index.toString());
+                                                  }
+                                                },
+                                                title: isFirebaseStorageLink(
+                                                        element)
+                                                    ? Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: EFadeInImage(
+                                                          width: 120,
+                                                          height: 120,
+                                                          image: NetworkImage(
+                                                              element),
+                                                        ),
+                                                      )
+                                                    : EText(element),
+                                              )
+                                            : RadioListTile(
+                                                fillColor: MaterialStateColor
+                                                    .resolveWith((states) =>
+                                                        qcuResponse.value ==
+                                                                index.toString()
+                                                            ? Colors.pinkAccent
+                                                            : Colors.grey),
+                                                value: index.toString(),
+                                                groupValue: qcuResponse.value,
+                                                onChanged: (value) {
+                                                  qcuResponse.value = value!;
+                                                },
+                                                title: isFirebaseStorageLink(
+                                                        element)
+                                                    ? Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: EFadeInImage(
+                                                          width: 120,
+                                                          height: 120,
+                                                          image: NetworkImage(
+                                                              element),
+                                                        ),
+                                                      )
+                                                    : EText(element),
+                                              ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                              onPressed: () {
+                                                showAddPropositionDialog(
+                                                    context,
+                                                    index: propositions
+                                                        .indexOf(element));
+                                              },
+                                              icon: Icon(
+                                                Icons.mode_edit_outlined,
+                                              )),
+                                          IconButton(
+                                              onPressed: () {
+                                                propositions.remove(element);
+                                              },
+                                              icon: Icon(
+                                                CupertinoIcons.trash,
+                                                color: Colors.red,
+                                              ))
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                }).toList(),
+                              ]),
+                      ),
+                    ),
+                  ]),
+                ),
+                floatingActionButton: Obx(
+                  () => type.value == QuestionType.qct
+                      ? 0.h
+                      : SizedBox(
+                          height: 55,
+                          child: Center(
+                            child: SimpleOutlineButton(
+                              radius: 12,
+                              width: 230,
                               color: Colors.pinkAccent,
+                              onTap: () {
+                                showAddPropositionDialog(context);
+                              },
+                              child: EText(
+                                "Ajouter une proposition",
+                                color: Colors.pinkAccent,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-              ),
-            ),
+                ),
+              );
+            }),
           ),
         ),
       );
     });
   }
 
-  void showAddPropositionDialog() {
-    String proposition = "";
+  void showAddPropositionDialog(context, {int? index}) {
+    String proposition = index.isNotNul
+        ? isFirebaseStorageLink(propositions[index!])
+            ? ""
+            : propositions[index]
+        : "";
     var loadingImage = false.obs;
     Get.dialog(Dialog(
       child: ConstrainedBox(
@@ -473,14 +528,18 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
             EText("Saisissez la proposition"),
             9.h,
             ETextField(
+                initialValue: proposition,
                 placeholder: "Saisissez une proposition",
                 onSubmitted: (value) {
                   if (proposition.isEmpty) {
-                    Toasts.error(context,description:  "Veuillez saisir une proposition valable");
+                    Toasts.error(context,
+                        description: "Veuillez saisir une proposition valable");
                     return;
                   }
                   if (propositions.contains(proposition)) {
-                    Toasts.error(context,description:  "Evitez d'entrer des propositions identiques");
+                    Toasts.error(context,
+                        description:
+                            "Evitez d'entrer des propositions identiques");
                     return;
                   }
                   propositions.add(proposition);
@@ -517,14 +576,17 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                     loadingImage.value = false;
                     print(link);
                     proposition = link;
-                    propositions.add(proposition);
+                    if (index.isNotNul) {
+                      propositions[index!] = proposition;
+                    } else {
+                      propositions.add(proposition);
+                    }
 
                     Get.back();
                   },
                 ).onError((_, __) {
                   loadingImage.value = false;
                 });
-                ;
               },
               child: Obx(() => Container(
                     height: 95,
@@ -538,29 +600,59 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                         ? ECircularProgressIndicator(
                             color: Colors.pinkAccent,
                           )
-                        : Icon(
-                            Icons.image_outlined,
-                            color: Colors.pinkAccent,
-                          ),
+                        : index.isNotNul &&
+                                isFirebaseStorageLink(propositions[index!])
+                            ? Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  EFadeInImage(
+                                      width: double.infinity,
+                                      image: NetworkImage(propositions[index])),
+                                  Container(
+                                      height: 45,
+                                      width: 45,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle),
+                                      child: Icon(
+                                        Icons.edit,
+                                        color: Colors.pinkAccent,
+                                      ))
+                                ],
+                              )
+                            : Icon(
+                                Icons.image_outlined,
+                                color: Colors.pinkAccent,
+                              ),
                   )),
             ),
             18.h,
             SimpleButton(
               color: Colors.pinkAccent,
               onTap: () {
+                print("ennnnnnnnnnnnnnnnre");
                 if (proposition.isEmpty) {
-                  Toasts.error(context,description:  "Veuillez saisir une proposition valable");
+                  Toasts.error(context,
+                      description: "Veuillez saisir une proposition valable");
                   return;
                 }
                 if (propositions.contains(proposition)) {
-                  Toasts.error(context,description:  "Evitez d'entrer des propositions identiques");
+                  Toasts.error(context,
+                      description:
+                          "Evitez d'entrer des propositions identiques");
                   return;
                 }
-                propositions.add(proposition);
+                      print(index);
+                if (index.isNotNul) {
+                  propositions[index!] = proposition;
+                } else {
+                  propositions.add(proposition);
+                }
                 Get.back();
               },
               child: EText(
-                "Ajouter",
+                index.isNotNul ? "Enregistrer" : "Ajouter",
                 color: Colors.white,
               ),
             )

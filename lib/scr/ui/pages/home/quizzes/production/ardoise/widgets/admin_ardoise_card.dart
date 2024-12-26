@@ -55,24 +55,22 @@ class ArdoiseQuestionCard extends StatelessWidget {
               size: 22,
             ),
             9.h,
-              question.image.isNotNul
-                  ? InkWell(
-                    
-                    onTap: (){
+            question.image.isNotNul
+                ? InkWell(
+                    onTap: () {
                       showImageViewer(context, NetworkImage(question.image!));
                     },
                     child: EFadeInImage(
-                      height: 120,
-                      width: 120,
-                      image: NetworkImage(question.image!)),
+                        height: 120,
+                        width: 120,
+                        image: NetworkImage(question.image!)),
                   )
-                  : 0.h
+                : 0.h
           ],
         ),
         question.type == QuestionType.qct
             ? Padding(
-                padding:
-                    const EdgeInsets.symmetric( vertical: 18),
+                padding: const EdgeInsets.symmetric(vertical: 18),
                 child: EColumn(
                   children: [
                     EText(
@@ -207,7 +205,10 @@ class ArdoiseQuestionCard extends StatelessWidget {
                       height: 35,
                       width: 140,
                       onTap: () {
-                        Get.to(ViewArdoiseResponses(ardoiseQuestionID: question.id), id: 2);
+                        Get.to(
+                            ViewArdoiseResponses(
+                                ardoiseQuestionID: question.id),
+                            id: 2);
                       },
                       child: EText(
                         "Reponses",
@@ -217,41 +218,32 @@ class ArdoiseQuestionCard extends StatelessWidget {
                   ),
             Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                  child: InkWell(
-                    onTap: () {
-                      Get.to(
-                          AddArdoiseQuestion(
-                            question: question,
-                            brouillon: brouillon,
-                          ),
-                          id: brouillon == true ? 4 : 2);
-                    },
-                    child: Container(
-                        height: 35,
-                        width: 35,
-                        decoration: BoxDecoration(
-                            color: Colors.white24,
-                            borderRadius: BorderRadius.circular(24)),
-                        child: Obx(
-                          () => _delete_loading.value
-                              ? SizedBox(
-                                  height: 15,
-                                  width: 15,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 1.2,
-                                  ),
-                                )
-                              : Icon(
-                                  Icons.mode_edit_outlined,
-                                  color: Colors.white,
-                                  size: 18,
+                brouillon != true
+                    ? 0.h
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0),
+                        child: InkWell(
+                          onTap: () {
+                            Get.to(
+                                AddArdoiseQuestion(
+                                  question: question,
+                                  brouillon: brouillon,
                                 ),
-                        )),
-                  ),
-                ),
+                                id: brouillon == true ? 4 : 2);
+                          },
+                          child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: Colors.white24,
+                                  borderRadius: BorderRadius.circular(24)),
+                              child: Icon(
+                                    Icons.mode_edit_outlined,
+                                    color: Colors.white,
+                                    size: 18,
+                                  )),
+                        ),
+                      ),
                 12.w,
                 InkWell(
                   onTap: () {

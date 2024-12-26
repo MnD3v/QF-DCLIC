@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
@@ -7,22 +8,38 @@ import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:my_widgets/my_widgets.dart';
 
 class AddQuestion extends StatelessWidget {
+  int? index;
   RxList<Question> questions;
-  AddQuestion({super.key, required this.questions});
+  Question? question;
+  AddQuestion(
+      {super.key, required this.questions, required this.question, this.index});
   var qcuResponse = "".obs;
   var qcmResponse = RxList<String>();
-  var qctResponse = "";
-
+  var qctResponse = "".obs;
   var propositions = RxList<String>();
-
   var type = "qcm".obs;
 
-  String title = "";
+  var title = "".obs;
   var titleImage = Rx<String?>(null);
   var loadingImage = false.obs;
   @override
   Widget build(BuildContext context) {
+    if (question.isNotNul) {
+      type.value = question!.type;
+      title.value = question!.question;
+      if (question!.type == QuestionType.qcm) {
+        qcmResponse.value = (question!.reponse as List)
+            .map((element) => element.toString())
+            .toList();
+      } else if (question!.type == QuestionType.qcu) {
+        qcuResponse.value = question!.reponse;
+      } else {
+        qctResponse.value = question!.reponse;
+      }
+      propositions.value = question!.choix.values.toList();
+    }
     return LayoutBuilder(builder: (context, constraints) {
+      var width = constraints.maxWidth;
       return Container(
         decoration: BoxDecoration(
             color: AppColors.background900,
@@ -40,12 +57,31 @@ class AddQuestion extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: constraints.maxWidth - 85,
-                      child: ETextField(
-                          placeholder: "Saisissez l'intitulé de la question",
+                      child: Obx(
+                        () => TextFormField(
+                          decoration: InputDecoration(
+                            hintText: "Saisir l'intitulé",
+                            hintStyle: TextStyle(
+                                color: Colors.white24,
+                                fontFamily: Fonts.poppins),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white38),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white38),
+                            ),
+                          ),
+                          initialValue: title.value,
+                          // placeholder: "Saisissez l'intitulé de la question",
                           onChanged: (value) {
-                            title = value;
+                            title.value = value;
                           },
-                          phoneScallerFactor: phoneScallerFactor),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20 * .7 / phoneScallerFactor),
+                          // phoneScallerFactor: phoneScallerFactor
+                        ),
+                      ),
                     ),
                     6.w,
                     InkWell(
@@ -154,7 +190,7 @@ class AddQuestion extends StatelessWidget {
                                 placeholder:
                                     "Saisissez la reponse à la question",
                                 onChanged: (value) {
-                                  qctResponse = value;
+                                  qctResponse.value = value;
                                 },
                                 phoneScallerFactor: phoneScallerFactor),
                             12.h,
@@ -171,70 +207,103 @@ class AddQuestion extends StatelessWidget {
                                       ),
                                       height: 80,
                                     ),
-                                    EText(
-                                      "Aucune question ajouté",
-                                      color: Colors.pinkAccent,
-                                    )
                                   ],
                                 )
                               : 0.h,
                           ...propositions.value.map((element) {
                             var index = propositions.value.indexOf(element);
-                            return type.value == QuestionType.qcm
-                                ? CheckboxListTile(
-                                    fillColor: MaterialStateColor.resolveWith(
-                                        (states) => qcmResponse
-                                                .contains(index.toString())
-                                            ? Colors.pinkAccent
-                                            : Colors.transparent),
-                                    activeColor: Colors.pinkAccent,
-                                    side: BorderSide(
-                                        width: 2, color: Colors.grey),
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    value:
-                                        qcmResponse.contains(index.toString()),
-                                    onChanged: (value) {
-                                      if (qcmResponse
-                                          .contains(index.toString())) {
-                                        qcmResponse.remove(index.toString());
-                                      } else {
-                                        qcmResponse.add(index.toString());
-                                      }
-                                    },
-                                    title: isFirebaseStorageLink(element)
-                                        ? Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: EFadeInImage(
-                                              width: 120,
-                                              height: 120,
-                                              image: NetworkImage(element),
-                                            ),
-                                          )
-                                        : EText(element),
-                                  )
-                                : RadioListTile(
-                                    fillColor: MaterialStateColor.resolveWith(
-                                        (states) => qcuResponse.value ==
-                                                index.toString()
-                                            ? Colors.pinkAccent
-                                            : Colors.grey),
-                                    value: index.toString(),
-                                    groupValue: qcuResponse.value,
-                                    onChanged: (value) {
-                                      qcuResponse.value = value!;
-                                    },
-                                    title: isFirebaseStorageLink(element)
-                                        ? Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: EFadeInImage(
-                                              width: 120,
-                                              height: 120,
-                                              image: NetworkImage(element),
-                                            ),
-                                          )
-                                        : EText(element),
-                                  );
+                            return Row(
+                              children: [
+                                SizedBox(
+                                  width: width - 120,
+                                  child: type.value == QuestionType.qcm
+                                      ? CheckboxListTile(
+                                          fillColor:
+                                              MaterialStateColor.resolveWith(
+                                                  (states) =>
+                                                      qcmResponse.contains(
+                                                              index.toString())
+                                                          ? Colors.pinkAccent
+                                                          : Colors.transparent),
+                                          activeColor: Colors.pinkAccent,
+                                          side: BorderSide(
+                                              width: 2, color: Colors.grey),
+                                          controlAffinity:
+                                              ListTileControlAffinity.leading,
+                                          value: qcmResponse
+                                              .contains(index.toString()),
+                                          onChanged: (value) {
+                                            if (qcmResponse
+                                                .contains(index.toString())) {
+                                              qcmResponse
+                                                  .remove(index.toString());
+                                            } else {
+                                              qcmResponse.add(index.toString());
+                                            }
+                                          },
+                                          title: isFirebaseStorageLink(element)
+                                              ? Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: EFadeInImage(
+                                                    width: 120,
+                                                    height: 120,
+                                                    image:
+                                                        NetworkImage(element),
+                                                  ),
+                                                )
+                                              : EText(element),
+                                        )
+                                      : RadioListTile(
+                                          fillColor:
+                                              MaterialStateColor.resolveWith(
+                                                  (states) =>
+                                                      qcuResponse.value ==
+                                                              index.toString()
+                                                          ? Colors.pinkAccent
+                                                          : Colors.grey),
+                                          value: index.toString(),
+                                          groupValue: qcuResponse.value,
+                                          onChanged: (value) {
+                                            qcuResponse.value = value!;
+                                          },
+                                          title: isFirebaseStorageLink(element)
+                                              ? Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: EFadeInImage(
+                                                    width: 120,
+                                                    height: 120,
+                                                    image:
+                                                        NetworkImage(element),
+                                                  ),
+                                                )
+                                              : EText(element),
+                                        ),
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          showAddPropositionDialog(context,
+                                              index: propositions
+                                                  .indexOf(element));
+                                        },
+                                        icon: Icon(
+                                          Icons.mode_edit_outlined,
+                                        )),
+                                    IconButton(
+                                        onPressed: () {
+                                          propositions.remove(element);
+                                        },
+                                        icon: Icon(
+                                          CupertinoIcons.trash,
+                                          color: Colors.red,
+                                        ))
+                                  ],
+                                ),
+                              ],
+                            );
                           }).toList(),
                           12.h,
                           SimpleButton(
@@ -269,18 +338,21 @@ class AddQuestion extends StatelessWidget {
                           color: Colors.pinkAccent,
                           onTap: () {
                             if (loadingImage.value) {
-                              Toasts.error(context,description: 
+                              Toasts.error(context,
+                                  description:
                                       "Attendez que l'image finisse de charger");
                               return;
                             }
                             if (title.isEmpty) {
-                              Toasts.error(context,description: 
+                              Toasts.error(context,
+                                  description:
                                       "Veuillez saisir l'intitulé de la question");
                               return;
                             }
                             if (type.value != QuestionType.qct &&
                                 propositions.length < 2) {
-                              Toasts.error(context,description: 
+                              Toasts.error(context,
+                                  description:
                                       "Veuillez ajouter au-moins deux propositions");
                               return;
                             }
@@ -295,42 +367,50 @@ class AddQuestion extends StatelessWidget {
                             //liste en map
                             if (type == QuestionType.qcu) {
                               if (qcuResponse.value.isEmpty) {
-                                Toasts.error(context,description:  "Veuillez choisir la reponse");
+                                Toasts.error(context,
+                                    description: "Veuillez choisir la reponse");
                                 return;
                               }
                               question = Question(
-                                  question: title,
+                                  question: title.value,
                                   choix: choix,
                                   reponse: qcuResponse.value,
                                   type: QuestionType.qcu);
                             } else if (type == QuestionType.qcm) {
                               if (qcmResponse.value.isEmpty) {
-                                Toasts.error(context,description:  "Veuillez choisir la reponse");
+                                Toasts.error(context,
+                                    description: "Veuillez choisir la reponse");
                                 return;
                               }
                               question = Question(
-                                  question: title,
+                                  question: title.value,
                                   choix: choix,
                                   reponse: qcmResponse.value,
                                   type: QuestionType.qcm);
                             } else {
                               if (qctResponse.isEmpty) {
-                                Toasts.error(context,description: 
+                                Toasts.error(context,
+                                    description:
                                         "Veuillez saisir la réponse à la question");
                                 return;
                               }
                               question = Question(
-                                  question: title,
+                                  question: title.value,
                                   choix: choix,
                                   reponse: qctResponse,
                                   type: QuestionType.qct);
                             }
                             question.image = titleImage.value;
-                            questions.add(question);
+                            if (index.isNotNul) {
+                              questions[index!] = question;
+                              print(index);
+                            } else {
+                              questions.add(question);
+                            }
                             Get.back();
                           },
                           child: EText(
-                            "Ajouter",
+                            index.isNotNul ? "Enregistrer" : "Ajouter",
                             color: Colors.white,
                           )),
                     ),
@@ -344,8 +424,12 @@ class AddQuestion extends StatelessWidget {
     });
   }
 
-  void showAddPropositionDialog(context) {
-    String proposition = "";
+  void showAddPropositionDialog(context, {int? index}) {
+    String proposition = index.isNotNul
+        ? isFirebaseStorageLink(propositions[index!])
+            ? ""
+            : propositions[index]
+        : "";
     var loadingImage = false.obs;
     Get.dialog(Dialog(
       child: ConstrainedBox(
@@ -356,14 +440,18 @@ class AddQuestion extends StatelessWidget {
             EText("Saisissez la proposition"),
             9.h,
             ETextField(
+                initialValue: proposition,
                 placeholder: "Saisissez une proposition",
                 onSubmitted: (value) {
                   if (proposition.isEmpty) {
-                    Toasts.error(context,description:  "Veuillez saisir une proposition valable");
+                    Toasts.error(context,
+                        description: "Veuillez saisir une proposition valable");
                     return;
                   }
                   if (propositions.contains(proposition)) {
-                    Toasts.error(context,description:  "Evitez d'entrer des propositions identiques");
+                    Toasts.error(context,
+                        description:
+                            "Evitez d'entrer des propositions identiques");
                     return;
                   }
                   propositions.add(proposition);
@@ -400,7 +488,11 @@ class AddQuestion extends StatelessWidget {
                     loadingImage.value = false;
                     print(link);
                     proposition = link;
-                    propositions.add(proposition);
+                    if (index.isNotNul) {
+                      propositions[index!] = proposition;
+                    } else {
+                      propositions.add(proposition);
+                    }
 
                     Get.back();
                   },
@@ -420,29 +512,59 @@ class AddQuestion extends StatelessWidget {
                         ? ECircularProgressIndicator(
                             color: Colors.pinkAccent,
                           )
-                        : Icon(
-                            Icons.image_outlined,
-                            color: Colors.pinkAccent,
-                          ),
+                        : index.isNotNul &&
+                                isFirebaseStorageLink(propositions[index!])
+                            ? Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  EFadeInImage(
+                                      width: double.infinity,
+                                      image: NetworkImage(propositions[index])),
+                                  Container(
+                                      height: 45,
+                                      width: 45,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle),
+                                      child: Icon(
+                                        Icons.edit,
+                                        color: Colors.pinkAccent,
+                                      ))
+                                ],
+                              )
+                            : Icon(
+                                Icons.image_outlined,
+                                color: Colors.pinkAccent,
+                              ),
                   )),
             ),
             18.h,
             SimpleButton(
               color: Colors.pinkAccent,
               onTap: () {
+                print("ennnnnnnnnnnnnnnnre");
                 if (proposition.isEmpty) {
-                  Toasts.error(context,description:  "Veuillez saisir une proposition valable");
+                  Toasts.error(context,
+                      description: "Veuillez saisir une proposition valable");
                   return;
                 }
                 if (propositions.contains(proposition)) {
-                  Toasts.error(context,description:  "Evitez d'entrer des propositions identiques");
+                  Toasts.error(context,
+                      description:
+                          "Evitez d'entrer des propositions identiques");
                   return;
                 }
-                propositions.add(proposition);
+
+                if (index.isNotNul) {
+                  propositions[index!] = proposition;
+                } else {
+                  propositions.add(proposition);
+                }
                 Get.back();
               },
               child: EText(
-                "Ajouter",
+                index.isNotNul ? "Enregistrer" : "Ajouter",
                 color: Colors.white,
               ),
             )

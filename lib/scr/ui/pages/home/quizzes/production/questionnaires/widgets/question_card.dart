@@ -1,5 +1,6 @@
 import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 
 import 'package:immobilier_apk/scr/ui/pages/home/quizzes/production/questionnaires/add_question.dart';
@@ -9,12 +10,18 @@ class QuestionCard extends StatelessWidget {
       {super.key,
       required this.index,
       this.idUser,
+      required this.questions,
       required this.dejaRepondu,
       required this.qcuResponse,
       required this.questionnaire,
       required this.initalResponses,
       required this.qcmResponse,
+      this.withEditButtons,
       required this.element});
+
+  final bool? withEditButtons;
+
+  final RxList<Question> questions;
   final String? idUser;
   final Question element;
   final int index;
@@ -43,8 +50,7 @@ class QuestionCard extends StatelessWidget {
 
     return Container(
       width: Get.width,
-          padding: EdgeInsets.all(18),
-
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
           border: Border.all(width: .5, color: Colors.white54)),
@@ -65,21 +71,20 @@ class QuestionCard extends StatelessWidget {
                 ],
                 size: 22,
               ),
-
               element.image.isNotNul
                   ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 9.0),
-                    child: InkWell(
-                      
-                      onTap: (){
-                        showImageViewer(context, NetworkImage(element.image!));
-                      },
-                      child: EFadeInImage(
-                        height: 120,
-                        width: 120,
-                        image: NetworkImage(element.image!)),
-                    ),
-                  )
+                      padding: const EdgeInsets.symmetric(vertical: 9.0),
+                      child: InkWell(
+                        onTap: () {
+                          showImageViewer(
+                              context, NetworkImage(element.image!));
+                        },
+                        child: EFadeInImage(
+                            height: 120,
+                            width: 120,
+                            image: NetworkImage(element.image!)),
+                      ),
+                    )
                   : 0.h
             ],
           ),
@@ -95,26 +100,26 @@ class QuestionCard extends StatelessWidget {
             ? Obx(
                 () => dejaRepondu.value
                     ? EColumn(
-                      children: [
-                        EText(
-                          supprimerTirets(qctResponse),
-                          color: qctResponse.contains("--false")
-                              ? Colors.red
-                              : qctResponse.contains("--true")
-                                  ? Colors.green
-                                  : Colors.white,
-                        ),
-                        9.h,
-                        EText(
-                          element.reponse,
-                          color: Colors.greenAccent,
-                        ),
-                      ],
-                    )
+                        children: [
+                          EText(
+                            supprimerTirets(qctResponse),
+                            color: qctResponse.contains("--false")
+                                ? Colors.red
+                                : qctResponse.contains("--true")
+                                    ? Colors.green
+                                    : Colors.white,
+                          ),
+                          9.h,
+                          EText(
+                            element.reponse,
+                            color: Colors.greenAccent,
+                          ),
+                        ],
+                      )
                     : Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: ETextField(
-                          border: false,
+                            border: false,
                             maxLines: 6,
                             minLines: 3,
                             radius: 18,
@@ -261,6 +266,54 @@ class QuestionCard extends StatelessWidget {
                                 ),
                         );
                 }).toList()),
+              ),
+        withEditButtons != true
+            ? 0.h
+            : Align(
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        onPressed: () async {
+                          Get.dialog(
+                            Dialog(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(maxWidth: 700),
+                                  child: AddQuestion(
+                                    index: index,
+                                    question: element,
+                                    questions: questions,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.mode_edit_outline_outlined)),
+                    IconButton(
+                        onPressed: () async {
+                          Custom.showDialog(
+                            dialog: TwoOptionsDialog(
+                              confirmFunction: () {
+                                questions.remove(element);
+                                Get.back();
+                              },
+                              body:
+                                  "Voulez-vous vraiment supprimer cet element ?",
+                              confirmationText: "Supprimer",
+                              title: "Suppression",
+                            ),
+                          );
+                        },
+                        icon: Icon(
+                          CupertinoIcons.trash,
+                          color: Colors.red,
+                        )),
+                  ],
+                ),
               )
       ]),
     );
