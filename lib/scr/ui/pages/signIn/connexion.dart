@@ -122,17 +122,25 @@ class Connexion extends StatelessWidget {
                                         .doc(telephone)
                                         .get();
                                     if (q.exists) {
+                                      print("1");
                                       var utilisateur =
                                           Utilisateur.fromMap(q.data()!);
+                                      print("2");
+
                                       try {
+                                        print("3.0");
                                         await FirebaseAuth.instance
                                             .signInWithEmailAndPassword(
                                                 email: "$telephone@gmail.com",
                                                 password: pass);
+                                      print("3");
+
                                         Utilisateur.currentUser.value =
                                             utilisateur;
 
                                         isLoading.value = false;
+                                      print("4");
+
 
                                         Get.off(HomePage());
                                         Toasts.success(context,

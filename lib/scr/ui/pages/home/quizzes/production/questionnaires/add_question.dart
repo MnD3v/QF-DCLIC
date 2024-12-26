@@ -186,13 +186,30 @@ class AddQuestion extends StatelessWidget {
                       ? EColumn(
                           children: [
                             EText("Réponse attendue"),
-                            ETextField(
-                                placeholder:
-                                    "Saisissez la reponse à la question",
-                                onChanged: (value) {
-                                  qctResponse.value = value;
-                                },
-                                phoneScallerFactor: phoneScallerFactor),
+                            TextFormField(
+                              maxLines: 6,
+                              minLines: 3,
+                              decoration: InputDecoration(
+                                
+                                hintText: "Saisissez la reponse à la question",
+                                hintStyle: TextStyle(
+                                    color: Colors.white24,
+                                    fontFamily: Fonts.poppins),
+                                border: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white38),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white38),
+                                ),
+                              ),
+                              initialValue: qctResponse.value,
+                              onChanged: (value) {
+                                qctResponse.value = value;
+                              },
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20 * .7 / phoneScallerFactor),
+                            ),
                             12.h,
                           ],
                         )
@@ -397,7 +414,7 @@ class AddQuestion extends StatelessWidget {
                               question = Question(
                                   question: title.value,
                                   choix: choix,
-                                  reponse: qctResponse,
+                                  reponse: qctResponse.value,
                                   type: QuestionType.qct);
                             }
                             question.image = titleImage.value;
