@@ -56,7 +56,7 @@ class QuestionnaireBrouillon extends StatelessWidget {
               waitAfter(0, () async {
                 for (var element in snapshot.data!.docs) {
                   tempQuestionnaires
-                      .add(await Questionnaire.fromMap(element.data()));
+                      .add(await Questionnaire.fromMap(element.data(), classe: user.classe!));
                 }
 
                 questionnaires.value = tempQuestionnaires;
@@ -69,7 +69,6 @@ class QuestionnaireBrouillon extends StatelessWidget {
                       ? ECircularProgressIndicator()
                       : questionnaires.value!.isEmpty
                           ? Empty(
-                              constraints: constraints,
                             )
                           : DynamicHeightGridView(
                               physics: BouncingScrollPhysics(),

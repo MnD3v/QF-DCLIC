@@ -64,7 +64,6 @@ class ArdoiseBrouillon extends StatelessWidget {
                   duration: 666.milliseconds,
                   child: questions.value!.isEmpty
                       ? Empty(
-                          constraints: constraints,
                         )
                       : DynamicHeightGridView(
                           physics: BouncingScrollPhysics(),

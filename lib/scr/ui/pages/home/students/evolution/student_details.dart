@@ -20,14 +20,6 @@ class StudentDetails extends StatelessWidget {
       final crossAxisCount =
           (width / 400).toInt() <= 0 ? 1 : (width / 400).toInt();
 
-        waitAfter(5000, (){
-          print("....................");
-            print(max(
-                                            (crossAxisCount ~/
-                                                questionnaires.value!.length),
-                                            1));
-        });
-
       return EScaffold(
         appBar: AppBar(
           title: EText(
@@ -49,7 +41,6 @@ class StudentDetails extends StatelessWidget {
                       ? ECircularProgressIndicator()
                       : questionnaires.value!.isEmpty
                           ? Empty(
-                              constraints: constraints,
                             )
                           : Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -89,7 +80,11 @@ class StudentDetails extends StatelessWidget {
                                           )
                                         ]),
                                         24.h,
-                                        EText("Questionnaires", size: 24, weight: FontWeight.bold,)
+                                        EText(
+                                          "Questionnaires",
+                                          size: 24,
+                                          weight: FontWeight.bold,
+                                        )
                                       ],
                                     ),
                                   ),
@@ -97,7 +92,8 @@ class StudentDetails extends StatelessWidget {
                                     height: max(
                                             (crossAxisCount ~/
                                                 questionnaires.value!.length),
-                                            1) * questionnaires.value!.length *
+                                            1) *
+                                        questionnaires.value!.length *
                                         165,
                                     child: DynamicHeightGridView(
                                         physics: BouncingScrollPhysics(),
@@ -117,7 +113,7 @@ class StudentDetails extends StatelessWidget {
                                                   questionnaires.value!.length -
                                                       index -
                                                       1];
-                                                          //pour que le dernier entré soit le premier affiché
+                                          //pour que le dernier entré soit le premier affiché
 
                                           var pointsGagne = questionnaire.maked
                                                   .containsKey(
@@ -180,12 +176,16 @@ class StudentDetails extends StatelessWidget {
           "date",
         )
         .get();
+    print("11111111");
     var tempQuestionnaires = <Questionnaire>[];
     print(q.docs.length);
     for (var element in q.docs) {
       tempQuestionnaires.add(await Questionnaire.fromMap(element.data(),
+      classe: user.classe!,
           oneIdMaked: user.telephone_id));
     }
+    print("222222222");
+
     points = [];
     tempQuestionnaires.forEach((element) {
       if (element.maked.containsKey(user.telephone_id)) {

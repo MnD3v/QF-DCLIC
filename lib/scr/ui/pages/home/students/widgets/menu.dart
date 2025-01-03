@@ -69,7 +69,7 @@ class Menu extends StatelessWidget {
                 ),
                 6.h,
                 EText(
-                  "Formateur",
+                  user.admin ? "Administrateur" : "Formateur",
                   size: 16,
                 ),
               ])

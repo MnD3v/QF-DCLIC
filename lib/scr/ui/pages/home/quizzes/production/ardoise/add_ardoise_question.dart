@@ -189,9 +189,14 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                             question.image = titleImage.value;
 
                             if (widget.brouillon == true) {
-                              question.save(brouillon: true);
+                              question.save(brouillon: true
+                              ,                            classe: user.classe,
+                              
+                              );
                             } else {
-                              question.save(brouillon: false);
+                              question.save(brouillon: false
+                              ,                            classe: user.classe,
+                              );
                             }
 
                             _loading.value = false;
@@ -519,7 +524,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
             : propositions[index]
         : "";
     var loadingImage = false.obs;
-    Get.dialog(Dialog(
+    Custom.showDialog(dialog:Dialog(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: 500),
         child: Padding(

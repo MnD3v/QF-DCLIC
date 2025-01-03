@@ -159,7 +159,7 @@ class Connexion extends StatelessWidget {
                                                     'Echec de connexion.\nVeuillez verifier votre connexion internet',
                                               ));
                                         } else if (e.code ==
-                                            'invalid-credential') {
+                                            'wrong-password') {
                                           isLoading.value = false;
 
                                           Custom.showDialog(
@@ -167,6 +167,16 @@ class Connexion extends StatelessWidget {
                                               dialog: const WarningWidget(
                                                 message:
                                                     'Mot de passe incorrect',
+                                              ));
+                                        }
+                                          else{
+                                              isLoading.value = false;
+
+                                          Custom.showDialog(
+                                              barrierColor: Colors.white24,
+                                              dialog: const WarningWidget(
+                                                message:
+                                                    "Une erreur inconnue s'est produite",
                                               ));
                                         }
                                       }

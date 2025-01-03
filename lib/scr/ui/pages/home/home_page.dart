@@ -49,6 +49,8 @@ class _HomePageState extends State<HomePage> {
 
   var menuIsOpen = false.obs;
 
+
+
   var pages = [
     Navigator(
       key: Get.nestedKey(0), // Clé pour le Navigator local

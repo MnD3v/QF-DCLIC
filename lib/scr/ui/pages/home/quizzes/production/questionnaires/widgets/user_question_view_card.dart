@@ -373,7 +373,7 @@ class UserQuestionViewCard extends StatelessWidget {
         '${questionnaire!.date.split(".")[0]}.${Random().nextInt(900)}';
         //histoire de declancher le stream de recuperation de questionnaire
 
-    questionnaire!.save(brouillon: false);
+    questionnaire!.save(brouillon: false, classe: user.classe);
   }
 
   Future<void> getAndUpdateUserPoints() async {

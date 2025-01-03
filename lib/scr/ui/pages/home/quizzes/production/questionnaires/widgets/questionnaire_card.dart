@@ -83,7 +83,7 @@ class QuestionnaireCard extends StatelessWidget {
                                 height: 35,
                                 onTap: () async {
                                   _loading.value = true;
-                                  await questionnaire.toProduction();
+                                  await questionnaire.toProduction(Formateur.currentUser.value!.classe);
                                   _loading.value = false;
                                 },
                                 child: Obx(
@@ -196,7 +196,9 @@ class QuestionnaireCard extends StatelessWidget {
                                       Get.back();
                                       _delete_loading.value = true;
                                       await questionnaire.delete(
-                                          brouillon: brouillon == true);
+                                          brouillon: brouillon == true
+                                          ,                            classe: Formateur.currentUser.value!.classe,
+                                          );
                                       _delete_loading.value = false;
                                     },
                                     body:

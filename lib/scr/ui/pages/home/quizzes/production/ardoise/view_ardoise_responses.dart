@@ -49,7 +49,6 @@ class ViewArdoiseResponses extends StatelessWidget {
                   duration: 666.milliseconds,
                   child: sortByDate(question.maked).isEmpty
                       ?Empty(
-                              constraints: constraints,
                             )
                       : DynamicHeightGridView(
                         key: Key(sortByDate(question.maked).length.toString()),

@@ -448,7 +448,7 @@ class AddQuestion extends StatelessWidget {
             : propositions[index]
         : "";
     var loadingImage = false.obs;
-    Get.dialog(Dialog(
+    Custom.showDialog(dialog:Dialog(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: 500),
         child: Padding(

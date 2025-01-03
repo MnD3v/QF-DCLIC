@@ -51,7 +51,7 @@ class ViewResponses extends StatelessWidget {
                 }
                 waitAfter(0, () async {
                   questionnaire.value =
-                      await Questionnaire.fromMap(snapshot.data!.data()!);
+                      await Questionnaire.fromMap(snapshot.data!.data()!, classe: user.classe!);
                 });
 
                 return Padding(
@@ -63,7 +63,6 @@ class ViewResponses extends StatelessWidget {
                             ? ECircularProgressIndicator()
                             : questionnaire.value!.maked.keys.isEmpty
                                 ? Empty(
-                              constraints: constraints,
                             )
                                 : DynamicHeightGridView(
                                     key: Key(questionnaire

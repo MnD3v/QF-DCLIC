@@ -1,20 +1,10 @@
-import 'dart:isolate';
-import 'dart:math';
 import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/presence/scan/scanner_overlay.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:universal_html/html.dart';
 
 class Scanner extends StatefulWidget {
   const Scanner({Key? key}) : super(key: key);
@@ -79,8 +69,10 @@ class _ScannerState extends State<Scanner> {
                       "heure": heure
                     });
                     Vibrate.vibrate();
-                    AssetsAudioPlayer.newPlayer().open(success!);
+                    AssetsAudioPlayer.newPlayer().open(success);
                     Get.back();
+                    Toasts.success(context, description: "Verification effectuée");
+
                     lastUser = capture.barcodes[0].rawValue!;
                   } catch (e) {
                     Get.back();
@@ -158,15 +150,6 @@ class _ScannerState extends State<Scanner> {
                   onTap: () {
                     cameraController.dispose();
                     Get.back(id: 5);
-                    // payes.isEmpty
-                    //     ? null
-                    //     : Repository()
-                    //         .setStatistiqueData(data: payes.join(','));
-                    // Get.back();
-                    // nombrePayes == 0
-                    //     ? null
-                    //     : Repository().savePayes(nombrePayes: nombrePayes);
-                    // f_equalizer();
                   },
                   child: Container(
                       width: 150,
@@ -222,45 +205,4 @@ class _ScannerState extends State<Scanner> {
         ));
   }
 
-  Future<dynamic> M_history_dialog() {
-    return Get.dialog(
-      Dialog(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12), color: Colors.white),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: EColumn(children: [
-              EText(
-                'Payés',
-                color: Colors.pinkAccent,
-                size: 24,
-              ),
-              6.h,
-              // ...DriverHomePage.dayScans
-              //     .map(
-              //       (e) => Padding(
-              //         padding: const EdgeInsets.all(3.0),
-              //         child: Container(
-              //           width: double.maxFinite,
-              //           color: Colors.white,
-              //           child: Padding(
-              //             padding: const EdgeInsets.all(12.0),
-              //             child: EText(e,
-              //                 color: EColors.textColor,
-              //                 font: Fonts.interMedium,
-              //                 size: 22),
-              //           ),
-              //         ),
-              //       ),
-              //     )
-              //     .toList(),
-            ]),
-          ),
-        ),
-      ),
-    );
-  }
 }

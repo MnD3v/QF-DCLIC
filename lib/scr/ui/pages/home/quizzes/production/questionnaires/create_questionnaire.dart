@@ -99,9 +99,13 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                             maked: {},
                             questions: questions);
                         if (widget.brouillon == true) {
-                          questionnaire.save(brouillon: true);
+                          questionnaire.save(brouillon: true
+                          ,                            classe: user.classe,
+                          );
                         } else {
-                          questionnaire.save(brouillon: false);
+                          questionnaire.save(brouillon: false
+                          ,                            classe: user.classe,
+                          );
                         }
 
                         _loading.value = false;
@@ -189,7 +193,7 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                 child: SimpleOutlineButton(
                   width: 200,
                             onTap: () {
-                              Get.dialog(
+                              Custom.showDialog(dialog:
                                 Dialog(
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),

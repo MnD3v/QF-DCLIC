@@ -22,7 +22,7 @@ class MenuBoutton extends StatelessWidget {
           decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(6)),
           child: IconButton(
             onPressed: () {
-              Get.dialog(
+              Custom.showDialog(dialog:
                 Stack(
                   alignment: Alignment.topRight,
                   children: [

@@ -1,11 +1,11 @@
 {
-    "name": "immobilier_apk",
-    "short_name": "immobilier_apk",
+    "name": "Q-DCLIC",
+    "short_name": "Q-DCLIC",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Suivi et evalution du projet D-CLIC",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

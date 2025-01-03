@@ -181,7 +181,9 @@ class ArdoiseQuestionCard extends StatelessWidget {
                         width: 140,
                         onTap: () async {
                           sendLoading.value = true;
-                          await question.toProduction();
+                          await question.toProduction(
+                                                      Formateur.currentUser.value!.classe,
+                          );
                           sendLoading.value = false;
                         },
                         child: Obx(
@@ -253,6 +255,8 @@ class ArdoiseQuestionCard extends StatelessWidget {
                               Get.back();
                               _delete_loading.value = true;
                               await question.delete(
+                                classe: 
+                                Formateur.currentUser.value!.classe,
                                   brouillon: brouillon == true);
                               _delete_loading.value = false;
                             },

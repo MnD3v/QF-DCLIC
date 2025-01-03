@@ -2,8 +2,9 @@
 import 'package:immobilier_apk/scr/config/app/export.dart';
 
 class Empty extends StatelessWidget {
-  const Empty({super.key, required this.constraints});
-  final constraints;
+  final double? size;
+  const Empty({super.key, this.size});
+
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class Empty extends StatelessWidget {
       children: [
         Image(
           image: AssetImage(Assets.image("empty-2.png")),
-          width: 120,
+          width:size?? 120,
           fit: BoxFit.contain,
         ),
        

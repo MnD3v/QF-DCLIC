@@ -276,7 +276,7 @@ class QuestionCard extends StatelessWidget {
                   children: [
                     IconButton(
                         onPressed: () async {
-                          Get.dialog(
+                          Custom.showDialog(dialog:
                             Dialog(
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),

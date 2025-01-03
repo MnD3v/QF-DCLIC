@@ -28,7 +28,7 @@ class Students extends StatelessWidget {
       final crossAxisCount = width / 250;
       print(crossAxisCount);
       return StreamBuilder(
-          stream: DB
+          stream:  DB
               .firestore(Collections.classes)
               .doc(formateur.classe)
               .collection(Collections.utilistateurs)
@@ -123,7 +123,6 @@ class Students extends StatelessWidget {
                   duration: 666.milliseconds,
                   child: users.value!.isEmpty
                       ? Empty(
-                          constraints: constraints,
                         )
                       : DynamicHeightGridView(
                           key: Key(users.value!.length.toString()),
@@ -202,37 +201,9 @@ class Students extends StatelessWidget {
       studentsMap[index].putIfAbsent("quiz_effectue", () => quizMaked);
       studentsMap[index].putIfAbsent("reussite", () => points / quizMaked);
 
-      var qs = await DB
-          .firestore(Collections.classes)
-          .doc(user.classe)
-          .collection(Collections.sessions)
-          .get();
 
-      // ----------- presence
 
-      Map<String, bool> presence = {};
 
-      for (var element in qs.docs) {
-        var present = await presenceVerification(
-            session: element.id, userID: student.telephone_id);
-        presence.putIfAbsent(element.id, () => present);
-      }
-      studentsMap[index].putIfAbsent(
-        "presence",
-        () => presence.values.where((element) => element).length,
-      );
-      studentsMap[index].putIfAbsent(
-        "absence",
-        () => presence.values.where((element) => !element).length,
-      );
-      studentsMap[index].putIfAbsent(
-        "session_total",
-        () => presence.values.length,
-      );
-      // -------------- presence
-      print("////////////");
-      print(index);
-      print("////////////");
 
 
       effectue.value = ((index +1)  / students.length);
@@ -246,10 +217,6 @@ class Students extends StatelessWidget {
         "Quiz effectués",
         "Quiz total",
         "Taux de Réussite",
-        "Heures de Présence",
-        "Nombre de Présence",
-        "Nombre d'Absence",
-        "Nombre total de Sessions"
       ], // En-tête
       for (var student in studentsMap)
         [
@@ -259,10 +226,6 @@ class Students extends StatelessWidget {
           student["quiz_effectue"],
           q.docs.length,
           student["reussite"].toDouble().toStringAsFixed(2) + " %",
-          student["heuresTotal"] ?? "0",
-          "${student["presence"]}", // Ajout de guillemets pour les champs texte
-          "${student["absence"]}",
-          "${student["session_total"]}",
         ]
     ];
 

@@ -91,7 +91,7 @@ class PresenceDetails extends StatelessWidget {
                 }
             
                 return ids.isEmpty
-                    ? Empty(constraints: constraints)
+                    ? Empty()
                     : DynamicHeightGridView(
                         key: Key(ids.length.toString()),
                         physics: BouncingScrollPhysics(),

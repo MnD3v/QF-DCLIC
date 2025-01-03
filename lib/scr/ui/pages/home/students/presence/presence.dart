@@ -19,11 +19,11 @@ class Presence extends StatelessWidget {
           leading: Get.width > 600
               ? null
               : MenuBoutton(user: user, constraints: constraints, width: width),
-          title: EText("Verification de présence"),
+          title: EText("Verification de présence", size: 24, weight: FontWeight.bold,),
           actions: [
             IconButton(
                 onPressed: () {
-                  Get.dialog(Dialog(
+                  Custom.showDialog(dialog:Dialog(
                     child: ConstrainedBox(
                       constraints: BoxConstraints(maxWidth: 300, minWidth: 300),
                       child: Padding(
@@ -36,7 +36,10 @@ class Presence extends StatelessWidget {
                           ),
                           12.h,
                           FutureBuilder(
-                              future: DB.firestore(Collections.presence).orderBy("date", descending: true).get(),
+                              future: DB
+                                  .firestore(Collections.presence)
+                                  .orderBy("date", descending: true)
+                                  .get(),
                               builder: (context, snapshot) {
                                 if (DB.waiting(snapshot)) {
                                   return ECircularProgressIndicator();
@@ -46,7 +49,7 @@ class Presence extends StatelessWidget {
                                   dates.add(element.data()['date']);
                                 });
                                 return dates.isEmpty
-                                    ? Empty(constraints: constraints)
+                                    ? Empty()
                                     : EColumn(
                                         children: dates
                                             .map((date) => InkWell(
@@ -73,11 +76,17 @@ class Presence extends StatelessWidget {
                                                               BorderRadius
                                                                   .circular(
                                                                       12)),
-                                                      child: EText(
-                                                          GFunctions.isToday(
-                                                                  date)
-                                                              ? "Aujourd'hui"
-                                                              : date)),
+                                                      child: EText(GFunctions
+                                                              .isToday(date)
+                                                          ? "Aujourd'hui"
+                                                          : GFunctions
+                                                                  .isYesterday(
+                                                                      date)
+                                                              ? "Hier"
+                                                              : date
+                                                                  .split("-")
+                                                                  .reversed
+                                                                  .join('-'))),
                                                 ))
                                             .toList());
                               })
@@ -108,7 +117,7 @@ class Presence extends StatelessWidget {
                       .set({"date": date});
                   Get.to(Scanner(), id: 5);
                 },
-                text: "Debuter",
+                text: "Scanner",
               ),
             ],
           ),
