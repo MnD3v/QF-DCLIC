@@ -6,7 +6,7 @@ class ViewInfos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var utilisateur = Utilisateur.currentUser.value!;
+    var utilisateur = Formateur.currentUser.value!;
     return EScaffold(
       appBar: AppBar(
        backgroundColor: Colors.transparent,

@@ -16,7 +16,7 @@ class QuestionnaireBrouillon extends StatelessWidget {
 
   var questionnaires = Rx<List<Questionnaire>?>(null);
 
-  var user = Utilisateur.currentUser.value!;
+  var user = Formateur.currentUser.value!;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class QuestionnaireBrouillon extends StatelessWidget {
                 return ECircularProgressIndicator();
               }
 
-              var telephone = Utilisateur.currentUser.value!.telephone_id;
+              var telephone = Formateur.currentUser.value!.telephone_id;
 
               var tempQuestionnaires = <Questionnaire>[];
 

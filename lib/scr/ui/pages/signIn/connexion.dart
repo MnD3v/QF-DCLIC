@@ -118,13 +118,13 @@ class Connexion extends StatelessWidget {
                                   isLoading.value = true;
                                   try {
                                     var q = await DB
-                                        .firestore(Collections.utilistateurs)
+                                        .firestore(Collections.formateurs)
                                         .doc(telephone)
                                         .get();
                                     if (q.exists) {
                                       print("1");
                                       var utilisateur =
-                                          Utilisateur.fromMap(q.data()!);
+                                          Formateur.fromMap(q.data()!);
                                       print("2");
 
                                       try {
@@ -135,7 +135,7 @@ class Connexion extends StatelessWidget {
                                                 password: pass);
                                       print("3");
 
-                                        Utilisateur.currentUser.value =
+                                        Formateur.currentUser.value =
                                             utilisateur;
 
                                         isLoading.value = false;
@@ -146,7 +146,7 @@ class Connexion extends StatelessWidget {
                                         Toasts.success(context,
                                             description:
                                                 "Vous vous êtes connecté avec succès");
-                                        Utilisateur.refreshToken();
+                                        Formateur.refreshToken();
                                       } on FirebaseAuthException catch (e) {
                                         if (e.code ==
                                             "network-request-failed") {
@@ -228,12 +228,12 @@ class Connexion extends StatelessWidget {
     if (GFunctions.isPhoneNumber(numero: telephone)) {
       try {
         var q =
-            await DB.firestore(Collections.utilistateurs).doc(telephone).get();
+            await DB.firestore(Collections.formateurs).doc(telephone).get();
         if (q.exists) {
           isLoading.value = true;
-          await Utilisateur.getUser(telephone);
+          await Formateur.getUser(telephone);
 
-          var utilisateur = Utilisateur.fromMap(q.data()!);
+          var utilisateur = Formateur.fromMap(q.data()!);
 
           if (utilisateur.formateur != true) {
             isLoading.value = false;

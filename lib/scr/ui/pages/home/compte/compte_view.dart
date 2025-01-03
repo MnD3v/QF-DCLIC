@@ -27,7 +27,7 @@ class Compte extends StatelessWidget {
           12.h,
           InkWell(
             onTap: () {
-              if (Utilisateur.currentUser.value == null) {
+              if (Formateur.currentUser.value == null) {
                 Get.to(
                     Connexion(
                    
@@ -56,18 +56,18 @@ class Compte extends StatelessWidget {
                       ),
                       9.w,
                       Obx(
-                        () => Utilisateur.currentUser.value != null
+                        () => Formateur.currentUser.value != null
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   EText(
-                                    "${Utilisateur.currentUser.value!.nom} ${Utilisateur.currentUser.value!.prenom}",
+                                    "${Formateur.currentUser.value!.nom} ${Formateur.currentUser.value!.prenom}",
                                     weight: FontWeight.bold,
                                     size: 22,
                                   ),
                                   EText(
-                                      Utilisateur.currentUser.value!.telephone_id)
+                                      Formateur.currentUser.value!.telephone_id)
                                 ],
                               )
                             : const EText(
@@ -112,7 +112,7 @@ class Compte extends StatelessWidget {
          
           24.h,
           Obx(
-            () => Utilisateur.currentUser.value == null
+            () => Formateur.currentUser.value == null
                 ? 0.h
                 : Column(
                     children: [
@@ -122,7 +122,7 @@ class Compte extends StatelessWidget {
                               confirmationText: "Me deconnecter",
                               confirmFunction: () {
                                 FirebaseAuth.instance.signOut();
-                                Utilisateur.currentUser.value = null;
+                                Formateur.currentUser.value = null;
                                
                               //  Get.off(Connexion());
                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Connexion(),), (route) => false,);

@@ -57,6 +57,10 @@ dependencies:
   http: ^1.2.2
   csv: ^6.0.0
   ntp: ^2.0.0
+  universal_html: ^2.2.4
+  mobile_scanner: ^6.0.2
+  assets_audio_player: ^3.1.1
+  flutter_vibrate: 
 
 dev_dependencies:
   flutter_test:
@@ -111,6 +115,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/audios/
 
 
 

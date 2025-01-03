@@ -12,7 +12,7 @@ class Inscription extends StatelessWidget {
 
   bool? deconnected;
   final function;
-  Utilisateur utilisateur = Utilisateur.empty;
+  Formateur utilisateur = Formateur.empty;
 
   var currentRegion = Rx<String?>(null);
 
@@ -55,7 +55,6 @@ class Inscription extends StatelessWidget {
                       const BigTitleText(
                         "Inscription",
                       ),
-
                       34.h,
                       UnderLineTextField(
                         label: "Votre nom",
@@ -189,7 +188,8 @@ class Inscription extends StatelessWidget {
                                     password: utilisateur.password,
                                   );
                                   utilisateur.formateur = true;
-                                  await Utilisateur.setUser(utilisateur, notSetUser: true);
+                                  await Formateur.setUser(utilisateur,
+                                      notSetUser: true);
 
                                   isLoading.value = false;
 
@@ -197,11 +197,12 @@ class Inscription extends StatelessWidget {
                                   Toasts.success(context,
                                       description:
                                           "Création de compte effectué avec succès");
-                                             await FirebaseAuth.instance
+                                  await FirebaseAuth.instance
                                       .signInWithEmailAndPassword(
                                     email:
-                                        "${Utilisateur.currentUser.value!.telephone_id}@gmail.com",
-                                    password: Utilisateur.currentUser.value!.password,
+                                        "${Formateur.currentUser.value!.telephone_id}@gmail.com",
+                                    password:
+                                        Formateur.currentUser.value!.password,
                                   );
                                   waitAfter(1000, () {
                                     function();

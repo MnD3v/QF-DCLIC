@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/home_page.dart';
-import 'dart:html';
+import 'package:universal_html/html.dart';
 
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/chart.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/widgets/student_card.dart';
@@ -14,10 +14,10 @@ import 'package:lottie/lottie.dart';
 
 class Students extends StatelessWidget {
   Students({super.key});
-  final formateur = Utilisateur.currentUser.value!;
+  final formateur = Formateur.currentUser.value!;
   var users = Rx<List<Utilisateur>?>(null);
 
-  var user = Utilisateur.currentUser.value!;
+  var user = Formateur.currentUser.value!;
 
   var downloadLoading = false.obs;
 
@@ -237,6 +237,7 @@ class Students extends StatelessWidget {
 
       effectue.value = ((index +1)  / students.length);
     }
+    
     List<List<dynamic>> rows = [
       [
         "Nom",

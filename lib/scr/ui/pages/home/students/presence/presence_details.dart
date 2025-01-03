@@ -8,7 +8,8 @@ import 'package:my_widgets/widgets/scaffold.dart';
 
 class PresenceDetails extends StatelessWidget {
   final Utilisateur user;
-  PresenceDetails({super.key, required this.user});
+  final String date;
+  PresenceDetails({super.key, required this.user, required this.date});
   var ids = [];
   var presence = Rx<Map<String, bool>>({});
   @override
@@ -25,31 +26,38 @@ class PresenceDetails extends StatelessWidget {
             weight: FontWeight.bold,
           ),
           actions: [
-            Obx(()=>
-               Row(
+            Obx(
+              () => Row(
                 children: [
-                          12.w,
-                         Icon(
+                  12.w,
+                  Icon(
                     Icons.circle,
                     size: 14,
                     color: Colors.white,
                   ),
                   3.w,
-                  EText(presence.value.values
-                     
-                      .length
-                      .toString(), font: Fonts.sevenSegment, size: 24, weight: FontWeight.bold,),
-                      12.w,
+                  EText(
+                    presence.value.values.length.toString(),
+                    font: Fonts.sevenSegment,
+                    size: 24,
+                    weight: FontWeight.bold,
+                  ),
+                  12.w,
                   Icon(
                     Icons.circle,
                     size: 14,
                     color: Colors.greenAccent,
                   ),
                   3.w,
-                  EText(presence.value.values
-                      .where((element) => element)
-                      .length
-                      .toString(), font: Fonts.sevenSegment, size: 24, weight: FontWeight.bold,),
+                  EText(
+                    presence.value.values
+                        .where((element) => element)
+                        .length
+                        .toString(),
+                    font: Fonts.sevenSegment,
+                    size: 24,
+                    weight: FontWeight.bold,
+                  ),
                   12.w,
                   Icon(
                     Icons.circle,
@@ -57,16 +65,16 @@ class PresenceDetails extends StatelessWidget {
                     color: Colors.red,
                   ),
                   3.w,
-       
-
-                        EText(presence.value.values
-                      .where((element) => !element)
-                      .length
-                      .toString(), font: Fonts.sevenSegment, size: 24, weight: FontWeight.bold,),
-              
-
-                     
-                      12.w,
+                  EText(
+                    presence.value.values
+                        .where((element) => !element)
+                        .length
+                        .toString(),
+                    font: Fonts.sevenSegment,
+                    size: 24,
+                    weight: FontWeight.bold,
+                  ),
+                  12.w,
                 ],
               ),
             )
@@ -76,20 +84,12 @@ class PresenceDetails extends StatelessWidget {
           final width = constraints.maxWidth;
           final crossAxisCount = width / 250;
           return FutureBuilder(
-              future: DB
-                  .firestore(Collections.classes)
-                  .doc(user.classe)
-                  .collection(Collections.sessions)
-                  .orderBy("date")
-                  .get(),
+              future: presenceVerification(),
               builder: (context, snapshot) {
                 if (DB.waiting(snapshot)) {
                   return ECircularProgressIndicator();
                 }
-                print(snapshot.data!.docs.length);
-                snapshot.data!.docs.forEach((element) {
-                  ids.add(element.id);
-                });
+            
                 return ids.isEmpty
                     ? Empty(constraints: constraints)
                     : DynamicHeightGridView(
@@ -111,6 +111,30 @@ class PresenceDetails extends StatelessWidget {
               });
         }));
   }
+
+  presenceVerification() async {
+    var qEtudiants = await DB
+        .firestore(Collections.utilistateurs)
+        .where("formateur", isNotEqualTo: true)
+        .where("classe", isEqualTo: user.classe)
+        .get();
+    var qEtudiantsPresents = await DB
+        .firestore(Collections.presence)
+        .doc(date)
+        .collection(Collections.etudiants)
+        .get();
+    var presentsID = [];
+
+    for (var element in qEtudiantsPresents.docs) {
+      presentsID.add(element.id);
+    }
+
+    var etudiants = [];
+
+    for (var element in qEtudiants.docs) {
+      etudiants.add(Utilisateur.fromMap(element.data()));
+    }
+  }
 }
 
 class UserPresenceCard extends StatelessWidget {
@@ -127,7 +151,6 @@ class UserPresenceCard extends StatelessWidget {
   var present = Rx<bool?>(null);
   @override
   Widget build(BuildContext context) {
-    presenceVerification();
     return Container(
       padding: EdgeInsets.all(24),
       margin: EdgeInsets.all(6),
@@ -158,25 +181,5 @@ class UserPresenceCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  presenceVerification() async {
-    var q = await DB
-        .firestore(Collections.classes)
-        .doc(user.classe)
-        .collection(Collections.sessions)
-        .doc(session)
-        .collection(Collections.sessions)
-        .doc(user.telephone_id)
-        .get();
-
-    if (q.exists) {
-      present.value = true;
-    } else {
-      present.value = false;
-    }
-    presence.update((value) {
-      value?.putIfAbsent(session, () => present.value!);
-    });
   }
 }

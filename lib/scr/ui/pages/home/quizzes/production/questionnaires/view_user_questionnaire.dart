@@ -29,7 +29,6 @@ class ViewUserQuestionnaire extends StatefulWidget {
 class _ViewUserQuestionnaireState extends State<ViewUserQuestionnaire> {
   var initalResponses = [];
 
-  var totalPoints = Utilisateur.currentUser.value!.points.obs;
 
   PageController pageController = PageController();
 

@@ -15,7 +15,7 @@ class Menu extends StatelessWidget {
   });
   final double maxHeight;
   final double width;
-  final Utilisateur user;
+  final Formateur user;
   final RxInt currentIndex;
   final RxBool showBrouillonElements;
   RxBool showStudentsElements = true.obs;
@@ -59,9 +59,13 @@ class Menu extends StatelessWidget {
               ),
               6.w,
               EColumn(children: [
-                EText(
-                  "${user.nom} ${user.prenom}",
-                  weight: FontWeight.bold,
+                SizedBox(
+                  width: 135,
+                  child: EText(
+                    "${user.nom} ${user.prenom}",
+                    maxLines: 2,
+                    weight: FontWeight.bold,
+                  ),
                 ),
                 6.h,
                 EText(
@@ -330,7 +334,7 @@ class Menu extends StatelessWidget {
                       confirmationText: "Me deconnecter",
                       confirmFunction: () {
                         FirebaseAuth.instance.signOut();
-                        Utilisateur.currentUser.value = null;
+                        Formateur.currentUser.value = null;
 
                         //  Get.off(Connexion());
                         Navigator.pushAndRemoveUntil(

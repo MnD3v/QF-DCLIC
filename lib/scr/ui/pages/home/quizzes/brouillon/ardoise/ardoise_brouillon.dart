@@ -17,7 +17,7 @@ class ArdoiseBrouillon extends StatelessWidget {
   ArdoiseBrouillon({super.key});
 
   var questions = Rx<List<ArdoiseQuestion>?>(null);
-  var user = Utilisateur.currentUser.value!;
+  var user = Formateur.currentUser.value!;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class ArdoiseBrouillon extends StatelessWidget {
                 return ECircularProgressIndicator();
               }
 
-              var telephone = Utilisateur.currentUser.value!.telephone_id;
+              var telephone = Formateur.currentUser.value!.telephone_id;
               var tempQuestions = <ArdoiseQuestion>[];
               snapshot.data!.docs.forEach((element) {
                 tempQuestions.add(ArdoiseQuestion.fromMap(element.data()));

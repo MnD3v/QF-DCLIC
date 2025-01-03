@@ -158,13 +158,13 @@ class LoadingPage extends StatelessWidget {
     var user = FirebaseAuth.instance.currentUser;
     if (user.isNotNul) {
       if (user!.email != null) {
-        await Utilisateur.getUser(user.email!);
+        await Formateur.getUser(user.email!);
       } else {
-        await Utilisateur.getUser(user.phoneNumber!.substring(4));
+        await Formateur.getUser(user.phoneNumber!.substring(4));
       }
       
       if(!kIsWeb){
-      await Utilisateur.refreshToken();
+      await Formateur.refreshToken();
 
       }
       waitAfter(999, () {

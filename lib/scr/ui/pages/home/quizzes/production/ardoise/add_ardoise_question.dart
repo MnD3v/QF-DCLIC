@@ -98,7 +98,7 @@ class _AddArdoiseQuestionState extends State<AddArdoiseQuestion> {
                           width: 140,
                           color: Colors.pink,
                           onTap: () async {
-                            var user = Utilisateur.currentUser.value!;
+                            var user = Formateur.currentUser.value!;
 
                             if (loadingImage.value) {
                               Toasts.error(context,

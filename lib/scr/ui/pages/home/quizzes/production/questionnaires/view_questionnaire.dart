@@ -25,13 +25,12 @@ class ViewQuestionnaire extends StatefulWidget {
 class _ViewQuestionnaireState extends State<ViewQuestionnaire> {
   var initalResponses = [];
 
-  var totalPoints = Utilisateur.currentUser.value!.points.obs;
 
   PageController pageController = PageController();
 
   var loading = false.obs;
 
-  var telephone = Utilisateur.currentUser.value!.telephone_id;
+  var telephone = Formateur.currentUser.value!.telephone_id;
 
 
 

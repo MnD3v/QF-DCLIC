@@ -214,7 +214,7 @@ class StudentPresenceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.to(PresenceDetails(user: user), id: 5);
+        Get.to(PresenceDetails(user: user, date: "date",), id: 5);
       },
       child: Stack(
         alignment: Alignment.topRight,

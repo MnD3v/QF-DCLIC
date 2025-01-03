@@ -28,7 +28,7 @@ class UserQuestionViewCard extends StatelessWidget {
 
   var inLoading = false.obs;
 
-  var user = Utilisateur.currentUser.value!;
+  var user = Formateur.currentUser.value!;
   @override
   Widget build(BuildContext context) {
     if (element.type == QuestionType.qcu) {

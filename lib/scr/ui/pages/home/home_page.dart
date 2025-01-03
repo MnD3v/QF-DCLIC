@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
 
   var id = "".obs;
 
-  var totalPoints = Utilisateur.currentUser.value!.points.obs;
+
 
   PageController pageController = PageController();
 
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
 
   var showBrouillonElements = true.obs;
 
-  var user = Utilisateur.currentUser.value!;
+  var user = Formateur.currentUser.value!;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {

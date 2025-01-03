@@ -16,9 +16,9 @@ class ViewArdoiseResponses extends StatelessWidget {
     return StreamBuilder(
         stream: DB
             .firestore(Collections.classes)
-            .doc(Utilisateur.currentUser.value!.classe)
+            .doc(Formateur.currentUser.value!.classe)
             .collection(Collections.ardoise)
-            .doc(Utilisateur.currentUser.value!.classe)
+            .doc(Formateur.currentUser.value!.classe)
             .collection(Collections.production)
             .doc(ardoiseQuestionID)
             .snapshots(),

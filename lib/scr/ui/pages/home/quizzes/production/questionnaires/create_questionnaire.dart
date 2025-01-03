@@ -71,7 +71,7 @@ class _CreateQuestionnaireState extends State<CreateQuestionnaire> {
                       radius: 12,
                       width: 120,
                       onTap: () async {
-                        var user = Utilisateur.currentUser.value!;
+                        var user = Formateur.currentUser.value!;
 
                         if (titre.isEmpty) {
                           Toasts.error(context,description:  "Veuillez saisir le titre du questionnaire");

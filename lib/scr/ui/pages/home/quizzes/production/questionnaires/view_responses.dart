@@ -15,7 +15,7 @@ class ViewResponses extends StatelessWidget {
   final String id;
   ViewResponses({super.key, required this.id});
 
-  var user = Utilisateur.currentUser.value!;
+  var user = Formateur.currentUser.value!;
 
   var questionnaire = Rx<Questionnaire?>(null);
 
