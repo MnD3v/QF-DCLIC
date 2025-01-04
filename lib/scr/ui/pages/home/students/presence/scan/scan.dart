@@ -1,10 +1,11 @@
-import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
+
+// import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/presence/scan/scanner_overlay.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:vibration/vibration.dart';
 
 class Scanner extends StatefulWidget {
   const Scanner({Key? key}) : super(key: key);
@@ -68,8 +69,8 @@ class _ScannerState extends State<Scanner> {
                       "classe": Formateur.currentUser.value!.classe!,
                       "heure": heure
                     });
-                    Vibrate.vibrate();
-                    AssetsAudioPlayer.newPlayer().open(success);
+                    Vibration.vibrate();
+                    // AssetsAudioPlayer.newPlayer().open(success);
                     Get.back();
                     Toasts.success(context, description: "Verification effectuée");
 
@@ -78,7 +79,6 @@ class _ScannerState extends State<Scanner> {
                     Get.back();
                     Get.dialog(
                         WarningWidget(message: "Une erreur s'est produite"));
-                    // AssetsAudioPlayer.newPlayer().open(error!);
                     await Future.delayed(
                       1.seconds,
                     );

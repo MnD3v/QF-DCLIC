@@ -63,6 +63,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373750335106:android:f7b35d1a08b3450b03569b",
+        "android_client_info": {
+          "package_name": "com.equilibre.qf_dclic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "373750335106-s238cdsf9dt1ja83vnhdgdlh1rjbtgjg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkyYqAW7e_i_-KGM4QFpfCs6vNpKppnWw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "373750335106-s238cdsf9dt1ja83vnhdgdlh1rjbtgjg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

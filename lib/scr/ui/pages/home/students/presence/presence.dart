@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:immobilier_apk/scr/config/app/export.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/presence/presence_list.dart';
 import 'package:immobilier_apk/scr/ui/pages/home/students/presence/scan/scan.dart';
@@ -19,11 +20,16 @@ class Presence extends StatelessWidget {
           leading: Get.width > 600
               ? null
               : MenuBoutton(user: user, constraints: constraints, width: width),
-          title: EText("Verification de présence", size: 24, weight: FontWeight.bold,),
+          title: EText(
+            "Verification de présence",
+            size: 24,
+            weight: FontWeight.bold,
+          ),
           actions: [
             IconButton(
                 onPressed: () {
-                  Custom.showDialog(dialog:Dialog(
+                  Custom.showDialog(
+                      dialog: Dialog(
                     child: ConstrainedBox(
                       constraints: BoxConstraints(maxWidth: 300, minWidth: 300),
                       child: Padding(
@@ -107,18 +113,20 @@ class Presence extends StatelessWidget {
                 CupertinoIcons.qrcode_viewfinder,
                 size: 200,
               ),
-              SimpleButton(
-                width: 100,
-                onTap: () {
-                  var date = DateTime.now().toString().split(" ")[0];
-                  DB
-                      .firestore(Collections.presence)
-                      .doc(date)
-                      .set({"date": date});
-                  Get.to(Scanner(), id: 5);
-                },
-                text: "Scanner",
-              ),
+              kIsWeb
+                  ? 0.h
+                  : SimpleButton(
+                      width: 100,
+                      onTap: () {
+                        var date = DateTime.now().toString().split(" ")[0];
+                        DB
+                            .firestore(Collections.presence)
+                            .doc(date)
+                            .set({"date": date});
+                        Get.to(Scanner(), id: 5);
+                      },
+                      text: "Scanner",
+                    ),
             ],
           ),
         ),

@@ -26,18 +26,20 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.equilibre.q_dclic"
-    compileSdk flutter.compileSdkVersion
+    namespace "com.equilibre.qf_dclic"
+    compileSdk 34
     ndkVersion flutter.ndkVersion
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    
+     compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "17"
     }
+
+
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -45,11 +47,11 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.equilibre.q_dclic"
+        applicationId "com.equilibre.qf_dclic"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

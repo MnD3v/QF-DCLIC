@@ -26,7 +26,7 @@
 
 
     <application
-        android:label="Q-D-CLIC"
+        android:label="QF-DCLIC"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
